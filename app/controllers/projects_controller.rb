@@ -8,7 +8,6 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    @project_users = @project.project_users.includes(:user)
   end
 
   def new
@@ -54,6 +53,6 @@ class ProjectsController < ApplicationController
     end
 
     def check_management_permission!
-      head :unauthorized unless @project.can_be_managed_by?(@current_user)
+      head :unauthorized unless @project.can_be_managed_by?(current_user)
     end
 end

@@ -4,7 +4,11 @@ class Project < ApplicationRecord
 
   validates :name, presence: true
 
+  def can_be_viewed_by?(user)
+    project_users.find_by(user: user)
+  end
+
   def can_be_managed_by?(user)
-    project_users.where(user: user, role: :admin)
+    project_users.find_by(user: user, role: :admin)
   end
 end
