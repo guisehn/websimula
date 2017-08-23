@@ -15,3 +15,39 @@
 //= require turbolinks
 //= require bootstrap-sprockets
 //= require_tree .
+
+var currentProjectId = null
+
+$(document).on('turbolinks:load', function () {
+  var projectId = window.location.pathname.match(/^\/projects\/([0-9])+/)
+  projectId = projectId ? projectId[1] : null
+
+  if (!projectId || projectId !== currentProjectId) {
+    App.cable.subscriptions.subscriptions.forEach(subscription => {
+      subscription.unsubscribe()
+    })
+
+    currentProjectId = null
+  }
+
+  if (projectId) {
+    currentProjectId = projectId
+
+    App.cable.subscriptions.create({
+      channel: 'ProjectChannel',
+      project_id: projectId
+    }, {
+      connected: () => {
+        console.log(`Project ${projectId}: connected`)
+      },
+
+      rejected: () => {
+        console.log(`Project ${projectId}: rejected`)
+      },
+
+      received: (data) => {
+        console.log(`Project ${projectId}: received`, data)
+      }
+    })
+  }
+})
