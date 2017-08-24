@@ -5,5 +5,9 @@ Rails.application.routes.draw do
 
   resources :projects do
     resources :users
+
+    member do
+      get 'agents'
+    end
   end
 end

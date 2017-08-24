@@ -1,10 +1,16 @@
 class ProjectsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_project, only: [:show, :edit, :update, :destroy]
+  before_action :set_project_and_check_access!, only: [:show, :edit, :update, :destroy, :agents]
   before_action :check_management_permission!, only: [:edit, :update, :destroy]
+
+  before_action :load_agents, only: [:show, :agents]
 
   def index
     @projects = Project.all
+  end
+
+  def agents
+    render partial: 'projects/agents'
   end
 
   def show
@@ -44,8 +50,9 @@ class ProjectsController < ApplicationController
   end
 
   private
-    def set_project
+    def set_project_and_check_access!
       @project = Project.find(params[:id])
+      head :unauthorized unless @project.can_be_viewed_by?(current_user)
     end
 
     def project_params
@@ -54,5 +61,9 @@ class ProjectsController < ApplicationController
 
     def check_management_permission!
       head :unauthorized unless @project.can_be_managed_by?(current_user)
+    end
+
+    def load_agents
+      @agents = @project.agents.order(name: :asc)
     end
 end

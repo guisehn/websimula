@@ -46,6 +46,10 @@ $(document).on('turbolinks:load', function () {
       },
 
       received: (data) => {
+        if (data.model === 'Agent') {
+          $('.agents-section').load(`/projects/${projectId}/agents`);
+        }
+
         console.log(`Project ${projectId}: received`, data)
       }
     })

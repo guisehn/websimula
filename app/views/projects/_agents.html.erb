@@ -1,0 +1,12 @@
+<h2>Agentes</h2>
+
+<div class="agent-list clearfix">
+  <% @agents.each do |agent| %>
+    <a href="#" class="agent pixelated">
+      <img src="<%= agent_image(agent) %>">
+      <p class="agent-label"><%= agent.name %></p>
+    </a>
+  <% end %>
+</div>
+
+<a class="btn btn-sm btn-success">Novo agente</a>

@@ -1,8 +1,26 @@
-<p>
-  <strong>Name:</strong>
-  <%= @project.name %>
-</p>
+<div class="project-header">
+  <div class="container">
+    <div class="project-name">
+      <h1><%= @project.name %></h1>
+    </div>
+  </div>
+</div>
 
+<div class="project-dashboard">
+  <div class="container">
+    <section class="agents-section" id="agents-section">
+      <%= render 'agents' %>
+    </section>
+  </div>
+</div>
+
+<!--
+<%= link_to 'Back', projects_path %>
 <%= link_to 'Team members', project_users_path(@project) %> |
 <%= link_to 'Edit', edit_project_path(@project) %> |
-<%= link_to 'Back', projects_path %>
+-->
+
+<script>
+// reload agents
+//$('#agents-section-container').load('/projects/6/agents');
+</script>

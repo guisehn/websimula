@@ -16,3 +16,70 @@
 
 @import "bootstrap-sprockets";
 @import "bootstrap";
+
+/* header */
+.navbar {
+  margin-bottom: 0;
+}
+
+.project-header {
+  background: #f0f0f0;
+  border-bottom: 1px solid #ddd;
+
+  .project-name {
+    padding: 20px 0;
+
+    h1 {
+      font-weight: normal;
+      font-size: 30px;
+      margin: 0;
+      padding: 0;
+    }
+  }
+}
+
+.pixelated {
+  // Disable antialiasing
+  // https://stackoverflow.com/questions/14068103/disable-antialising-when-scaling-images
+  image-rendering: optimizeSpeed;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -o-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: pixelated;
+  image-rendering: optimize-contrast;
+  -ms-interpolation-mode: nearest-neighbor;
+}
+
+.project-dashboard {
+  padding: 40px 0;
+
+  section h2 {
+    font-size: 18px;
+    font-weight: normal;
+    margin: 0 0 16px 0;
+    padding: 0;
+  }
+
+  .agents-section {
+    .agent {
+      float: left;
+      width: 100px;
+      display: block;
+      color: #000;
+      text-decoration: none;
+      margin: 0 40px 20px 0;
+
+      img {
+        display: block;
+        width: 100px;
+        height: 100px;
+      }
+
+      .agent-label {
+        text-align: center;
+        font-size: 13px;
+        margin: 10px 0 0 0;
+      }
+    }
+  }
+}
