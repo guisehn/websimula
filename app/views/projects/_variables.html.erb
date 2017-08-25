@@ -1,0 +1,22 @@
+<h2>Variáveis</h2>
+
+<div class="agent-list clearfix">
+  <table class="table">
+    <thead>
+      <tr>
+        <th width="90%">Nome</th>
+        <th width="10%">Tipo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @variables.each do |variable| %>
+        <tr>
+          <td><%= variable.name %></td>
+          <td nowrap><%= variable.data_type %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<a class="btn btn-sm btn-success">Nova variável</a>

@@ -1,0 +1,13 @@
+<div class="project-header">
+  <div class="container">
+    <div class="project-name">
+      <% if local_assigns[:internal] %>
+        <h1><%= link_to "← #{project.name}", @project %></h1>
+      <% else %>
+        <h1><%= project.name %></h1>
+      <% end %>
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</div>

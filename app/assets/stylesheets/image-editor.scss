@@ -1,0 +1,27 @@
+.image-editor {
+  .right-pane {
+    float: left;
+    padding-left: 20px;
+
+    .color-picker-container {
+      margin-bottom: 20px;
+    }
+  }
+}
+
+.image-editor-grid,
+.image-editor-grid tr,
+.image-editor-grid td {
+  border: 1px solid #888;
+  border-collapse: collapse;
+}
+
+.image-editor-grid {
+  float: left;
+  background: url(/assets/transparent.png);
+}
+
+.image-editor-grid td {
+  width: 16px;
+  height: 16px;
+}

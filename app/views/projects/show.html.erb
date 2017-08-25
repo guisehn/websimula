@@ -1,26 +1,23 @@
-<div class="project-header">
-  <div class="container">
-    <div class="project-name">
-      <h1><%= @project.name %></h1>
-    </div>
-  </div>
-</div>
+<%= render 'header', project: @project %>
 
 <div class="project-dashboard">
   <div class="container">
-    <section class="agents-section" id="agents-section">
-      <%= render 'agents' %>
-    </section>
+    <div class="row">
+      <div class="col-md-12">
+        <section class="agents-section" id="agents-section">
+          <%= render 'agents' %>
+        </section>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="row">
+      <div class="col-md-4">
+        <section class="variables-section" id="variables-section">
+          <%= render 'variables' %>
+        </section>
+      </div>
+    </div>
   </div>
 </div>
-
-<!--
-<%= link_to 'Back', projects_path %>
-<%= link_to 'Team members', project_users_path(@project) %> |
-<%= link_to 'Edit', edit_project_path(@project) %> |
--->
-
-<script>
-// reload agents
-//$('#agents-section-container').load('/projects/6/agents');
-</script>

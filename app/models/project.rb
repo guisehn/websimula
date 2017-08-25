@@ -1,5 +1,6 @@
 class Project < ApplicationRecord
   has_many :agents
+  has_many :variables
 
   has_many :project_users
   has_many :users, through: :project_users
@@ -11,7 +12,7 @@ class Project < ApplicationRecord
   end
 
   def can_be_edited_by?(user)
-    project_users.find_by(user: user, role: :editor)
+    project_users.find_by(user: user, role: [:admin, :editor])
   end
 
   def can_be_managed_by?(user)

@@ -11,6 +11,7 @@
  * It is generally better to create a new file per style scope.
  *
  *= require_tree .
+ *= require spectrum
  *= require_self
  */
 
@@ -30,10 +31,16 @@
     padding: 20px 0;
 
     h1 {
+      float: left;
       font-weight: normal;
       font-size: 30px;
       margin: 0;
       padding: 0;
+
+      a {
+        color: #000;
+        text-decoration: none;
+      }
     }
   }
 }
@@ -53,11 +60,13 @@
 .project-dashboard {
   padding: 40px 0;
 
-  section h2 {
-    font-size: 18px;
-    font-weight: normal;
-    margin: 0 0 16px 0;
-    padding: 0;
+  section {
+    h2 {
+      font-size: 18px;
+      font-weight: normal;
+      margin: 0 0 16px 0;
+      padding: 0;
+    }
   }
 
   .agents-section {
@@ -82,4 +91,8 @@
       }
     }
   }
+}
+
+.form {
+  margin-bottom: 40px;
 }

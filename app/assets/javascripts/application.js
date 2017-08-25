@@ -14,6 +14,8 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require bootstrap-sprockets
+//= require spectrum
+//= require spectrum.pt-br
 //= require_tree .
 
 var currentProjectId = null
@@ -47,7 +49,11 @@ $(document).on('turbolinks:load', function () {
 
       received: (data) => {
         if (data.model === 'Agent') {
-          $('.agents-section').load(`/projects/${projectId}/agents`);
+          $('#agents-section').load(`/projects/${projectId}/agents`);
+        }
+
+        if (data.model === 'Variable') {
+          $('#variables-section').load(`/projects/${projectId}/variables`);
         }
 
         console.log(`Project ${projectId}: received`, data)

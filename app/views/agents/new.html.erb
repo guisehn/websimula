@@ -1,0 +1,37 @@
+<%= render 'projects/header', project: @project, internal: true %>
+
+<div class="container">
+  <div class="form">
+    <h2>Novo agente</h2>
+
+    <%= simple_form_for([@project, @agent]) do |f| %>
+      <%= f.error_notification %>
+
+      <div class="form-inputs">
+        <div class="row">
+          <div class="col-md-4">
+            <%= f.input :name %>
+            <%= f.input :perception_area %>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Imagem do agente</label>
+          <div id="image-editor-container"></div>
+        </div>
+
+        <%= f.input :image, as: :hidden %>
+      </div>
+
+      <div class="form-actions">
+        <%= f.button :submit %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+$('#image-editor-container').imageEditor({
+  input: $('#agent_image')
+})
+</script>
