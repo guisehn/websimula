@@ -1,6 +1,6 @@
 <h2>Variáveis</h2>
 
-<div class="agent-list clearfix">
+<% if @variables.length > 0 %>
   <table class="table">
     <thead>
       <tr>
@@ -11,12 +11,12 @@
     <tbody>
       <% @variables.each do |variable| %>
         <tr>
-          <td><%= variable.name %></td>
+          <td><%= link_to variable.name, edit_project_variable_path(@project, variable) %></td>
           <td nowrap><%= variable.data_type %></td>
         </tr>
       <% end %>
     </tbody>
   </table>
-</div>
+<% end %>
 
-<a class="btn btn-sm btn-success">Nova variável</a>
+<%= link_to 'Nova variável', new_project_variable_path(@project), class: 'btn btn-sm btn-success' %>

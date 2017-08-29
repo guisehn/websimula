@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :projects do
     resources :users
     resources :agents, except: [:index, :show]
+    resources :variables, except: [:index, :show]
 
     member do
       get 'agents'

@@ -1,0 +1,21 @@
+<%= simple_form_for([project, variable]) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <div class="row">
+      <div class="col-md-4">
+        <%= f.input :name %>
+        <%= f.input :data_type, collection: Variable.data_types.keys %>
+        <%= f.input :initial_value %>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+
+    <% unless variable.new_record? %>
+      <%= link_to 'Excluir', project_variable_path(project, variable), class: 'btn btn-danger', method: :delete, data: { confirm: 'Tem certeza de que deseja excluir esta variável?' } %>
+    <% end %>
+  </div>
+<% end %>
