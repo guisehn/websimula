@@ -4,8 +4,9 @@
   <table class="table">
     <thead>
       <tr>
-        <th width="90%">Nome</th>
+        <th width="80%">Nome</th>
         <th width="10%">Tipo</th>
+        <th width="10%" nowrap>Valor inicial</th>
       </tr>
     </thead>
     <tbody>
@@ -13,6 +14,7 @@
         <tr>
           <td><%= link_to variable.name, edit_project_variable_path(@project, variable) %></td>
           <td nowrap><%= variable.data_type %></td>
+          <td nowrap><%= variable.initial_value %></td>
         </tr>
       <% end %>
     </tbody>
