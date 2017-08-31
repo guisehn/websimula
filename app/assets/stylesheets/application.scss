@@ -96,3 +96,49 @@
 .form {
   margin-bottom: 40px;
 }
+
+.simulator {
+  .simulator-stage-container {
+    float: left;
+    border: 4px solid #eee;
+  }
+
+  .simulator-stage {
+    position: relative;
+
+    .agent {
+      position: absolute;
+      transition: top 0.1s linear, left 0.1s linear
+    }
+  }
+
+  .simulator-options {
+    float: left;
+    margin-left: 20px;
+
+    .speed-container {
+      text-align: center;
+      font-size: 12px;
+      margin-bottom: 20px;
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      input {
+        display: block;
+        width: 150px;
+        margin-bottom: 5px;
+      }
+    }
+
+    .simulator-actions {
+      button {
+        display: block;
+        width: 150px;
+        margin-bottom: 5px;
+      }
+    }
+  }
+}
