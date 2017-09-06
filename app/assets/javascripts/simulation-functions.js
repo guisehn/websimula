@@ -127,5 +127,32 @@ window.simulationFunctions = {
     definition: (env, agent, input, output) => {
       return false
     }
+  },
+
+  move_random: {
+    order: 1,
+    type: 'action',
+    label: 'Mover aleatoriamente',
+    input: [],
+    output: [],
+    definition: (env, agent, input) => {
+      let adjacentPositions = [
+        { x: agent.position.x - 1, y: agent.position.y - 1 },
+        { x: agent.position.x, y: agent.position.y - 1 },
+        { x: agent.position.x + 1, y: agent.position.y - 1 },
+        { x: agent.position.x - 1, y: agent.position.y },
+        { x: agent.position.x + 1, y: agent.position.y },
+        { x: agent.position.x - 1, y: agent.position.y + 1 },
+        { x: agent.position.x, y: agent.position.y + 1 },
+        { x: agent.position.x + 1, y: agent.position.y + 1 }
+      ]
+
+      let freeAdjacentPositions = adjacentPositions.filter(p => p.x >= 0 && p.y >= 0 && p.x < env.stageSize && p.y < env.stageSize && !env.positions[p.y][p.x])
+      let randomPosition = _.sample(freeAdjacentPositions)
+
+      if (randomPosition) {
+        env._moveAgent(agent, randomPosition.x, randomPosition.y)
+      }
+    }
   }
 }

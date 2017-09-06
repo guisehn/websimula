@@ -3,6 +3,7 @@
 
   const STAGE_SIZE = 25
   const AGENT_SIZE = 16
+  const DEFAULT_SPEED = 50
 
   class Simulator {
     constructor(definition, functions, simulatorElement) {
@@ -10,7 +11,9 @@
       this.simulatorElement = simulatorElement
       this.stage = simulatorElement.find('.simulator-stage')
 
-      this.speed = 10
+      this.stageSize = STAGE_SIZE
+      this.speed = DEFAULT_SPEED
+
       this.variables = {}
       this.functions = functions
       this.agents = []
@@ -22,6 +25,8 @@
     }
 
     reset() {
+      this.stopLoop()
+
       this._resetVariables()
       this._clearPositions()
       this._resetAgents()
@@ -44,23 +49,50 @@
       })
     }
 
+    startLoop() {
+      this.stopLoop()
+      this.loopInterval = setInterval(() => this.step(), this.speed)
+      this._setButtonsStates()
+    }
+
+    stopLoop() {
+      if (this.loopInterval) {
+        clearInterval(this.loopInterval)
+        this.loopInterval = null
+        this._setButtonsStates()
+      }
+    }
+
+    _setButtonsStates() {
+      if (this.loopInterval) {
+        $('[data-action=step], [data-action=start]').attr('disabled', 'disabled')
+        $('[data-action=stop]').removeAttr('disabled')
+      } else {
+        $('[data-action=step], [data-action=start]').removeAttr('disabled')
+        $('[data-action=stop]').attr('disabled', 'disabled')
+      }
+    }
+
     _bindEvents() {
       let simulator = this
 
       $('[data-action=step]').on('click', () => this.step())
-
       $('[data-action=reset]').on('click', () => this.reset())
+      $('[data-action=start]').on('click', () => this.startLoop())
+      $('[data-action=stop]').on('click', () => this.stopLoop())
 
-      $('[data-value=speed]').on('input', function () {
-        simulator.speed = this.value
+      $('[data-value=speed]').on('input', function (e) {
         $('[data-bind=speed]').text(this.value)
+
+        simulator.speed = this.value
+        if (simulator.loopInterval) simulator.startLoop()
       })
 
       $('[data-value=speed]').val(this.speed).trigger('input')
     }
 
     _setStageDimensions() {
-      let size = AGENT_SIZE * STAGE_SIZE
+      let size = AGENT_SIZE * this.stageSize
 
       this.stage.css({
         width: `${size}px`,
@@ -92,10 +124,10 @@
     }
 
     _clearPositions() {
-      for (let y = 0; y < STAGE_SIZE; y++) {
+      for (let y = 0; y < this.stageSize; y++) {
         this.positions[y] = []
 
-        for (let x = 0; x < STAGE_SIZE; x++) {
+        for (let x = 0; x < this.stageSize; x++) {
           this.positions[y][x] = null
         }
       }
@@ -105,10 +137,12 @@
       this.agents = []
 
       // add fixed position agents
-      this.definition.initial_positions.fixed_positions.forEach(pos => {
+      let fixedPositions = _.get(this.definition.initial_positions, 'fixed_positions', [])
+
+      fixedPositions.forEach(pos => {
         let agentDefinition = this.definition.agents.filter(a => a.id === pos.agent_id)[0]
 
-        let agent = this._buildAgent(agentDefinition)
+        let agent = this._buildAgent(agentDefinition, pos.x, pos.y)
         this.agents.push(agent)
 
         this.positions[pos.y][pos.x] = { type: 'agent', agent: agent }
@@ -116,15 +150,16 @@
 
       // add random agents
       let freePositions = this._getFreePositions()
+      let randomPositions = _.get(this.definition.initial_positions, 'random_positions', [])
 
-      this.definition.initial_positions.random_positions.forEach(item => {
+      randomPositions.forEach(item => {
         let agentDefinition = this.definition.agents.filter(a => a.id === item.agent_id)[0]
 
         for (let i = 0; i < item.quantity; i++) {
           let index = _.random(0, freePositions.length - 1)
           let pos = freePositions.splice(index, 1)[0]
 
-          let agent = this._buildAgent(agentDefinition)
+          let agent = this._buildAgent(agentDefinition, pos.x, pos.y)
           this.agents.push(agent)
 
           this.positions[pos.y][pos.x] = { type: 'agent', agent: agent }
@@ -135,8 +170,8 @@
     _getFreePositions() {
       let freePositions = []
 
-      for (let y = 0; y < STAGE_SIZE; y++) {
-        for (let x = 0; x < STAGE_SIZE; x++) {
+      for (let y = 0; y < this.stageSize; y++) {
+        for (let x = 0; x < this.stageSize; x++) {
           if (!this.positions[y][x]) {
             freePositions.push({ x: x, y: y })
           }
@@ -146,22 +181,11 @@
       return freePositions
     }
 
-    _findAgentPosition(agent) {
-      for (let y = 0; y < STAGE_SIZE; y++) {
-        for (let x = 0; x < STAGE_SIZE; x++) {
-          let pos = this.positions[y][x]
-
-          if (pos && pos.agent === agent) {
-            return { x: x, y: y }
-          }
-        }
-      }
-    }
-
-    _buildAgent(definition) {
+    _buildAgent(definition, x, y) {
       return {
         definition: definition,
-        age: 0
+        age: 0,
+        position: { x: x, y: y }
       }
     }
 
@@ -170,13 +194,20 @@
       agent.dead = true
 
       // remove the agent from the stage
-      let position = this._findAgentPosition(agent)
-      this.positions[y][x] = null
+      this.positions[agent.position.y][agent.position.x] = null
 
       // remove it from list of agents
       // it's important to use `a => a === agent` instead of just `agent` on the 2nd argument
       // of _.remove, otherwise lodash will remove all agents with the same properties such as age, etc.
       _.remove(this.agents, a => a === agent)
+    }
+
+    _moveAgent(agent, x, y) {
+      this.positions[y][x] = { type: 'agent', agent: agent }
+      this.positions[agent.position.y][agent.position.x] = null
+
+      agent.position = { x: x, y: y }
+      agent.element.css(this._generateAgentCssPosition(agent))
     }
 
     _sortAgentRulesByPriority() {
@@ -186,7 +217,8 @@
     }
 
     _selectRule(agent) {
-      return _.find(agent.definition.rules, rule => this._evaluateCondition(rule.condition, agent))
+      return _.find(agent.definition.rules,
+        rule => rule.condition === null || this._evaluateCondition(rule.condition, agent))
     }
 
     _getFunction(functionName) {
@@ -242,19 +274,26 @@
       throw new Error(`Unexpected node type ${node.type}`)
     }
 
+    _generateAgentCssPosition(agent) {
+      return {
+        top: `${AGENT_SIZE * agent.position.y}px`,
+        left: `${AGENT_SIZE * agent.position.x}px`
+      }
+    }
+
     _render() {
       this.stage.html('')
 
-      for (let y = 0; y < STAGE_SIZE; y++) {
-        for (let x = 0; x < STAGE_SIZE; x++) {
+      for (let y = 0; y < this.stageSize; y++) {
+        for (let x = 0; x < this.stageSize; x++) {
           let item = this.positions[y][x]
 
           if (item) {
             if (item.type === 'agent') {
-              $('<img class="agent pixelated" />')
+              item.agent.element = $('<img class="agent pixelated" />')
                 .attr('src', item.agent.definition.image)
                 .data('agent', item.agent)
-                .css({ top: `${AGENT_SIZE * y}px`, left: `${AGENT_SIZE * x}px` })
+                .css(this._generateAgentCssPosition(item.agent))
                 .appendTo(this.stage)
             }
           }
