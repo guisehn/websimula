@@ -25,8 +25,11 @@
     }
 
     reset() {
+      this.agentAutoIncrement = 0
+
       this.stopLoop()
 
+      this._setCycleCount(0)
       this._setButtonsStates()
       this._resetVariables()
       this._clearPositions()
@@ -35,6 +38,10 @@
     }
 
     step() {
+      this._incrementCycleCount()
+
+      if (window.debug) console.log('Cycle', this.cycleCount)
+
       // get agents from top to bottom, left to right
       let agents = _.flatten(this.positions)
         .filter(p => p && p.type === 'agent')
@@ -47,8 +54,11 @@
 
         try {
           let rule = this._selectRule(agent)
-          if (rule) this._performRuleAction(agent, rule)
-          agent.output = {}
+
+          if (rule) {
+            if (window.debug) console.log('Agent', agent, 'selected rule', rule)
+            this._performRuleAction(agent, rule)
+          }
         } catch (e) {
           console.error(e)
           alert('Ocorreu um erro na execução da simulação.')
@@ -70,6 +80,15 @@
         this.loopInterval = null
         this._setButtonsStates()
       }
+    }
+
+    _incrementCycleCount() {
+      this._setCycleCount(this.cycleCount + 1)
+    }
+
+    _setCycleCount(value) {
+      this.cycleCount = value
+      $('[data-bind=cycle-count]').text(this.cycleCount)
     }
 
     _setButtonsStates() {
@@ -192,6 +211,7 @@
 
     _buildAgent(definition, x, y) {
       return {
+        id: ++this.agentAutoIncrement,
         definition: definition,
         position: { x: x, y: y },
         age: 0,
@@ -284,7 +304,8 @@
 
       return actions.map(action => {
         let func = this._getFunction(action.function)
-        return func.definition(this, agent, action.input)
+        let input = action.input || {}
+        return func.definition(this, agent, input)
       })
     }
 
