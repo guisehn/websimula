@@ -118,7 +118,17 @@ window.simulationFunctions = {
       }
     ],
     definition: (env, agent, input) => {
-      return false
+      let coordinateWithAgent = env._getAdjacentCoordinates(
+        agent.position.x,
+        agent.position.y,
+        agent.definition.perception_area,
+        (x, y) => {
+          let position = env.positions[y][x]
+          return position && position.agent.definition.id === input.agent_id
+        }
+      )
+
+      return Boolean(coordinateWithAgent)
     }
   },
 
@@ -222,5 +232,5 @@ window.simulationFunctions = {
         env._killAgent(agent)
       }
     }
-  },
+  }
 }
