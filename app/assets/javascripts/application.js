@@ -16,6 +16,7 @@
 //= require bootstrap-sprockets
 //= require spectrum
 //= require spectrum.pt-br
+//= require lodash
 //= require_tree .
 
 var currentProjectId = null
