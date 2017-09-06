@@ -14,8 +14,8 @@
       this.stageSize = STAGE_SIZE
       this.speed = DEFAULT_SPEED
 
-      this.variables = {}
       this.functions = functions
+      this.variables = {}
       this.agents = []
       this.positions = []
 
@@ -102,13 +102,23 @@
     }
 
     buildAgent(definition, x, y) {
-      return {
+      if (this.positions[y][x]) {
+        throw new Error(`Error trying to create agent ${definition.name}. ` +
+          `Position ${x}:${y} is already occupied`)
+      }
+
+      let agent = {
         id: ++this.agentAutoIncrement,
         definition: definition,
         position: { x: x, y: y },
         age: 0,
         element: null
       }
+
+      this.positions[y][x] = { type: 'agent', agent: agent }
+      this.agents.push(agent)
+
+      return agent
     }
 
     moveAgent(agent, x, y) {
@@ -275,11 +285,7 @@
 
       fixedPositions.forEach(pos => {
         let agentDefinition = this.definition.agents.filter(a => a.id === pos.agent_id)[0]
-
-        let agent = this.buildAgent(agentDefinition, pos.x, pos.y)
-        this.agents.push(agent)
-
-        this.positions[pos.y][pos.x] = { type: 'agent', agent: agent }
+        this.buildAgent(agentDefinition, pos.x, pos.y)
       })
 
       // add random agents
@@ -293,10 +299,7 @@
           let index = _.random(0, freePositions.length - 1)
           let pos = freePositions.splice(index, 1)[0]
 
-          let agent = this.buildAgent(agentDefinition, pos.x, pos.y)
-          this.agents.push(agent)
-
-          this.positions[pos.y][pos.x] = { type: 'agent', agent: agent }
+          this.buildAgent(agentDefinition, pos.x, pos.y)
         }
       })
     }
