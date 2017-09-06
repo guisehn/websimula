@@ -299,7 +299,7 @@
           let index = _.random(0, freePositions.length - 1)
           let pos = freePositions.splice(index, 1)[0]
 
-          this.buildAgent(agentDefinition, pos.x, pos.y)
+          if (pos) this.buildAgent(agentDefinition, pos.x, pos.y)
         })
       })
     }
