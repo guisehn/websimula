@@ -39,13 +39,20 @@
         .filter(p => p && p.type === 'agent')
         .map(p => p.agent)
 
-      agents.forEach(agent => {
+      _.forEach(agents, agent => {
         if (agent.dead) return
 
         ++agent.age
 
-        let rule = this._selectRule(agent)
-        if (rule) this._performRuleAction(agent, rule)
+        try {
+          let rule = this._selectRule(agent)
+          if (rule) this._performRuleAction(agent, rule)
+        } catch (e) {
+          console.error(e)
+          alert('Ocorreu um erro na execução da simulação.')
+          this.stopLoop()
+          return false
+        }
       })
     }
 
