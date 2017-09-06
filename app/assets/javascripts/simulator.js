@@ -25,6 +25,8 @@
     }
 
     reset() {
+      this.finished = false
+      this.movingAgent = null
       this.agentAutoIncrement = 0
 
       this.stopLoop()
@@ -38,37 +40,54 @@
     }
 
     step() {
-      this._incrementCycleCount()
+      this._removeContextMenu()
+      this._stopMovingAgent()
 
-      if (window.debug) console.log('Cycle', this.cycleCount)
+      if (this.finished) return
 
-      // get agents from top to bottom, left to right
-      let agents = _.flatten(this.positions)
-        .filter(p => p && p.type === 'agent')
-        .map(p => p.agent)
+      try {
+        if (this.definition.stop_condition) {
+          if (this._evaluateCondition(this.definition.stop_condition)) {
+            this.finished = true
+            this.stopLoop()
+            this._setButtonsStates()
+            return
+          }
+        }
 
-      _.forEach(agents, agent => {
-        if (agent.dead) return
+        this._incrementCycleCount()
 
-        ++agent.age
+        if (window.debug) console.log('Cycle', this.cycleCount)
 
-        try {
+        // get agents from top to bottom, left to right
+        let agents = _.flatten(this.positions)
+          .filter(p => p && p.type === 'agent')
+          .map(p => p.agent)
+
+        agents.forEach(agent => {
+          if (agent.dead) return
+
+          ++agent.age
+
           let rule = this._selectRule(agent)
 
           if (rule) {
             if (window.debug) console.log('Agent', agent, 'selected rule', rule)
             this._performRuleAction(agent, rule)
+          } else {
+            if (window.debug) console.log('Agent', agent, 'has no selected rule')
           }
-        } catch (e) {
-          console.error(e)
-          alert('Ocorreu um erro na execução da simulação.')
-          this.stopLoop()
-          return false
-        }
-      })
+        })
+      } catch (e) {
+        console.error(e)
+        alert('Ocorreu um erro na execução da simulação.')
+        this.stopLoop()
+      }
     }
 
     startLoop() {
+      if (this.finished) return
+
       this.stopLoop()
       this.loopInterval = setInterval(() => this.step(), this.speed)
       this._setButtonsStates()
@@ -92,31 +111,85 @@
     }
 
     _setButtonsStates() {
-      if (this.loopInterval) {
-        $('[data-action=step], [data-action=start]').attr('disabled', 'disabled')
-        $('[data-action=stop]').removeAttr('disabled')
+      if (this.finished) {
+        this.simulatorElement.find('[data-action=step], [data-action=start], [data-action=stop]').attr('disabled', 'disabled')
+      } else if (this.loopInterval) {
+        this.simulatorElement.find('[data-action=step], [data-action=start]').attr('disabled', 'disabled')
+        this.simulatorElement.find('[data-action=stop]').removeAttr('disabled')
       } else {
-        $('[data-action=step], [data-action=start]').removeAttr('disabled')
-        $('[data-action=stop]').attr('disabled', 'disabled')
+        this.simulatorElement.find('[data-action=step], [data-action=start]').removeAttr('disabled')
+        this.simulatorElement.find('[data-action=stop]').attr('disabled', 'disabled')
       }
     }
 
     _bindEvents() {
       let simulator = this
 
-      $('[data-action=step]').on('click', () => this.step())
-      $('[data-action=reset]').on('click', () => this.reset())
-      $('[data-action=start]').on('click', () => this.startLoop())
-      $('[data-action=stop]').on('click', () => this.stopLoop())
+      this.simulatorElement.find('[data-action=step]').on('click', () => this.step())
+      this.simulatorElement.find('[data-action=reset]').on('click', () => this.reset())
+      this.simulatorElement.find('[data-action=start]').on('click', () => this.startLoop())
+      this.simulatorElement.find('[data-action=stop]').on('click', () => this.stopLoop())
 
-      $('[data-value=speed]').on('input', function (e) {
+      this.simulatorElement.find('[data-value=speed]').on('input', function (e) {
         $('[data-bind=speed]').text(this.value)
 
         simulator.speed = this.value
         if (simulator.loopInterval) simulator.startLoop()
       })
 
-      $('[data-value=speed]').val(this.speed).trigger('input')
+      this.simulatorElement.find('[data-value=speed]').val(this.speed).trigger('input')
+
+      this.simulatorElement.on('click', '[data-action=move-agent]', function (e) {
+        let agent = $(this).closest('.agent-context-menu').data('agent')
+        simulator._startMovingAgent(agent)
+        e.preventDefault()
+      })
+
+      this.simulatorElement.on('click', '[data-action=kill-agent]', function (e) {
+        let agent = $(this).closest('.agent-context-menu').data('agent')
+
+        if (confirm(`Tem certeza que deseja remover o agente ${agent.definition.name}?`)) {
+          setTimeout(() => simulator._killAgent(agent), 500)
+        }
+
+        e.preventDefault()
+      })
+
+      this.stage.on('contextmenu', '.agent', function (e) {
+        if (!simulator.finished) {
+          simulator._createContextMenu($(this).data('agent'))
+        }
+
+        e.stopPropagation()
+        e.preventDefault()
+      })
+
+      this.stage.on('click', function (e) {
+        if (simulator.movingAgent) {
+          let offset = $(this).offset()
+          let x = Math.floor((e.pageX - offset.left) / AGENT_SIZE)
+          let y = Math.floor((e.pageY - offset.top) / AGENT_SIZE)
+
+          if (simulator.positions[y][x]) {
+            return false
+          }
+
+          simulator._moveAgent(simulator.movingAgent, x, y)
+          simulator._stopMovingAgent()
+        }
+      })
+
+      this.stage.on('click', '.agent-moved', function (e) {
+        let agent = $(this).data('agent')
+
+        simulator._stopMovingAgent()
+        e.preventDefault()
+        e.stopPropagation()
+      })
+
+      $(document).off('.close-agent-context-menu').on('click.close-agent-context-menu', () => {
+        simulator._removeContextMenu()
+      })
     }
 
     _setStageDimensions() {
@@ -147,7 +220,7 @@
             throw new Error(`Unknown variable type "${variable_data_type}"`)
         }
 
-        this.variables[variable.id] = value
+        this.variables[variable.id] = { definition: variable, value: value }
       })
     }
 
@@ -350,7 +423,7 @@
       if (agent.dead) {
         if (agent.element) {
           agent.element.css({ transform: 'scale(0)' })
-          setTimeout(() => agent.element.remove(), 100)
+          setTimeout(() => agent.element.remove(), 150)
         }
 
         return
@@ -372,6 +445,49 @@
     _render() {
       this.stage.html('')
       this.agents.forEach(agent => this._renderAgent(agent))
+    }
+
+    _createContextMenu(agent) {
+      if (this.finished) return
+
+      this._stopMovingAgent()
+      this._removeContextMenu()
+
+      let template = $('#agent-context-menu-template').html().trim()
+      let menu = $(template).data('agent', agent).appendTo(this.stage)
+
+      menu.on('contextmenu', e => e.preventDefault())
+
+      menu.css({
+        top: `${AGENT_SIZE * agent.position.y + AGENT_SIZE - 5}px`,
+        left: `${AGENT_SIZE * agent.position.x + AGENT_SIZE - 5}px`
+      })
+    }
+
+    _removeContextMenu() {
+      let menu = this.stage.find('.agent-context-menu')
+
+      if (menu.length) {
+        menu.css('opacity', 0)
+        setTimeout(() => menu.remove(), 150)
+      }
+    }
+
+    _startMovingAgent(agent) {
+      if (this.finished) return
+
+      this.movingAgent = agent
+      agent.element.addClass('agent-moved')
+      this.stage.addClass('moving-agent')
+    }
+
+    _stopMovingAgent() {
+      if (this.movingAgent) {
+        this.movingAgent.element.removeClass('agent-moved')
+      }
+
+      this.movingAgent = false
+      this.stage.removeClass('moving-agent')
     }
   }
 

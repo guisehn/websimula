@@ -155,7 +155,21 @@
 
     .agent {
       position: absolute;
-      transition: top 0.05s linear, left 0.05s linear, transform 0.5s linear;
+      transition: top 0.05s linear, left 0.05s linear, transform 0.15s linear, box-shadow 0.25s linear, margin-top 0.15s linear;
+    }
+
+    &.moving-agent {
+      .agent {
+        cursor: not-allowed;
+      }
+
+      .agent-moved {
+        cursor: default;
+        box-shadow: 0 3px 3px rgba(0, 0, 0, .5);
+        transform: scale(1.5);
+        z-index: 9;
+        margin-top: -2px;
+      }
     }
   }
 
@@ -186,6 +200,33 @@
         width: 150px;
         margin-bottom: 5px;
       }
+    }
+  }
+
+  .agent-context-menu {
+    position: absolute;
+    z-index: 10;
+    width: 150px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .3);
+    transition: opacity .15s linear;
+
+    a {
+      display: block;
+      color: #000;
+      padding: 3px 6px;
+
+      &:hover {
+        background: #069;
+        text-decoration: none;
+        color: #fff;
+      }
+    }
+
+    ul {
+      margin: 4px 0;
     }
   }
 }

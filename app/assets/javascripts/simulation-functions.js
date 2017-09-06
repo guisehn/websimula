@@ -7,7 +7,7 @@ window.simulationFunctions = {
     label: 'Comparar variável com valor',
     input: [
       {
-        name: 'variable',
+        name: 'variable_id',
         type: 'variable',
         label: 'Qual variável?',
         defaultValue: null,
@@ -38,7 +38,7 @@ window.simulationFunctions = {
       }
     ],
     definition: (env, agent, input) => {
-      let variable = env.variables[input.variable]
+      let variable = env.variables[input.variable_id]
 
       switch (input.comparison) {
         case '=':  return variable.value == input.value
@@ -57,7 +57,7 @@ window.simulationFunctions = {
     label: 'Comparar variável com variável',
     input: [
       {
-        name: 'variable1',
+        name: 'variable1_id',
         type: 'variable',
         label: 'Qual variável?',
         defaultValue: null,
@@ -80,7 +80,7 @@ window.simulationFunctions = {
         ]
       },
       {
-        name: 'variable2',
+        name: 'variable2_id',
         type: 'variable',
         label: 'Qual variável?',
         defaultValue: null,
@@ -89,8 +89,8 @@ window.simulationFunctions = {
       },
     ],
     definition: (env, agent, input) => {
-      let variable1 = env.variables[input.variable1]
-      let variable2 = env.variables[input.variable2]
+      let variable1 = env.variables[input.variable1_id]
+      let variable2 = env.variables[input.variable2_id]
 
       switch (input.comparison) {
         case '=':  return variable1.value == variable2.value
