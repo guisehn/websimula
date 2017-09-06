@@ -23,6 +23,12 @@
   margin-bottom: 0;
 }
 
+.header-alerts {
+  .alert {
+    margin-bottom: 0;
+  }
+}
+
 .project-header {
   background: #f0f0f0;
   border-bottom: 1px solid #ddd;
@@ -32,6 +38,7 @@
     padding: 20px 0;
 
     h1 {
+      cursor: default;
       font-weight: normal;
       font-size: 30px;
       margin: 0;

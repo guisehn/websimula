@@ -49,12 +49,22 @@ $(document).on('turbolinks:load', function () {
       },
 
       received: (data) => {
+        if (data.model === 'Project') {
+          $.get(`/projects/${projectId}.json`, project => {
+            $('#project-name').text(project.name).hide().fadeIn(500)
+          })
+        }
+
         if (data.model === 'Agent') {
-          $('#agents-section').load(`/projects/${projectId}/agents`);
+          $('#agents-section').load(`/projects/${projectId}/agents`, () => {
+            $('#agents-section').hide().fadeIn(500)
+          })
         }
 
         if (data.model === 'Variable') {
-          $('#variables-section').load(`/projects/${projectId}/variables`);
+          $('#variables-section').load(`/projects/${projectId}/variables`, () => {
+            $('#variables-section').hide().fadeIn(500)
+          })
         }
 
         console.log(`Project ${projectId}: received`, data)

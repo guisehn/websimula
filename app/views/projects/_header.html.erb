@@ -2,9 +2,13 @@
   <div class="container">
     <div class="project-name">
       <% if local_assigns[:internal] %>
-        <h1><%= link_to "← #{project.name}", @project %></h1>
+        <h1>
+          <%= link_to @project do %>
+            ← <span id="project-name"><%= project.name %></span>
+          <% end %>
+        </h1>
       <% else %>
-        <h1><%= project.name %></h1>
+        <h1><span id="project-name"><%= project.name %></span></h1>
       <% end %>
     </div>
 
