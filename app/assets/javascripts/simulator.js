@@ -295,12 +295,12 @@
       randomPositions.forEach(item => {
         let agentDefinition = this.definition.agents.filter(a => a.id === item.agent_id)[0]
 
-        for (let i = 0; i < item.quantity; i++) {
+        _.times(item.quantity, () => {
           let index = _.random(0, freePositions.length - 1)
           let pos = freePositions.splice(index, 1)[0]
 
           this.buildAgent(agentDefinition, pos.x, pos.y)
-        }
+        })
       })
     }
 
@@ -388,6 +388,7 @@
         if (agent.element) {
           agent.element.css({ transform: 'scale(0)' })
           setTimeout(() => agent.element.remove(), 150)
+          agent.element = null
         }
 
         return
