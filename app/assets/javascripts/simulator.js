@@ -207,6 +207,8 @@
       // it's important to use `a => a === agent` instead of just `agent` on the 2nd argument
       // of _.remove, otherwise lodash will remove all agents with the same properties such as age, etc.
       _.remove(this.agents, a => a === agent)
+
+      this._renderAgent(agent)
     }
 
     _moveAgent(agent, x, y) {
@@ -282,6 +284,15 @@
     }
 
     _renderAgent(agent) {
+      if (agent.dead) {
+        if (agent.element) {
+          agent.element.css({ transform: 'scale(0)' })
+          setTimeout(() => agent.element.remove(), 100)
+        }
+
+        return
+      }
+
       if (!agent.element) {
         agent.element = $('<img class="agent pixelated" />')
           .attr('src', agent.definition.image)
