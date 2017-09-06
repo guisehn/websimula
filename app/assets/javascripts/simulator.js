@@ -387,8 +387,11 @@
       if (agent.dead) {
         if (agent.element) {
           agent.element.css({ transform: 'scale(0)' })
-          setTimeout(() => agent.element.remove(), 150)
-          agent.element = null
+
+          setTimeout(() => {
+            agent.element.remove()
+            agent.element = null
+          }, 150)
         }
 
         return
