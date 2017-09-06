@@ -214,7 +214,7 @@
       this.positions[agent.position.y][agent.position.x] = null
 
       agent.position = { x: x, y: y }
-      agent.element.css(this._generateAgentCssPosition(agent))
+      this._renderAgent(agent)
     }
 
     _sortAgentRulesByPriority() {
@@ -281,31 +281,23 @@
       throw new Error(`Unexpected node type ${node.type}`)
     }
 
-    _generateAgentCssPosition(agent) {
-      return {
+    _renderAgent(agent) {
+      if (!agent.element) {
+        agent.element = $('<img class="agent pixelated" />')
+          .attr('src', agent.definition.image)
+          .data('agent', agent)
+          .appendTo(this.stage)
+      }
+
+      agent.element.css({
         top: `${AGENT_SIZE * agent.position.y}px`,
         left: `${AGENT_SIZE * agent.position.x}px`
-      }
+      })
     }
 
     _render() {
       this.stage.html('')
-
-      for (let y = 0; y < this.stageSize; y++) {
-        for (let x = 0; x < this.stageSize; x++) {
-          let item = this.positions[y][x]
-
-          if (item) {
-            if (item.type === 'agent') {
-              item.agent.element = $('<img class="agent pixelated" />')
-                .attr('src', item.agent.definition.image)
-                .data('agent', item.agent)
-                .css(this._generateAgentCssPosition(item.agent))
-                .appendTo(this.stage)
-            }
-          }
-        }
-      }
+      this.agents.forEach(agent => this._renderAgent(agent))
     }
   }
 
