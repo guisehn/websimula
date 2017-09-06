@@ -1,4 +1,4 @@
-(function() {
+(function (global) {
   'use strict'
 
   const STAGE_SIZE = 25
@@ -57,7 +57,7 @@
 
         this._incrementCycleCount()
 
-        if (window.debug) console.log('Cycle', this.cycleCount)
+        if (global.debug) console.log('Cycle', this.cycleCount)
 
         // get agents from top to bottom, left to right
         let agents = _.flatten(this.positions)
@@ -72,10 +72,10 @@
           let rule = this._selectRule(agent)
 
           if (rule) {
-            if (window.debug) console.log('Agent', agent, 'selected rule', rule)
+            if (global.debug) console.log('Agent', agent, 'selected rule', rule)
             this._performRuleAction(agent, rule)
           } else {
-            if (window.debug) console.log('Agent', agent, 'has no selected rule')
+            if (global.debug) console.log('Agent', agent, 'has no selected rule')
           }
         })
       } catch (e) {
@@ -99,6 +99,39 @@
         this.loopInterval = null
         this._setButtonsStates()
       }
+    }
+
+    buildAgent(definition, x, y) {
+      return {
+        id: ++this.agentAutoIncrement,
+        definition: definition,
+        position: { x: x, y: y },
+        age: 0,
+        element: null
+      }
+    }
+
+    moveAgent(agent, x, y) {
+      this.positions[y][x] = { type: 'agent', agent: agent }
+      this.positions[agent.position.y][agent.position.x] = null
+
+      agent.position = { x: x, y: y }
+      this._renderAgent(agent)
+    }
+
+    killAgent(agent) {
+      // mark agent as dead so that their rules won't be executed on this simulation step
+      agent.dead = true
+
+      // remove the agent from the stage
+      this.positions[agent.position.y][agent.position.x] = null
+
+      // remove it from list of agents
+      // it's important to use `a => a === agent` instead of just `agent` on the 2nd argument
+      // of _.remove, otherwise lodash will remove all agents with the same properties such as age, etc.
+      _.remove(this.agents, a => a === agent)
+
+      this._renderAgent(agent)
     }
 
     _incrementCycleCount() {
@@ -149,7 +182,7 @@
         let agent = $(this).closest('.agent-context-menu').data('agent')
 
         if (confirm(`Tem certeza que deseja remover o agente ${agent.definition.name}?`)) {
-          setTimeout(() => simulator._killAgent(agent), 500)
+          setTimeout(() => simulator.killAgent(agent), 500)
         }
 
         e.preventDefault()
@@ -174,7 +207,7 @@
             return false
           }
 
-          simulator._moveAgent(simulator.movingAgent, x, y)
+          simulator.moveAgent(simulator.movingAgent, x, y)
           simulator._stopMovingAgent()
         }
       })
@@ -243,7 +276,7 @@
       fixedPositions.forEach(pos => {
         let agentDefinition = this.definition.agents.filter(a => a.id === pos.agent_id)[0]
 
-        let agent = this._buildAgent(agentDefinition, pos.x, pos.y)
+        let agent = this.buildAgent(agentDefinition, pos.x, pos.y)
         this.agents.push(agent)
 
         this.positions[pos.y][pos.x] = { type: 'agent', agent: agent }
@@ -260,7 +293,7 @@
           let index = _.random(0, freePositions.length - 1)
           let pos = freePositions.splice(index, 1)[0]
 
-          let agent = this._buildAgent(agentDefinition, pos.x, pos.y)
+          let agent = this.buildAgent(agentDefinition, pos.x, pos.y)
           this.agents.push(agent)
 
           this.positions[pos.y][pos.x] = { type: 'agent', agent: agent }
@@ -280,78 +313,6 @@
       }
 
       return freePositions
-    }
-
-    _buildAgent(definition, x, y) {
-      return {
-        id: ++this.agentAutoIncrement,
-        definition: definition,
-        position: { x: x, y: y },
-        age: 0,
-        element: null
-      }
-    }
-
-    _killAgent(agent) {
-      // mark agent as dead so that their rules won't be executed on this simulation step
-      agent.dead = true
-
-      // remove the agent from the stage
-      this.positions[agent.position.y][agent.position.x] = null
-
-      // remove it from list of agents
-      // it's important to use `a => a === agent` instead of just `agent` on the 2nd argument
-      // of _.remove, otherwise lodash will remove all agents with the same properties such as age, etc.
-      _.remove(this.agents, a => a === agent)
-
-      this._renderAgent(agent)
-    }
-
-    _getAdjacentCoordinates(x, y, radius = 1, findFunction) {
-      let z = 2 * radius + 1
-      let _x = 0, _y = 0, dx = 0, dy = -1
-      let coordinates = []
-
-      // generate coordinates in spiral, based on
-      // https://stackoverflow.com/questions/398299/looping-in-a-spiral
-      for (let i = 0, j = Math.pow(z, 2); i < j; i++) {
-        if (i > 0) {
-          let px = _x + x
-          let py = _y + y
-
-          // is this coordinate in the stage?
-          if (px >= 0 && py >= 0 && px < this.stageSize && py < this.stageSize) {
-            let xy = { x: px, y: py }
-
-            // if we have a findFunction, we check the coordinate against this function
-            // and return the coordinate if it returns true
-            if (findFunction && findFunction(px, py)) {
-              return xy
-            }
-
-            coordinates.push(xy)
-          }
-        }
-
-        if (_x === _y || (_x < 0 && _x === -_y) || (_x > 0 && _x === 1 - _y)) {
-          [dx, dy] = [-dy, dx]
-        }
-
-        _x = _x + dx
-        _y = _y + dy
-      }
-
-      // if we have a findFunction and no coordinates fit, we return null,
-      // otherwise we return an array with the spiral of coordinates
-      return findFunction ? null : coordinates
-    }
-
-    _moveAgent(agent, x, y) {
-      this.positions[y][x] = { type: 'agent', agent: agent }
-      this.positions[agent.position.y][agent.position.x] = null
-
-      agent.position = { x: x, y: y }
-      this._renderAgent(agent)
     }
 
     _sortAgentRulesByPriority() {
@@ -498,7 +459,7 @@
       return
     }
 
-    let simulator = new Simulator(window.projectDefinition, window.simulationFunctions, $simulator)
+    let simulator = new Simulator(global.projectDefinition, global.simulationFunctions, $simulator)
     simulator.reset()
   })
-})()
+})(window)
