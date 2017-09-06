@@ -28,10 +28,10 @@
   border-bottom: 1px solid #ddd;
 
   .project-name {
+    float: left;
     padding: 20px 0;
 
     h1 {
-      float: left;
       font-weight: normal;
       font-size: 30px;
       margin: 0;
@@ -41,6 +41,46 @@
         color: #000;
         text-decoration: none;
       }
+    }
+  }
+
+  .project-actions {
+    float: right;
+    padding-top: 7px;
+
+    .action {
+      height: 58px;
+      color: #000;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+      margin-left: 20px;
+      padding: 8px;
+      border-radius: 4px;
+      transition: background .1s linear;
+
+      &:hover {
+        background: rgba(0, 0, 0, .1);
+      }
+
+      &:active {
+        background: rgba(0, 0, 0, .2);
+      }
+
+      .glyphicon {
+        display: block;
+        color: #000;
+        font-size: 22px;
+        margin-bottom: 3px;
+      }
+
+      label {
+        cursor: pointer;
+        font-weight: normal;
+        font-size: 12px;
+      }
+
+      .glyphicon-play-circle { color: green; }
     }
   }
 }

@@ -6,8 +6,17 @@
       <% else %>
         <h1><%= project.name %></h1>
       <% end %>
-
-      <div class="clearfix"></div>
     </div>
+
+    <% unless local_assigns[:internal] %>
+      <div class="project-actions">
+        <%= link_to new_project_simulation_path(@project), class: 'action' do %>
+          <span class="glyphicon glyphicon-play-circle"></span>
+          <label>Simular</label>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="clearfix"></div>
   </div>
 </div>
