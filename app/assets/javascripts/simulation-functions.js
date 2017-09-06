@@ -134,10 +134,21 @@ window.simulationFunctions = {
         defaultValue: null,
         nullLabel: 'Qualquer agente',
         required: false
+      },
+      {
+        name: 'allow_diagonal',
+        type: 'boolean',
+        label: 'Permitir diagonal?',
+        defaultValue: false,
+        required: true
       }
     ],
     definition: (env, agent, input) => {
       let coordinateWithAgent = env._getAdjacentCoordinates(agent.position.x, agent.position.y, 1, (x, y) => {
+        if (!input.allow_diagonal && (x !== agent.position.x || y !== agent.position.y)) {
+          return false
+        }
+
         let position = env.positions[y][x]
         return position && position.agent.definition.id === input.agent_id
       })
@@ -150,10 +161,23 @@ window.simulationFunctions = {
     order: 1,
     type: 'action',
     label: 'Mover aleatoriamente',
-    input: [],
+    input: [
+      {
+        name: 'allow_diagonal',
+        type: 'boolean',
+        label: 'Permitir diagonal?',
+        defaultValue: false,
+        required: true
+      }
+    ],
     definition: (env, agent, input) => {
       let adjacentCoordinates = env._getAdjacentCoordinates(agent.position.x, agent.position.y)
       let freeAdjacentCoordinates = adjacentCoordinates.filter(c => !env.positions[c.y][c.x])
+
+      if (!input.allow_diagonal) {
+        freeAdjacentCoordinates = freeAdjacentCoordinates.filter(c => c.x === agent.position.x || c.y === agent.position.y)
+      }
+
       let randomCoordinate = _.sample(freeAdjacentCoordinates)
 
       if (randomCoordinate) {
@@ -174,10 +198,21 @@ window.simulationFunctions = {
         defaultValue: null,
         nullLabel: 'Qualquer agente',
         required: false
+      },
+      {
+        name: 'allow_diagonal',
+        type: 'boolean',
+        label: 'Permitir diagonal?',
+        defaultValue: false,
+        required: true
       }
     ],
     definition: (env, agent, input) => {
       let coordinateWithAgent = env._getAdjacentCoordinates(agent.position.x, agent.position.y, 1, (x, y) => {
+        if (!input.allow_diagonal && (x !== agent.position.x || y !== agent.position.y)) {
+          return false
+        }
+
         let position = env.positions[y][x]
         return position && position.agent.definition.id === input.agent_id
       })
