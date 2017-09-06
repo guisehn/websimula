@@ -37,7 +37,7 @@ window.simulationFunctions = {
         required: true
       }
     ],
-    definition: (env, agent, input, output) => {
+    definition: (env, agent, input) => {
       let variable = env.variables[input.variable]
 
       switch (input.comparison) {
@@ -88,7 +88,7 @@ window.simulationFunctions = {
         required: true
       },
     ],
-    definition: (env, agent, input, output) => {
+    definition: (env, agent, input) => {
       let variable1 = env.variables[input.variable1]
       let variable2 = env.variables[input.variable2]
 
@@ -109,7 +109,7 @@ window.simulationFunctions = {
     label: 'Perceber agente',
     input: [
       {
-        name: 'agent',
+        name: 'agent_id',
         type: 'agent',
         label: 'Qual agente?',
         defaultValue: null,
@@ -117,15 +117,32 @@ window.simulationFunctions = {
         required: false
       }
     ],
-    output: [
+    definition: (env, agent, input) => {
+      return false
+    }
+  },
+
+  touch_agent: {
+    order: 4,
+    type: 'condition',
+    label: 'Atinge agente',
+    input: [
       {
-        name: 'perceived_agent',
-        label: 'Agente percebido',
-        type: 'agent'
+        name: 'agent_id',
+        type: 'agent',
+        label: 'Qual agente?',
+        defaultValue: null,
+        nullLabel: 'Qualquer agente',
+        required: false
       }
     ],
-    definition: (env, agent, input, output) => {
-      return false
+    definition: (env, agent, input) => {
+      let coordinateWithAgent = env._getAdjacentCoordinates(agent.position.x, agent.position.y, 1, (x, y) => {
+        let position = env.positions[y][x]
+        return position && position.agent.definition.id === input.agent_id
+      })
+
+      return Boolean(coordinateWithAgent)
     }
   },
 
@@ -134,25 +151,41 @@ window.simulationFunctions = {
     type: 'action',
     label: 'Mover aleatoriamente',
     input: [],
-    output: [],
     definition: (env, agent, input) => {
-      let adjacentPositions = [
-        { x: agent.position.x - 1, y: agent.position.y - 1 },
-        { x: agent.position.x, y: agent.position.y - 1 },
-        { x: agent.position.x + 1, y: agent.position.y - 1 },
-        { x: agent.position.x - 1, y: agent.position.y },
-        { x: agent.position.x + 1, y: agent.position.y },
-        { x: agent.position.x - 1, y: agent.position.y + 1 },
-        { x: agent.position.x, y: agent.position.y + 1 },
-        { x: agent.position.x + 1, y: agent.position.y + 1 }
-      ]
+      let adjacentCoordinates = env._getAdjacentCoordinates(agent.position.x, agent.position.y)
+      let freeAdjacentCoordinates = adjacentCoordinates.filter(c => !env.positions[c.y][c.x])
+      let randomCoordinate = _.sample(freeAdjacentCoordinates)
 
-      let freeAdjacentPositions = adjacentPositions.filter(p => p.x >= 0 && p.y >= 0 && p.x < env.stageSize && p.y < env.stageSize && !env.positions[p.y][p.x])
-      let randomPosition = _.sample(freeAdjacentPositions)
-
-      if (randomPosition) {
-        env._moveAgent(agent, randomPosition.x, randomPosition.y)
+      if (randomCoordinate) {
+        env._moveAgent(agent, randomCoordinate.x, randomCoordinate.y)
       }
     }
-  }
+  },
+
+  kill_agent: {
+    order: 2,
+    type: 'action',
+    label: 'Matar agente',
+    input: [
+      {
+        name: 'agent_id',
+        type: 'agent',
+        label: 'Qual agente?',
+        defaultValue: null,
+        nullLabel: 'Qualquer agente',
+        required: false
+      }
+    ],
+    definition: (env, agent, input) => {
+      let coordinateWithAgent = env._getAdjacentCoordinates(agent.position.x, agent.position.y, 1, (x, y) => {
+        let position = env.positions[y][x]
+        return position && position.agent.definition.id === input.agent_id
+      })
+
+      if (coordinateWithAgent) {
+        let agent = env.positions[coordinateWithAgent.y][coordinateWithAgent.x].agent
+        env._killAgent(agent)
+      }
+    }
+  },
 }

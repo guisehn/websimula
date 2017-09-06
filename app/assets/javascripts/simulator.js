@@ -27,6 +27,7 @@
     reset() {
       this.stopLoop()
 
+      this._setButtonsStates()
       this._resetVariables()
       this._clearPositions()
       this._resetAgents()
@@ -47,6 +48,7 @@
         try {
           let rule = this._selectRule(agent)
           if (rule) this._performRuleAction(agent, rule)
+          agent.output = {}
         } catch (e) {
           console.error(e)
           alert('Ocorreu um erro na execução da simulação.')
@@ -191,8 +193,9 @@
     _buildAgent(definition, x, y) {
       return {
         definition: definition,
+        position: { x: x, y: y },
         age: 0,
-        position: { x: x, y: y }
+        element: null
       }
     }
 
@@ -209,6 +212,45 @@
       _.remove(this.agents, a => a === agent)
 
       this._renderAgent(agent)
+    }
+
+    _getAdjacentCoordinates(x, y, radius = 1, findFunction) {
+      let z = 2 * radius + 1
+      let _x = 0, _y = 0, dx = 0, dy = -1
+      let coordinates = []
+
+      // generate coordinates in spiral, based on
+      // https://stackoverflow.com/questions/398299/looping-in-a-spiral
+      for (let i = 0, j = Math.pow(z, 2); i < j; i++) {
+        if (i > 0) {
+          let px = _x + x
+          let py = _y + y
+
+          // is this coordinate in the stage?
+          if (px >= 0 && py >= 0 && px < this.stageSize && py < this.stageSize) {
+            let xy = { x: px, y: py }
+
+            // if we have a findFunction, we check the coordinate against this function
+            // and return the coordinate if it returns true
+            if (findFunction && findFunction(px, py)) {
+              return xy
+            }
+
+            coordinates.push(xy)
+          }
+        }
+
+        if (_x === _y || (_x < 0 && _x === -_y) || (_x > 0 && _x === 1 - _y)) {
+          [dx, dy] = [-dy, dx]
+        }
+
+        _x = _x + dx
+        _y = _y + dy
+      }
+
+      // if we have a findFunction and no coordinates fit, we return null,
+      // otherwise we return an array with the spiral of coordinates
+      return findFunction ? null : coordinates
     }
 
     _moveAgent(agent, x, y) {
@@ -260,7 +302,7 @@
         if (node.operator === 'and') {
           // for AND, we can shortcut the evaluation if any child returns false
           for (let i = 0, j = node.children.length; i < j; i++) {
-            if (!evaluate(node.children[i], agent)) return false
+            if (!this._evaluateCondition(node.children[i], agent)) return false
           }
 
           // all children returned true, so it's true
@@ -270,7 +312,7 @@
         if (node.operator === 'or') {
           // for OR, we can shortcut the evaluation if any child returns true
           for (let i = 0, j = node.children.length; i < j; i++) {
-            if (evaluate(node.children[i], agent)) return true
+            if (this._evaluateCondition(node.children[i], agent)) return true
           }
 
           // none were true, so must be false
