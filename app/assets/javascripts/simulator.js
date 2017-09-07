@@ -236,7 +236,7 @@
         e.stopPropagation()
       })
 
-      $(document).off('.close-agent-context-menu').on('click.close-agent-context-menu', () => {
+      $(document).on('click.close-agent-context-menu', () => {
         simulator._removeContextMenu()
       })
     }
