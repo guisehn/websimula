@@ -262,8 +262,9 @@
     _refreshAgentsTable() {
       let agentsCount = _(this.agents).groupBy('definition.id').mapValues(a => a.length).value()
 
-      _.forEach(agentsCount, (count, id) => {
-        this.simulatorElement.find(`[data-bind-agent=${id}]`).text(count)
+      this.definition.agents.forEach(agent => {
+        let count = agentsCount[agent.id]
+        this.simulatorElement.find(`[data-bind-agent=${agent.id}]`).text(count || 0)
       })
     }
 
