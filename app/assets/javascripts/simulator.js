@@ -48,15 +48,6 @@
       if (this.finished) return
 
       try {
-        if (this.definition.stop_condition) {
-          if (this._evaluateCondition(this.definition.stop_condition)) {
-            this.finished = true
-            this.stopLoop()
-            this._setButtonsStates()
-            return
-          }
-        }
-
         this._incrementCycleCount()
 
         if (global.debug) console.log('Cycle', this.cycleCount)
@@ -80,6 +71,14 @@
             if (global.debug) console.log('Agent', agent, 'has no selected rule')
           }
         })
+
+        if (this.definition.stop_condition) {
+          if (this._evaluateCondition(this.definition.stop_condition)) {
+            this.finished = true
+            this.stopLoop()
+            this._setButtonsStates()
+          }
+        }
 
         this._refreshVariablesTable()
         this._refreshAgentsTable()
