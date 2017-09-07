@@ -144,9 +144,29 @@
   margin-bottom: 40px;
 }
 
+.simulator-container {
+  h2 {
+    margin-bottom: 20px;
+  }
+}
+
 .simulator {
-  .simulator-stage-container {
+  .simulator-stage-container,
+  .simulator-values,
+  .simulator-options {
     float: left;
+    margin-bottom: 20px;
+
+    h4 {
+      font-size: 14px;
+      border-bottom: 1px solid #ccc;
+      margin-bottom: 14px;
+      padding-bottom: 4px;
+    }
+  }
+
+  .simulator-stage-container {
+    margin-right: 20px;
     border: 4px solid #eee;
   }
 
@@ -173,9 +193,42 @@
     }
   }
 
+  .simulator-values {
+    width: 250px;
+    border-right: 1px solid #ddd;
+    padding-right: 20px;
+
+    section {
+      margin-bottom: 20px;
+
+      h5 {
+        font-size: 14px;
+        margin-top: 0;
+        margin-bottom: 3px;
+      }
+
+      table {
+        border-bottom: 1px solid #ccc;
+        font-size: 12px;
+        margin-top: 8px;
+
+        td:first-child {
+          padding-left: 0;
+        }
+
+        td:last-child {
+          text-align: right;
+          padding-right: 0;
+        }
+      }
+    }
+  }
+
   .simulator-options {
-    float: left;
-    margin-left: 20px;
+    width: 174px;
+    border-left: 1px solid #ddd;
+    margin-left: -1px;
+    padding-left: 20px;
 
     .speed-container {
       text-align: center;
@@ -200,6 +253,12 @@
         width: 150px;
         margin-bottom: 5px;
       }
+    }
+  }
+
+  .simulator-cycle-count {
+    .counter {
+      font-size: 24px;
     }
   }
 

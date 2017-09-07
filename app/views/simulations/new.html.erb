@@ -9,7 +9,28 @@
         <div class="simulator-stage"></div>
       </div>
 
+      <div class="simulator-values">
+        <h4>Detalhes da simulação</h4>
+
+        <section class="simulator-cycle-count">
+          <h5>Ciclos</h5>
+          <span class="counter" data-bind="cycle-count"></span>
+        </section>
+
+        <section class="simulator-variables">
+          <h5>Variáveis</h5>
+          <table class="table table-condensed"><tbody></tbody></table>
+        </section>
+
+        <section class="simulator-agents">
+          <h5>Agentes</h5>
+          <table class="table table-condensed"><tbody></tbody></table>
+        </section>
+      </div>
+
       <div class="simulator-options">
+        <h4>Opções</h4>
+
         <div class="speed-container">
           <label>Velocidade:</label>
           <input type="range" data-value="speed" min="50" max="4000">
@@ -28,8 +49,6 @@
     </div>
 
     <div class="clearfix"></div>
-
-    Ciclos: <span data-bind="cycle-count"></span>
   </div>
 </div>
 

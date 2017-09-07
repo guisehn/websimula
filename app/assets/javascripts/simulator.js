@@ -3,7 +3,7 @@
 
   const STAGE_SIZE = 25
   const AGENT_SIZE = 16
-  const DEFAULT_SPEED = 50
+  const DEFAULT_SPEED = 200
 
   class Simulator {
     constructor(definition, functions, simulatorElement) {
@@ -20,6 +20,8 @@
       this.positions = []
 
       this._bindEvents()
+      this._buildVariablesTable()
+      this._buildAgentsTable()
       this._setStageDimensions()
       this._sortAgentRulesByPriority()
     }
@@ -78,6 +80,9 @@
             if (global.debug) console.log('Agent', agent, 'has no selected rule')
           }
         })
+
+        this._refreshVariablesTable()
+        this._refreshAgentsTable()
       } catch (e) {
         console.error(e)
         alert('Ocorreu um erro na execução da simulação.')
@@ -150,7 +155,7 @@
 
     _setCycleCount(value) {
       this.cycleCount = value
-      $('[data-bind=cycle-count]').text(this.cycleCount)
+      this.simulatorElement.find('[data-bind=cycle-count]').text(this.cycleCount)
     }
 
     _setButtonsStates() {
@@ -174,7 +179,7 @@
       this.simulatorElement.find('[data-action=stop]').on('click', () => this.stopLoop())
 
       this.simulatorElement.find('[data-value=speed]').on('input', function (e) {
-        $('[data-bind=speed]').text(this.value)
+        simulator.simulatorElement.find('[data-bind=speed]').text(this.value)
 
         simulator.speed = this.value
         if (simulator.loopInterval) simulator.startLoop()
@@ -235,6 +240,59 @@
       })
     }
 
+    _buildAgentsTable() {
+      let section = this.simulatorElement.find('.simulator-agents')
+      let table = section.find('table')
+      let tbody = table.find('tbody').html('')
+      let agents = _.sortBy(this.definition.agents, 'name')
+
+      if (agents.length) {
+        agents.forEach(agent => {
+          let tr = $('<tr></tr>').appendTo(tbody)
+          $('<td></td>').text(agent.name).appendTo(tr)
+          $('<td></td>').attr('data-bind-agent', agent.id).appendTo(tr)
+        })
+
+        this._refreshAgentsTable()
+      } else {
+        section.hide()
+      }
+    }
+
+    _refreshAgentsTable() {
+      let agentsCount = _(this.agents).groupBy('definition.id').mapValues(a => a.length).value()
+
+      _.forEach(agentsCount, (count, id) => {
+        this.simulatorElement.find(`[data-bind-agent=${id}]`).text(count)
+      })
+    }
+
+    _buildVariablesTable() {
+      let section = this.simulatorElement.find('.simulator-variables')
+      let table = section.find('table')
+      let tbody = table.find('tbody').html('')
+      let variables = _.sortBy(this.definition.variables, 'name')
+
+      if (variables.length) {
+        variables.forEach(variable => {
+          let tr = $('<tr></tr>').appendTo(tbody)
+          $('<td></td>').text(variable.name).appendTo(tr)
+          $('<td></td>').attr('data-bind-variable', variable.id).appendTo(tr)
+        })
+
+        this._refreshVariablesTable()
+      } else {
+        section.hide()
+      }
+    }
+
+    _refreshVariablesTable() {
+      _.forEach(this.variables, variable => {
+        let id = variable.definition.id
+        this.simulatorElement.find(`[data-bind-variable=${id}]`).text(variable.value)
+      })
+    }
+
     _setStageDimensions() {
       let size = AGENT_SIZE * this.stageSize
 
@@ -265,6 +323,8 @@
 
         this.variables[variable.id] = { definition: variable, value: value }
       })
+
+      this._refreshVariablesTable()
     }
 
     _clearPositions() {
@@ -302,6 +362,8 @@
           if (pos) this.buildAgent(agentDefinition, pos.x, pos.y)
         })
       })
+
+      this._refreshAgentsTable()
     }
 
     _getFreePositions() {
