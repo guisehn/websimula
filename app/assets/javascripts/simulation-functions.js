@@ -410,6 +410,26 @@
           env.killAgent(agent)
         }
       }
+    },
+
+    increment_variable: {
+      order: 5,
+      type: 'action',
+      label: 'Incrementar variável',
+      input: [
+        {
+          name: 'variable_id',
+          type: 'variable',
+          label: 'Qual variável?',
+          defaultValue: null,
+          nullLabel: 'Selecione a variável',
+          required: true
+        }
+      ],
+      definition: (env, agent, input) => {
+        let variable = env.variables[input.variable_id]
+        ++variable.value
+      }
     }
   }
 })(window)
