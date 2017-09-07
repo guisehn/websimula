@@ -1,7 +1,7 @@
 (function (global) {
   'use strict'
 
-  function getAdjacentCoordinates(env, x, y, radius = 1, findFunction) {
+  function getAdjacentCoordinates(env, x, y, radius = 1, findFunctionReturnAll, findFunction) {
     let z = 2 * radius + 1
     let _x = 0, _y = 0, dx = 0, dy = -1
     let coordinates = []
@@ -20,10 +20,14 @@
           // if we have a findFunction, we check the coordinate against this function
           // and return the coordinate if it returns true
           if (findFunction && findFunction(px, py)) {
-            return xy
+            if (findFunctionReturnAll) {
+              coordinates.push(xy)
+            } else {
+              return xy
+            }
+          } else {
+            coordinates.push(xy)
           }
-
-          coordinates.push(xy)
         }
       }
 
@@ -35,9 +39,58 @@
       _y = _y + dy
     }
 
-    // if we have a findFunction and no coordinates fit, we return null,
-    // otherwise we return an array with the spiral of coordinates
-    return findFunction ? null : coordinates
+    return findFunction && !findFunctionReturnAll ? null : coordinates
+  }
+
+  function isPositionOcuppied(env, x, y) {
+    return _.get(env.positions[y][x], 'type') === 'agent'
+  }
+
+  // TODO: use A* for improvement, this one gets stuck very easily
+  function findPathTo(env, agent, x, y) {
+    let closerX = agent.position.x
+    let closerY = agent.position.y
+
+    if (x > agent.position.x) {
+      ++closerX
+    } else if (x < agent.position.x) {
+      --closerX
+    }
+
+    if (y > agent.position.y) {
+      ++closerY
+    } else if (y < agent.position.y) {
+      --closerY
+    }
+
+    let isHorizontalOccupied = isPositionOcuppied(env, closerX, agent.position.y)
+    let isVerticalOccupied = isPositionOcuppied(env, agent.position.x, closerY)
+    let isDiagonalOccupied = isPositionOcuppied(env, closerX, closerY)
+
+    if (!isDiagonalOccupied && (!isHorizontalOccupied || !isVerticalOccupied)) {
+      return { x: closerX, y: closerY }
+    }
+
+    if (!isHorizontalOccupied) {
+      return { x: closerX, y: agent.position.y }
+    }
+
+    if (!isVerticalOccupied) {
+      return { x: agent.position.x, y: closerY }
+    }
+
+    return null
+  }
+
+  function performComparison(value1, value2, comparer) {
+    switch (comparer) {
+      case '=':  return value1 == value2
+      case '!=': return value1 != value2
+      case '>':  return value1 > value2
+      case '>=': return value1 >= value2
+      case '<':  return value1 < value2
+      case '<=': return value1 <= value2
+    }
   }
 
   global.simulationFunctions = {
@@ -79,15 +132,7 @@
       ],
       definition: (env, agent, input) => {
         let variable = env.variables[input.variable_id]
-
-        switch (input.comparison) {
-          case '=':  return variable.value == input.value
-          case '!=': return variable.value != input.value
-          case '>':  return variable.value > input.value
-          case '>=': return variable.value >= input.value
-          case '<':  return variable.value < input.value
-          case '<=': return variable.value <= input.value
-        }
+        return performComparison(variable.value, input.value, input.comparison)
       }
     },
 
@@ -126,20 +171,54 @@
           defaultValue: null,
           nullLabel: 'Selecione a variável',
           required: true
-        },
+        }
       ],
       definition: (env, agent, input) => {
         let variable1 = env.variables[input.variable1_id]
         let variable2 = env.variables[input.variable2_id]
+        return performComparison(variable1.value, variable2.value, input.comparison)
+      }
+    },
 
-        switch (input.comparison) {
-          case '=':  return variable1.value == variable2.value
-          case '!=': return variable1.value != variable2.value
-          case '>':  return variable1.value > variable2.value
-          case '>=': return variable1.value >= variable2.value
-          case '<':  return variable1.value < variable2.value
-          case '<=': return variable1.value <= variable2.value
+    agent_quantity_comparison: {
+      order: 2,
+      type: 'condition',
+      label: 'Comparar quantidade de agentes com valor',
+      input: [
+        {
+          name: 'agent_id',
+          type: 'agent',
+          label: 'Qual agente?',
+          defaultValue: null,
+          nullLabel: 'Selecione o agente',
+          required: true
+        },
+        {
+          name: 'comparison',
+          type: 'string',
+          label: 'Comparação',
+          defaultValue: '=',
+          required: true,
+          options: [
+            { value: '=', label: 'É igual a' },
+            { value: '!=', label: 'É diferente de' },
+            { value: '>', label: 'É maior que' },
+            { value: '>=', label: 'É maior ou igual que' },
+            { value: '<', label: 'É menor que' },
+            { value: '<=', label: 'É menor ou igual a' }
+          ]
+        },
+        {
+          name: 'value',
+          type: 'string',
+          label: 'Qual valor?',
+          defaultValue: '',
+          required: true
         }
+      ],
+      definition: (env, agent, input) => {
+        let count = env.agents.filter(a => a.definition.id === input.agent_id).length
+        return performComparison(count, input.value, input.comparison)
       }
     },
 
@@ -163,6 +242,7 @@
           agent.position.x,
           agent.position.y,
           agent.definition.perception_area,
+          false,
           (x, y) => {
             let position = env.positions[y][x]
             return position && position.agent.definition.id === input.agent_id
@@ -195,8 +275,8 @@
         }
       ],
       definition: (env, agent, input) => {
-        let coordinateWithAgent = getAdjacentCoordinates(env, agent.position.x, agent.position.y, 1, (x, y) => {
-          if (!input.allow_diagonal && (x !== agent.position.x || y !== agent.position.y)) {
+        let coordinateWithAgent = getAdjacentCoordinates(env, agent.position.x, agent.position.y, 1, false, (x, y) => {
+          if (!input.allow_diagonal && x !== agent.position.x && y !== agent.position.y) {
             return false
           }
 
@@ -237,8 +317,65 @@
       }
     },
 
-    kill_agent: {
+    follow_agent: {
       order: 2,
+      type: 'action',
+      label: 'Seguir agente',
+      input: [
+        {
+          name: 'agent_id',
+          type: 'agent',
+          label: 'Qual agente?',
+          defaultValue: null,
+          required: true
+        }
+      ],
+      definition: (env, agent, input) => {
+        let moveTo = null
+
+        let coordinateWithAgent = getAdjacentCoordinates(
+          env,
+          agent.position.x,
+          agent.position.y,
+          agent.definition.perception_area,
+          false,
+          (x, y) => {
+            let position = env.positions[y][x]
+
+            if (position && position.agent.definition.id === input.agent_id) {
+              moveTo = findPathTo(env, agent, x, y)
+              if (moveTo) return true
+            }
+          }
+        )
+
+        if (coordinateWithAgent) {
+          env.moveAgent(agent, moveTo.x, moveTo.y)
+        }
+      }
+    },
+
+    escape_from_agent: {
+      order: 3,
+      type: 'action',
+      label: 'Escapar de agente',
+      input: [
+        {
+          name: 'agent_id',
+          type: 'agent',
+          label: 'Qual agente?',
+          defaultValue: null,
+          required: true
+        }
+      ],
+      definition: (env, agent, input) => {
+        // TODO: implement this
+        return simulationFunctions.move_random.definition(env, agent, input)
+      }
+    },
+
+    kill_agent: {
+      order: 4,
       type: 'action',
       label: 'Matar agente',
       input: [
@@ -259,8 +396,8 @@
         }
       ],
       definition: (env, agent, input) => {
-        let coordinateWithAgent = getAdjacentCoordinates(env, agent.position.x, agent.position.y, 1, (x, y) => {
-          if (!input.allow_diagonal && (x !== agent.position.x || y !== agent.position.y)) {
+        let coordinateWithAgent = getAdjacentCoordinates(env, agent.position.x, agent.position.y, 1, false, (x, y) => {
+          if (!input.allow_diagonal && x !== agent.position.x && y !== agent.position.y) {
             return false
           }
 
