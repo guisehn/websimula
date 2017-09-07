@@ -211,6 +211,8 @@
         e.preventDefault()
       })
 
+      this.stage.on('contextmenu', e => e.preventDefault())
+
       this.stage.on('click', function (e) {
         if (simulator.movingAgent) {
           let offset = $(this).offset()
@@ -480,6 +482,7 @@
     _createContextMenu(agent) {
       if (this.finished) return
 
+      this.stopLoop()
       this._stopMovingAgent()
       this._removeContextMenu()
 
