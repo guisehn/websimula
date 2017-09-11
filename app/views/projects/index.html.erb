@@ -1,5 +1,5 @@
 <div class="container">
-  <h1>Projects</h1>
+  <h1>Meus projetos</h1>
 
   <div class="row">
     <div class="col-md-5">
@@ -15,9 +15,9 @@
           <% @projects.each do |project| %>
             <tr>
               <td><%= project.name %></td>
-              <td nowrap><%= link_to 'Show', project %></td>
-              <td nowrap><%= link_to 'Edit', edit_project_path(project) %></td>
-              <td nowrap><%= link_to 'Destroy', project, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+              <td nowrap><%= link_to 'Abrir', project %></td>
+              <td nowrap><%= link_to 'Editar', edit_project_path(project) %></td>
+              <td nowrap><%= link_to 'Excluir', project, method: :delete, data: { confirm: 'Are you sure?' } %></td>
             </tr>
           <% end %>
         </tbody>
@@ -25,5 +25,5 @@
     </div>
   </div>
 
-  <%= link_to 'New Project', new_project_path %>
+  <%= link_to 'Novo projeto', new_project_path, class: 'btn btn-success' %>
 </div>
