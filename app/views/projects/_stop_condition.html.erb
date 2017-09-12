@@ -1,7 +1,10 @@
 <h2>Condição de parada</h2>
 
-TO-DO: exibir visualmente<br><br>
-
-<pre><%= JSON.pretty_generate(@project.stop_condition) %></pre>
+<% if @project.stop_condition %>
+  TO-DO: exibir visualmente<br><br>
+  <pre><%= JSON.pretty_generate(@project.stop_condition) %></pre>
+<% else %>
+  <p>Sem condição de parada (a simulação irá executar ininterruptamente).</p>
+<% end %>
 
 <%= link_to 'Editar', edit_stop_condition_project_path(@project), class: 'btn btn-sm btn-success' %>
