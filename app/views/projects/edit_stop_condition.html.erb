@@ -5,7 +5,10 @@
 
   <%= simple_form_for @project do |f| %>
     <div id="vue-container">
-      <condition-field ref="conditionField" :value="<%= @project.stop_condition.to_json %>"></condition-field>
+      <condition-field
+        ref="conditionField"
+        :value="<%= @project.stop_condition.to_json %>"
+        :function-types="['condition']"></condition-field>
     </div>
 
     <%= f.input :stop_condition, as: :hidden %>

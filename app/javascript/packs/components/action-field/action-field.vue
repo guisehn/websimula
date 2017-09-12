@@ -9,7 +9,10 @@
         <div class="action">
           <span class="order">#{{ index + 1 }}</span>
 
-          <function-call :value="action" function-type="action"></function-call>
+          <function-call
+            :value="action"
+            :function-types="['action']"
+            empty-label="Escolha uma ação"></function-call>
 
           <a class="remove" v-on:click="destroyAction(index, $event)" href="">
             <span class="glyphicon glyphicon-remove-circle" title="Remover ação"></span>

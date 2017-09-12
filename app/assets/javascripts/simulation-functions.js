@@ -181,7 +181,7 @@
     },
 
     agent_quantity_comparison: {
-      order: 2,
+      order: 3,
       type: 'condition',
       label: 'Comparar quantidade de agentes com valor',
       input: [
@@ -223,8 +223,8 @@
     },
 
     perceive_agent: {
-      order: 3,
-      type: 'condition',
+      order: 4,
+      type: 'agent_condition',
       label: 'Perceber agente',
       input: [
         {
@@ -254,8 +254,8 @@
     },
 
     touch_agent: {
-      order: 4,
-      type: 'condition',
+      order: 5,
+      type: 'agent_condition',
       label: 'Atingir agente',
       input: [
         {

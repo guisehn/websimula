@@ -39,7 +39,7 @@ import _ from 'lodash'
 
 export default {
   name: 'function-call',
-  props: ['value', 'functionType'],
+  props: ['value', 'functionTypes', 'emptyLabel'],
 
   data () {
     return {
@@ -48,13 +48,6 @@ export default {
   },
 
   computed: {
-    emptyLabel () {
-      switch (this.functionType) {
-        case 'condition': return 'Escolha a condição'
-        case 'action': return 'Escolha a ação'
-      }
-    },
-
     simulationFunctions () {
       return window.simulationFunctions
     },
@@ -69,7 +62,7 @@ export default {
 
     availableFunctions () {
       return _(this.simulationFunctions)
-        .pickBy(func => func.type === this.functionType)
+        .pickBy(func => this.functionTypes.indexOf(func.type) !== -1)
         .map((func, key) => ({ key: key, data: func }))
         .sortBy(f => f.data.order)
         .value()

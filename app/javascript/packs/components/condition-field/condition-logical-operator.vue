@@ -22,6 +22,7 @@
           v-if="child.type === 'function_call'"
           :index="index"
           :item="child"
+          :function-types="functionTypes"
           @update="updateChild"
           @destroy="destroyChild"></condition-function-call>
 
@@ -30,6 +31,7 @@
           :level="level + 1"
           :index="index"
           :item="child"
+          :function-types="functionTypes"
           @update="updateChild"
           @destroy="destroyChild"></condition-logical-operator>
       </div>
@@ -63,7 +65,7 @@ import uuid from 'uuid/v4'
 
 export default {
   name: 'condition-logical-operator',
-  props: ['index', 'item', 'level'],
+  props: ['index', 'item', 'level', 'functionTypes'],
 
   data () {
     return {

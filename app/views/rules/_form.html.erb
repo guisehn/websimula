@@ -27,14 +27,19 @@
         <label>Condições:</label>
 
         <!-- Located in /app/javascript/packs/components/condition-field/condition-field.vue -->
-        <condition-field ref="conditionField" :value="<%= @rule.condition.to_json %>"></condition-field>
+        <condition-field
+          ref="conditionField"
+          :value="<%= @rule.condition.to_json %>"
+          :function-types="['condition', 'agent_condition']"></condition-field>
       </div>
 
       <div class="form-group">
         <label>Ações a serem tomadas:</label>
 
         <!-- Located in /app/javascript/packs/components/action-field/action-field.vue -->
-        <action-field ref="actionField" :value="<%= @rule.action.to_json %>"></action-field>
+        <action-field
+          ref="actionField"
+          :value="<%= @rule.action.to_json %>"></action-field>
       </div>
     </div>
 

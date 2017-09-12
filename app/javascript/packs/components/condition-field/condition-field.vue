@@ -13,6 +13,7 @@
       <condition-logical-operator
         :item="item"
         :level="1"
+        :function-types="functionTypes"
         @destroy="reset"></condition-logical-operator>
 
       <p class="help-block">
@@ -32,7 +33,7 @@ import _ from 'lodash'
 export default {
   name: 'condition-field',
   replace: false,
-  props: ['value'],
+  props: ['value', 'functionTypes'],
 
   data () {
     let value = this.value

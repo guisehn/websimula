@@ -3,7 +3,10 @@
     <div class="horizontal-line"></div>
 
     <content>
-      <function-call :value="itemData" function-type="condition"></function-call>
+      <function-call
+        :value="itemData"
+        :function-types="functionTypes"
+        empty-label="Escolha uma condição"></function-call>
 
       <a class="negate" v-on:click="negate($event)" v-if="itemData.function" href="">
         <span class="glyphicon glyphicon-exclamation-sign" title="Negar condição"></span>
@@ -27,7 +30,7 @@ let simulationFunctions = window.simulationFunctions
 
 export default {
   name: 'condition-function-call',
-  props: ['item', 'index'],
+  props: ['item', 'index', 'functionTypes'],
 
   data () {
     return {
