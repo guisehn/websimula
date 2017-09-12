@@ -196,10 +196,14 @@ h2 {
 
       .agent-moved {
         cursor: default;
-        box-shadow: 0 3px 3px rgba(0, 0, 0, .5);
         transform: scale(1.5);
         z-index: 9;
         margin-top: -2px;
+
+        // use drop-shadow filter instead of box-shadow so that shadow
+        // appears correctly for non-square agents
+        -webkit-filter: drop-shadow(0 3px 3px rgba(0, 0, 0, .5));
+        filter: drop-shadow(0 3px 3px rgba(0, 0, 0, .5));
       }
     }
   }
