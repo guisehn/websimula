@@ -1,6 +1,6 @@
 <%= render 'header', project: @project %>
 
-<div class="project-dashboard">
+<div class="project-dashboard" id="vue-container">
   <div class="container">
     <div class="row">
       <div class="col-md-12">
@@ -23,7 +23,7 @@
     <hr>
 
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-12">
         <section class="stop-condition-section" id="stop-condition-section">
           <%= render 'stop_condition' %>
         </section>
@@ -42,3 +42,7 @@
     </div>
   </div>
 </div>
+
+<script>
+  window.projectDefinition = <%= raw render(template: 'projects/show.json') %>
+</script>

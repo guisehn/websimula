@@ -1,8 +1,12 @@
 <h2>Condição de parada</h2>
 
 <% if @project.stop_condition %>
-  TO-DO: exibir visualmente<br><br>
-  <pre><%= JSON.pretty_generate(@project.stop_condition) %></pre>
+  <condition-field
+    :read-only="true"
+    :value="<%= @project.stop_condition.to_json %>"
+    :function-types="['condition']"></condition-field>
+
+  <br>
 <% else %>
   <p>Sem condição de parada (a simulação irá executar ininterruptamente).</p>
 <% end %>

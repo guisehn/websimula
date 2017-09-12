@@ -51,9 +51,12 @@ $(document).on('turbolinks:load', function () {
       received: (data) => {
         if (data.model === 'Project') {
           $.get(`/projects/${projectId}.json`, project => {
+            window.projectDefinition = project
+
             $('#project-name').text(project.name).hide().fadeIn(500)
+
             $('#stop-condition-section').load(`/projects/${projectId}/stop_condition`, () => {
-              $('#stop-condition-section').hide().fadeIn(500)
+              document.dispatchEvent(new Event('simula:reload-project'))
             })
           })
         }

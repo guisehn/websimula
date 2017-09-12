@@ -8,7 +8,7 @@ const components = {
   ConditionField
 }
 
-document.addEventListener('turbolinks:load', () => {
+function loadComponents() {
   let container = document.querySelector('#vue-container')
 
   if (container) {
@@ -17,4 +17,7 @@ document.addEventListener('turbolinks:load', () => {
       components: components
     })
   }
-})
+}
+
+document.addEventListener('turbolinks:load', loadComponents)
+document.addEventListener('simula:reload-project', loadComponents)

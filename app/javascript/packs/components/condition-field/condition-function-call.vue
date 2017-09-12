@@ -5,15 +5,16 @@
     <content>
       <function-call
         :value="itemData"
+        :read-only="readOnly"
         :function-types="functionTypes"
         empty-label="Escolha uma condição"></function-call>
 
-      <a class="negate" v-on:click="negate($event)" v-if="itemData.function" href="">
+      <a class="negate" v-on:click="negate($event)" href="" v-if="showNegateFunction">
         <span class="glyphicon glyphicon-exclamation-sign" title="Negar condição"></span>
         <span class="sr-only">Negar condição</span>
       </a>
 
-      <a class="remove" v-on:click="destroy($event)" href="">
+      <a class="remove" v-on:click="destroy($event)" href="" v-if="!readOnly">
         <span class="glyphicon glyphicon-remove-circle" title="Remover condição"></span>
         <span class="sr-only">Remover condição</span>
       </a>
@@ -30,7 +31,7 @@ let simulationFunctions = window.simulationFunctions
 
 export default {
   name: 'condition-function-call',
-  props: ['item', 'index', 'functionTypes'],
+  props: ['item', 'index', 'functionTypes', 'readOnly'],
 
   data () {
     return {
@@ -40,6 +41,12 @@ export default {
 
   components: {
     FunctionCall
+  },
+
+  computed: {
+    showNegateFunction () {
+      return this.itemData.function && !this.readOnly
+    }
   },
 
   methods: {

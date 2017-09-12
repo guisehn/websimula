@@ -3,7 +3,7 @@
     <div v-if="!item" class="empty">
       <p>{{ noConditionMessage }}</p>
 
-      <a href="" v-on:click="addCondition($event)" class="btn btn-sm btn-default">
+      <a href="" v-on:click="addCondition($event)" v-if="!readOnly" class="btn btn-sm btn-default">
         <span class="glyphicon glyphicon-plus-sign"></span>
         Adicionar condição
       </a>
@@ -14,6 +14,7 @@
         :item="item"
         :level="1"
         :function-types="functionTypes"
+        :read-only="readOnly"
         @destroy="reset"></condition-logical-operator>
 
       <p class="help-block" v-if="helpMessage">
@@ -32,7 +33,7 @@ import _ from 'lodash'
 export default {
   name: 'condition-field',
   replace: false,
-  props: ['value', 'functionTypes', 'noConditionMessage', 'helpMessage'],
+  props: ['value', 'functionTypes', 'noConditionMessage', 'helpMessage', 'readOnly'],
 
   data () {
     let value = this.value
@@ -170,7 +171,7 @@ export default {
         width: 16px;
         vertical-align: top;
         border-top: 2px solid #ddd;
-        margin-top: 18px;
+        margin-top: 20px;
       }
     }
 
@@ -241,6 +242,14 @@ export default {
         }
       }
     }
+  }
+
+  .read-only-line-eraser {
+    background: #fff;
+    width: 2px;
+    height: 23px;
+    margin-top: -21px;
+    margin-left: -2px;
   }
 }
 </style>

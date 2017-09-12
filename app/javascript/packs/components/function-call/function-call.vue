@@ -1,34 +1,34 @@
 <template>
   <span>
-    <select class="form-control" v-model="item.function" v-on:change="changeFunction">
+    <select class="form-control" v-model="item.function" v-on:change="changeFunction" :disabled="readOnly">
       <option v-if="!item.function" :value="null">{{ emptyLabel }}</option>
       <option v-for="func in availableFunctions" :value="func.key">{{ func.data.label }}</option>
     </select>
 
     <span v-for="input in selectedFunctionInputs">
       <span v-if="input.type === 'variable'">
-        <select v-model="item.input[input.name]" class="form-control">
+        <select v-model="item.input[input.name]" class="form-control" :disabled="readOnly">
           <option disabled :value="null">Escolha a variável</option>
           <option v-for="variable in variables" :value="variable.id">{{ variable.name }}</option>
         </select>
       </span>
 
       <span v-if="input.type === 'agent'">
-        <select v-model="item.input[input.name]" class="form-control">
+        <select v-model="item.input[input.name]" class="form-control" :disabled="readOnly">
           <option disabled :value="null">Escolha o agente</option>
           <option v-for="agent in agents" :value="agent.id">{{ agent.name }}</option>
         </select>
       </span>
 
       <span v-if="input.type === 'string' && input.options">
-        <select v-model="item.input[input.name]" class="form-control">
+        <select v-model="item.input[input.name]" class="form-control" :disabled="readOnly">
           <option disabled :value="null" v-if="!input.defaultValue">{{ input.nullLabel }}</option>
           <option v-for="option in input.options" :value="option.value">{{ option.label }}</option>
         </select>
       </span>
 
       <span v-if="input.type === 'string' && !input.options">
-        <input type="text" v-model="item.input[input.name]" class="form-control">
+        <input type="text" v-model="item.input[input.name]" class="form-control" :disabled="readOnly">
       </span>
     </span>
   </span>
@@ -39,7 +39,7 @@ import _ from 'lodash'
 
 export default {
   name: 'function-call',
-  props: ['value', 'functionTypes', 'emptyLabel'],
+  props: ['value', 'functionTypes', 'emptyLabel', 'readOnly'],
 
   data () {
     return {
@@ -74,6 +74,18 @@ export default {
   },
 
   methods: {
+    getFunctionLabel (name) {
+      return this.simulationFunctions[name].label
+    },
+
+    getAgentName (agentId) {
+      return this.agents[agentId].name
+    },
+
+    getAgentName (agentId) {
+      return this.agents[agentId].name
+    },
+
     changeFunction () {
       let inputs = this.selectedFunctionInputs
       let previousInput = this.item.input

@@ -3,12 +3,17 @@
     <div class="horizontal-line"></div>
 
     <header>
-      <select class="form-control" v-model="itemData.operator">
-        <option value="and">Todas as condições precisam ser satisfeitas (E)</option>
-        <option value="or">Qualquer uma das condições podem ser satisfeitas (OU)</option>
+      <select class="form-control" v-model="itemData.operator" v-if="!readOnly">
+        <option value="and">{{ andLabel }}</option>
+        <option value="or">{{ orLabel }}</option>
       </select>
 
-      <a class="remove" v-on:click="destroy($event)" href="">
+      <span class="read-only-label" v-if="readOnly">
+        <span v-if="itemData.operator === 'and'">{{ andLabel }}</span>
+        <span v-if="itemData.operator === 'or'">{{ orLabel }}</span>
+      </span>
+
+      <a class="remove" v-on:click="destroy($event)" href="" v-if="!readOnly">
         <span class="glyphicon glyphicon-remove-circle" v-bind:title="destroyLabel"></span>
         <span class="sr-only">{{ destroyLabel }}</span>
       </a>
@@ -23,6 +28,7 @@
           :index="index"
           :item="child"
           :function-types="functionTypes"
+          :read-only="readOnly"
           @update="updateChild"
           @destroy="destroyChild"></condition-function-call>
 
@@ -31,12 +37,15 @@
           :level="level + 1"
           :index="index"
           :item="child"
+          :read-only="readOnly"
           :function-types="functionTypes"
           @update="updateChild"
           @destroy="destroyChild"></condition-logical-operator>
       </div>
 
-      <div class="add-section">
+      <div class="read-only-line-eraser" v-if="readOnly"></div>
+
+      <div class="add-section" v-if="!readOnly">
         <div class="horizontal-line"></div>
 
         <div class="button-dropdown-container">
@@ -65,7 +74,7 @@ import uuid from 'uuid/v4'
 
 export default {
   name: 'condition-logical-operator',
-  props: ['index', 'item', 'level', 'functionTypes'],
+  props: ['index', 'item', 'level', 'functionTypes', 'readOnly'],
 
   data () {
     return {
@@ -79,6 +88,14 @@ export default {
   },
 
   computed: {
+    andLabel () {
+      return 'Todas as condições precisam ser satisfeitas (E)'
+    },
+
+    orLabel () {
+      return 'Qualquer uma das condições podem ser satisfeitas (OU)'
+    },
+
     destroyLabel () {
       return this.isRoot ? 'Remover todas as condições' : 'Remover grupo'
     },
