@@ -15,4 +15,9 @@ class ApplicationController < ActionController::Base
     def check_project_management_permission!
       head :unauthorized unless @project.can_be_managed_by?(current_user)
     end
+
+    def param_to_json(params, name)
+      params[name] = nil if params[name] == 'null'
+      params[name] = JSON.parse(params[name]) unless params[name].nil?
+    end
 end

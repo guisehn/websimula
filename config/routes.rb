@@ -15,6 +15,8 @@ Rails.application.routes.draw do
     member do
       get 'agents'
       get 'variables'
+      get 'stop_condition'
+      get 'stop_condition/edit', to: 'projects#edit_stop_condition', as: 'edit_stop_condition'
     end
   end
 end

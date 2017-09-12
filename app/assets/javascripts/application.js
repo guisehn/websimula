@@ -52,6 +52,9 @@ $(document).on('turbolinks:load', function () {
         if (data.model === 'Project') {
           $.get(`/projects/${projectId}.json`, project => {
             $('#project-name').text(project.name).hide().fadeIn(500)
+            $('#stop-condition-section').load(`/projects/${projectId}/stop_condition`, () => {
+              $('#stop-condition-section').hide().fadeIn(500)
+            })
           })
         }
 

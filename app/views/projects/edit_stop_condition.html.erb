@@ -1,0 +1,40 @@
+<%= render 'header', project: @project, internal: true %>
+
+<div class="container">
+  <h2>Editar condição de parada</h2>
+
+  <%= simple_form_for @project do |f| %>
+    <div id="vue-container">
+      <condition-field ref="conditionField" :value="<%= @project.stop_condition.to_json %>"></condition-field>
+    </div>
+
+    <%= f.input :stop_condition, as: :hidden %>
+
+    <div class="form-actions">
+      <hr>
+      <%= f.button :submit, class: 'btn btn-primary' %>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  window.projectDefinition = <%= raw render(template: 'projects/show.json') %>
+
+  $('form.edit_project').submit(() => {
+    let conditionField = window.vue.$refs.conditionField
+
+    if (!conditionField.validate()) {
+      return false
+    }
+
+    let data = JSON.stringify(conditionField.getData())
+    console.log('Condition data:', data)
+
+    $('#project_stop_condition').val(data)
+
+    // don't submit the form if there's ?debug in the URL
+    if (window.location.search.indexOf('debug') !== -1) {
+      return false
+    }
+  })
+</script>

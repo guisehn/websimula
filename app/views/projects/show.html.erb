@@ -13,25 +13,32 @@
     <hr>
 
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-5">
         <section class="variables-section" id="variables-section">
           <%= render 'variables' %>
-        </section>
-      </div>
-
-      <div class="col-md-6">
-        <section>
-          <h2>Condição de parada</h2>
-          <p>TO-DO:<br>Aqui será exibida a condição de parada do projeto, com botão para editar</p>
         </section>
       </div>
     </div>
 
     <hr>
 
-    <section>
-      <h2>Posição inicial dos agentes</h2>
-      <p>TO-DO:<br>Aqui será exibida a disposição inicial dos agentes no ambiente no canvas, com botão para editar</p>
-    </section>
+    <div class="row">
+      <div class="col-md-6">
+        <section class="stop-condition-section" id="stop-condition-section">
+          <%= render 'stop_condition' %>
+        </section>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="row">
+      <div class="col-md-12">
+        <section class="initial-positions-section" id="initial-positions-section">
+          <h2>Posição inicial dos agentes</h2>
+          <p>TO-DO:<br>Aqui será exibida a disposição inicial dos agentes no ambiente no canvas, com botão para editar</p>
+        </section>
+      </div>
+    </div>
   </div>
 </div>

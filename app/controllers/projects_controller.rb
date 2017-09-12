@@ -1,7 +1,7 @@
 class ProjectsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_project_and_check_access!, only: [:show, :edit, :update, :destroy, :agents, :variables]
-  before_action :check_project_management_permission!, only: [:edit, :update, :destroy]
+  before_action :set_project_and_check_access!, only: [:show, :edit, :update, :destroy, :agents, :variables, :stop_condition, :edit_stop_condition]
+  before_action :check_project_management_permission!, only: [:edit, :update, :destroy, :edit_stop_condition]
 
   before_action :load_agents, only: [:show, :agents]
   before_action :load_variables, only: [:show, :variables]
@@ -18,6 +18,10 @@ class ProjectsController < ApplicationController
     render partial: 'projects/variables'
   end
 
+  def stop_condition
+    render partial: 'projects/stop_condition'
+  end
+
   def show
   end
 
@@ -26,6 +30,9 @@ class ProjectsController < ApplicationController
   end
 
   def edit
+  end
+
+  def edit_stop_condition
   end
 
   def create
@@ -43,7 +50,7 @@ class ProjectsController < ApplicationController
 
   def update
     if @project.update(project_params)
-      redirect_to @project, notice: 'Project was successfully updated.'
+      redirect_to @project
     else
       render :edit
     end
@@ -51,12 +58,14 @@ class ProjectsController < ApplicationController
 
   def destroy
     @project.destroy
-    redirect_to projects_url, notice: 'Project was successfully destroyed.'
+    redirect_to projects_url, notice: 'Projeto excluído.'
   end
 
   private
     def project_params
-      params.require(:project).permit(:name)
+      p = params.require(:project).permit(:name, :stop_condition)
+      param_to_json(p, :stop_condition)
+      p
     end
 
     def load_agents

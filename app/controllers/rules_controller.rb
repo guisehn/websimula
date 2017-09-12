@@ -40,10 +40,8 @@ class RulesController < ApplicationController
 
     def rule_params
       p = params.require(:rule).permit(:name, :priority, :condition, :action)
-
-      p[:condition] = p[:condition] == 'null' ? nil : JSON.parse(p[:condition])
-      p[:action] = p[:action] == 'null' ? nil : JSON.parse(p[:action])
-
+      param_to_json(p, :condition)
+      param_to_json(p, :action)
       p
     end
 end
