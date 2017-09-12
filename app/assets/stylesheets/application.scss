@@ -18,6 +18,17 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
+body {
+  background: #fff;
+  padding-bottom: 40px;
+}
+
+h2 {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
 /* header */
 .navbar {
   margin-bottom: 0;
