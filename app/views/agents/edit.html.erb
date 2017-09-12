@@ -1,0 +1,31 @@
+<%= render 'projects/header', project: @project, internal: true %>
+
+<div class="container">
+  <h2>Agente "<%= @agent.name %>"</h2>
+
+  TO-DO: editar nome, área de percepção e imagem
+  <br><br>
+
+  <div class="row">
+    <div class="col-md-5">
+      <h4>Regras de comportamento</h4>
+
+      <table class="table">
+        <thead>
+          <th nowrap>Prioridade</th>
+          <th width="100%">Regra</th>
+        </thead>
+        <tbody>
+          <% @rules.each do |rule| %>
+            <tr>
+              <td align="right"><%= rule.priority %></td>
+              <td><%= link_to rule.name, edit_project_agent_rule_path(@project, @agent, rule) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+      <%= link_to 'Nova regra', new_project_agent_rule_path(@project, @agent), class: 'btn btn-sm btn-success' %>
+    </div>
+  </div>
+</div>

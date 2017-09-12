@@ -14,6 +14,11 @@
 
     <% unless local_assigns[:internal] %>
       <div class="project-actions">
+        <%= link_to 'javascript:alert("TO-DO")', class: 'action' do %>
+          <span class="glyphicon glyphicon glyphicon-wrench"></span>
+          <label>Ajustes</label>
+        <% end %>
+
         <%= link_to new_project_simulation_path(@project), class: 'action' do %>
           <span class="glyphicon glyphicon-play-circle"></span>
           <label>Simular</label>

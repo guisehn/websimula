@@ -256,7 +256,7 @@
     touch_agent: {
       order: 4,
       type: 'condition',
-      label: 'Atinge agente',
+      label: 'Atingir agente',
       input: [
         {
           name: 'agent_id',

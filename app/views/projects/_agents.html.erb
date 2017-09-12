@@ -2,10 +2,10 @@
 
 <div class="agent-list clearfix">
   <% @agents.each do |agent| %>
-    <a href="#" class="agent pixelated">
-      <img src="<%= agent_image(agent) %>">
+    <%= link_to edit_project_agent_path(@project, agent), class: 'agent pixelated' do %>
+      <%= image_tag agent_image(agent) %>
       <p class="agent-label"><%= agent.name %></p>
-    </a>
+    <% end %>
   <% end %>
 </div>
 

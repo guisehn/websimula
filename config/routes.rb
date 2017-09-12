@@ -5,9 +5,12 @@ Rails.application.routes.draw do
 
   resources :projects do
     resources :users
-    resources :agents, except: [:index, :show]
     resources :variables, except: [:index, :show]
     resources :simulations, except: [:edit, :update]
+
+    resources :agents, except: [:index, :show] do
+      resources :rules, except: [:index, :show]
+    end
 
     member do
       get 'agents'

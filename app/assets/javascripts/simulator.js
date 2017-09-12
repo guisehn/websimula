@@ -492,8 +492,8 @@
       menu.on('contextmenu', e => e.preventDefault())
 
       menu.css({
-        top: `${AGENT_SIZE * agent.position.y + AGENT_SIZE - 5}px`,
-        left: `${AGENT_SIZE * agent.position.x + AGENT_SIZE - 5}px`
+        top: `${AGENT_SIZE * agent.position.y + AGENT_SIZE + 2}px`,
+        left: `${AGENT_SIZE * agent.position.x - (AGENT_SIZE / 2)}px`
       })
     }
 

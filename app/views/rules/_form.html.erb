@@ -1,0 +1,81 @@
+<%= simple_form_for([@project, @agent, @rule]) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <div class="row">
+      <div class="col-md-6">
+        <%= f.input :name %>
+        <!-- <p class="help-block">Digite nesse campo um nome que descreva qual o papel desta regra para o agente.</p> -->
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-2">
+        <%= f.input :priority %>
+        <!--
+        <p class="help-block">
+          Quanto menor o número, maior a prioridade desta regra em relação às demais deste agente.<br>
+          A regra com menor prioridade que atenda às condições especificadas será a executada<br>
+          pelo agente durante o ciclo na simulação.
+        </p>
+      -->
+      </div>
+    </div>
+
+    <div id="vue-container">
+      <div class="form-group">
+        <label>Condições:</label>
+
+        <!-- Located in /app/javascript/packs/components/condition-field/condition-field.vue -->
+        <condition-field ref="conditionField" :value="<%= @rule.condition.to_json %>"></condition-field>
+      </div>
+
+      <div class="form-group">
+        <label>Ações a serem tomadas:</label>
+
+        <!-- Located in /app/javascript/packs/components/action-field/action-field.vue -->
+        <action-field ref="actionField" :value="<%= @rule.action.to_json %>"></action-field>
+      </div>
+    </div>
+
+    <%= f.input :condition, as: :hidden %>
+    <%= f.input :action, as: :hidden %>
+  </div>
+
+  <div class="form-actions">
+    <hr>
+    <%= f.button :submit, class: 'btn btn-primary' %>
+  </div>
+
+  <br>
+<% end %>
+
+<script>
+  window.projectDefinition = <%= raw render(template: 'projects/show.json') %>
+
+  $('form.new_rule, form.edit_rule').submit(() => {
+    let conditionField = window.vue.$refs.conditionField
+    let actionField = window.vue.$refs.actionField
+
+    let isConditionFieldValid = conditionField.validate()
+    let isActionFieldValid = conditionField.validate()
+
+    if (!isConditionFieldValid || !isActionFieldValid) {
+      return false
+    }
+
+    let conditionData = JSON.stringify(conditionField.getData())
+    let actionData = JSON.stringify(actionField.getData())
+
+    console.log('Condition data:', conditionData)
+    console.log('Action data:', actionData)
+
+    $('#rule_condition').val(conditionData)
+    $('#rule_action').val(actionData)
+
+    // don't submit the form if there's ?debug in the URL
+    if (window.location.search.indexOf('debug') !== -1) {
+      return false
+    }
+  })
+</script>

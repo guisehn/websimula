@@ -1,7 +1,7 @@
 class AgentsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_project_and_check_access!
-  before_action :check_project_edit_permission!, only: [:create, :update, :destroy]
+  before_action :check_project_edit_permission!
 
   def new
     @agent = @project.agents.new
@@ -15,6 +15,11 @@ class AgentsController < ApplicationController
     else
       render :new
     end
+  end
+
+  def edit
+    @agent = @project.agents.find(params[:id])
+    @rules = @agent.rules.order('priority ASC, LOWER(name) ASC')
   end
 
   private

@@ -1,0 +1,96 @@
+<template>
+  <span>
+    <select class="form-control" v-model="item.function" v-on:change="changeFunction">
+      <option v-if="!item.function" :value="null">{{ emptyLabel }}</option>
+      <option v-for="func in availableFunctions" :value="func.key">{{ func.data.label }}</option>
+    </select>
+
+    <span v-for="input in selectedFunctionInputs">
+      <span v-if="input.type === 'variable'">
+        <select v-model="item.input[input.name]" class="form-control">
+          <option disabled :value="null">Escolha a variável</option>
+          <option v-for="variable in variables" :value="variable.id">{{ variable.name }}</option>
+        </select>
+      </span>
+
+      <span v-if="input.type === 'agent'">
+        <select v-model="item.input[input.name]" class="form-control">
+          <option disabled :value="null">Escolha o agente</option>
+          <option v-for="agent in agents" :value="agent.id">{{ agent.name }}</option>
+        </select>
+      </span>
+
+      <span v-if="input.type === 'string' && input.options">
+        <select v-model="item.input[input.name]" class="form-control">
+          <option disabled :value="null" v-if="!input.defaultValue">{{ input.nullLabel }}</option>
+          <option v-for="option in input.options" :value="option.value">{{ option.label }}</option>
+        </select>
+      </span>
+
+      <span v-if="input.type === 'string' && !input.options">
+        <input type="text" v-model="item.input[input.name]" class="form-control">
+      </span>
+    </span>
+  </span>
+</template>
+
+<script>
+import _ from 'lodash'
+
+export default {
+  name: 'function-call',
+  props: ['value', 'functionType'],
+
+  data () {
+    return {
+      item: this.value
+    }
+  },
+
+  computed: {
+    emptyLabel () {
+      switch (this.functionType) {
+        case 'condition': return 'Escolha a condição'
+        case 'action': return 'Escolha a ação'
+      }
+    },
+
+    simulationFunctions () {
+      return window.simulationFunctions
+    },
+
+    agents () {
+      return window.projectDefinition.agents
+    },
+
+    variables () {
+      return window.projectDefinition.variables
+    },
+
+    availableFunctions () {
+      return _(this.simulationFunctions)
+        .pickBy(func => func.type === this.functionType)
+        .map((func, key) => ({ key: key, data: func }))
+        .sortBy(f => f.data.order)
+        .value()
+    },
+
+    selectedFunctionInputs () {
+      return this.item.function ? this.simulationFunctions[this.item.function].input : []
+    }
+  },
+
+  methods: {
+    changeFunction () {
+      let inputs = this.selectedFunctionInputs
+      let previousInput = this.item.input
+
+      // reset input but keep the value if there's an input variable with the same name
+      this.item.input = {}
+      inputs.forEach(input => {
+        this.item.input[input.name] = previousInput[input.name] ? previousInput[input.name] : (input.defaultValue || null)
+      })
+    }
+  }
+}
+</script>

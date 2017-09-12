@@ -16,7 +16,6 @@
             <tr>
               <td><%= project.name %></td>
               <td nowrap><%= link_to 'Abrir', project %></td>
-              <td nowrap><%= link_to 'Editar', edit_project_path(project) %></td>
               <td nowrap><%= link_to 'Excluir', project, method: :delete, data: { confirm: 'Are you sure?' } %></td>
             </tr>
           <% end %>
