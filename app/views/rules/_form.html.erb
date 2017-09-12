@@ -31,6 +31,7 @@
           ref="conditionField"
           :value="<%= @rule.condition.to_json %>"
           :function-types="['condition', 'agent_condition']"
+          help-message="Caso as condições acima sejam atendidas na visão do agente, esta regra será executada se uma regra com mais prioridade não for executada."
           no-condition-message="Nenhuma condição (esta ação sempre será executada caso não haja outra com mais prioridade)."></condition-field>
       </div>
 

@@ -9,6 +9,7 @@
         ref="conditionField"
         :value="<%= @project.stop_condition.to_json %>"
         :function-types="['condition']"
+        help-message="Quando as condições acima forem atendidas, a simulação será encerrada."
         no-condition-message="Sem condição de parada (a simulação irá executar ininterruptamente)."></condition-field>
     </div>
 

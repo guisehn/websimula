@@ -16,9 +16,8 @@
         :function-types="functionTypes"
         @destroy="reset"></condition-logical-operator>
 
-      <p class="help-block">
-        Caso as condições acima sejam atendidas na visão do agente, esta regra será executada<br>
-        se uma regra com mais prioridade não for executada.
+      <p class="help-block" v-if="helpMessage">
+        {{ helpMessage }}
       </p>
     </div>
   </div>
@@ -33,7 +32,7 @@ import _ from 'lodash'
 export default {
   name: 'condition-field',
   replace: false,
-  props: ['value', 'functionTypes', 'noConditionMessage'],
+  props: ['value', 'functionTypes', 'noConditionMessage', 'helpMessage'],
 
   data () {
     let value = this.value
