@@ -3,9 +3,18 @@ import Vue from 'vue/dist/vue.esm'
 import ActionField from './components/action-field/action-field.vue'
 import ConditionField from './components/condition-field/condition-field.vue'
 
+const components = {
+  ActionField,
+  ConditionField
+}
+
 document.addEventListener('turbolinks:load', () => {
-  window.vue = new Vue({
-    el: '#vue-container',
-    components: { ActionField, ConditionField }
-  })
+  let container = document.querySelector('#vue-container')
+
+  if (container) {
+    window.vue = new Vue({
+      el: container,
+      components: components
+    })
+  }
 })
