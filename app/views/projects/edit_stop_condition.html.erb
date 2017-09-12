@@ -8,7 +8,8 @@
       <condition-field
         ref="conditionField"
         :value="<%= @project.stop_condition.to_json %>"
-        :function-types="['condition']"></condition-field>
+        :function-types="['condition']"
+        no-condition-message="Sem condição de parada (a simulação irá executar ininterruptamente)."></condition-field>
     </div>
 
     <%= f.input :stop_condition, as: :hidden %>

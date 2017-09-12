@@ -1,7 +1,7 @@
 <template>
   <div class="edit-rule-condition-field">
     <div v-if="!item" class="empty">
-      <p>Nenhuma condição (esta ação sempre será executada caso não haja outra com mais prioridade).</p>
+      <p>{{ noConditionMessage }}</p>
 
       <a href="" v-on:click="addCondition($event)" class="btn btn-sm btn-default">
         <span class="glyphicon glyphicon-plus-sign"></span>
@@ -33,7 +33,7 @@ import _ from 'lodash'
 export default {
   name: 'condition-field',
   replace: false,
-  props: ['value', 'functionTypes'],
+  props: ['value', 'functionTypes', 'noConditionMessage'],
 
   data () {
     let value = this.value
