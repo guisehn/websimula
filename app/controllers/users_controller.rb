@@ -1,4 +1,4 @@
-class UsersController < ProjectController
+class UsersController < ApplicationController
   before_action :check_management_permission!
 
   def index
