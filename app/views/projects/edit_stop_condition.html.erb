@@ -25,7 +25,7 @@
 <script>
   window.projectDefinition = <%= raw render(template: 'projects/show.json') %>
 
-  $('form.edit_project').submit(() => {
+  $('form.edit_project').submit(function () {
     let conditionField = window.vue.$refs.conditionField
 
     if (!conditionField.validate()) {

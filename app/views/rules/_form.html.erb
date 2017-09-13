@@ -60,7 +60,7 @@
 <script>
   window.projectDefinition = <%= raw render(template: 'projects/show.json') %>
 
-  $('form.new_rule, form.edit_rule').submit(() => {
+  $('form.new_rule, form.edit_rule').submit(function () {
     let conditionField = window.vue.$refs.conditionField
     let actionField = window.vue.$refs.actionField
 
