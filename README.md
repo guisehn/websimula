@@ -22,3 +22,17 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+
+---
+
+## When deploying to Heroku
+
+1. Remember to set up Redis
+
+2. Set buildpack order (as in https://github.com/rails/webpacker/issues/739). Run the following commands:
+
+```
+heroku buildpacks:clear
+heroku buildpacks:set heroku/nodejs
+heroku buildpacks:add heroku/ruby
+```
