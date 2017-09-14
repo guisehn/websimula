@@ -11,6 +11,11 @@ const components = {
 function loadComponents() {
   let container = document.querySelector('#vue-container')
 
+  if (window.vue) {
+    window.vue.$destroy()
+    window.vue = undefined
+  }
+
   if (container) {
     window.vue = new Vue({
       el: container,
