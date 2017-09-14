@@ -1,7 +1,7 @@
-const SIZE = 16
+import Constants from './constants'
 
 function refreshInputValue(input, grid) {
-  let canvas = $('<canvas></canvas>').attr('width', SIZE).attr('height', SIZE)
+  let canvas = $('<canvas></canvas>').attr('width', Constants.AGENT_SIZE).attr('height', Constants.AGENT_SIZE)
     .attr('style', 'border:1px solid red')
   let context = canvas[0].getContext('2d')
 
@@ -28,10 +28,10 @@ function setColor(cell, color) {
 function activateGrid(grid, colorPickerInput, dataUrlInput) {
   let painting = false
 
-  for (let i = 0; i < SIZE; i++) {
+  for (let i = 0; i < Constants.AGENT_SIZE; i++) {
     let row = $('<tr></tr>').appendTo(grid)
 
-    for (let j = 0; j < SIZE; j++) {
+    for (let j = 0; j < Constants.AGENT_SIZE; j++) {
       $('<td></td>').data('color', 'rgba(0,0,0,0)').appendTo(row)
     }
   }
@@ -84,11 +84,11 @@ function activateImageFileInput(fileInput, dataUrlInput, grid) {
 function refreshGridFromDataUrlInput(grid, dataUrlInput) {
   let dataUrl = dataUrlInput.val()
 
-  let canvas = $('<canvas></canvas>').attr('width', SIZE).attr('height', SIZE)
+  let canvas = $('<canvas></canvas>').attr('width', Constants.AGENT_SIZE).attr('height', Constants.AGENT_SIZE)
   let context = canvas[0].getContext('2d')
 
   function drawToGrid() {
-    let imageData = context.getImageData(0, 0, SIZE, SIZE)
+    let imageData = context.getImageData(0, 0, Constants.AGENT_SIZE, Constants.AGENT_SIZE)
     let pixels = imageData.data
 
     for (var i = 0, n = 0, j = pixels.length; i < j; i += 4, n++) {
@@ -98,8 +98,8 @@ function refreshGridFromDataUrlInput(grid, dataUrlInput) {
       let a = pixels[i + 3]
       let rgba = `rgba(${r},${g},${b},${a})`
 
-      let tr = grid.find('tr').eq(Math.floor(n / SIZE))
-      tr.find('td').eq(n % SIZE).data('color', rgba).css('background-color', rgba)
+      let tr = grid.find('tr').eq(Math.floor(n / Constants.AGENT_SIZE))
+      tr.find('td').eq(n % Constants.AGENT_SIZE).data('color', rgba).css('background-color', rgba)
     }
   }
 
@@ -107,7 +107,7 @@ function refreshGridFromDataUrlInput(grid, dataUrlInput) {
     let img = new Image
     img.src = dataUrlInput.val()
     img.onload = () => {
-      context.drawImage(img, 0, 0, SIZE, SIZE)
+      context.drawImage(img, 0, 0, Constants.AGENT_SIZE, Constants.AGENT_SIZE)
       drawToGrid()
     }
   } else {
