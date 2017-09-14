@@ -10,22 +10,26 @@
     <div class="col-md-5">
       <h4>Regras de comportamento</h4>
 
-      <table class="table">
-        <thead>
-          <th nowrap>Prioridade</th>
-          <th width="100%">Regra</th>
-        </thead>
-        <tbody>
-          <% @rules.each do |rule| %>
-            <tr>
-              <td align="right"><%= rule.priority %></td>
-              <td><%= link_to rule.name, edit_project_agent_rule_path(@project, @agent, rule) %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+      <% if @rules.empty? %>
+        <p>Este agente não possui regras.</p>
+      <% else %>
+        <table class="table">
+          <thead>
+            <th nowrap>Prioridade</th>
+            <th width="100%">Regra</th>
+          </thead>
+          <tbody>
+            <% @rules.each do |rule| %>
+              <tr>
+                <td align="right"><%= rule.priority %></td>
+                <td><%= link_to rule.name, edit_project_agent_rule_path(@project, @agent, rule) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
 
-      <%= link_to 'Nova regra', new_project_agent_rule_path(@project, @agent), class: 'btn btn-sm btn-success' %>
+      <%= link_to (@rules.empty? ? 'Adicione a primeira regra' : 'Nova regra'), new_project_agent_rule_path(@project, @agent), class: 'btn btn-sm btn-success' %>
     </div>
   </div>
 </div>

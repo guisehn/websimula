@@ -12,7 +12,8 @@
   </div>
 
   <div class="form-actions">
-    <%= f.button :submit %>
+    <%= f.button :submit, class: 'btn-success' %>
+    <%= link_to 'Cancelar', edit_project_path(@project), class: 'btn btn-default cancel-button' %>
 
     <% unless variable.new_record? %>
       <%= link_to 'Excluir', project_variable_path(project, variable), class: 'btn btn-danger', method: :delete, data: { confirm: 'Tem certeza de que deseja excluir esta variável?' } %>

@@ -2,6 +2,8 @@
 
 <div class="container">
   <div class="form">
+
+
     <h2>Novo agente</h2>
 
     <%= simple_form_for([@project, @agent]) do |f| %>
@@ -24,7 +26,8 @@
       </div>
 
       <div class="form-actions">
-        <%= f.button :submit %>
+        <%= f.button :submit, class: 'btn-success' %>
+        <%= link_to 'Cancelar', edit_project_path(@project), class: 'btn btn-default cancel-button' %>
       </div>
     <% end %>
   </div>

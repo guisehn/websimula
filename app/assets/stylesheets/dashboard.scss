@@ -1,0 +1,41 @@
+.project-dashboard {
+  padding: 40px 0;
+
+  section {
+    h2 {
+      font-size: 18px;
+      font-weight: normal;
+      margin: 0 0 16px 0;
+      padding: 0;
+    }
+  }
+
+  .agents-section {
+    .agent {
+      float: left;
+      width: 100px;
+      display: block;
+      color: #000;
+      text-decoration: none;
+      margin: 0 40px 20px 0;
+
+      img {
+        display: block;
+        width: 100px;
+        height: 100px;
+      }
+
+      .agent-label {
+        text-align: center;
+        font-size: 13px;
+        margin: 10px 0 0 0;
+      }
+    }
+  }
+
+  .initial-positions-section {
+    .fixed-positions {
+      float: left;
+    }
+  }
+}

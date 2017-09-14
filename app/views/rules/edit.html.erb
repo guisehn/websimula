@@ -1,6 +1,11 @@
 <%= render 'projects/header', project: @project, internal: true %>
 
 <div class="container">
+  <div class="back-link-container">
+    <%= link_to "← Voltar para #{@agent.name}", edit_project_agent_path(@project, @agent) %>
+  </div>
+
   <h2>Editar regra</h2>
+
   <%= render 'form' %>
 </div>
