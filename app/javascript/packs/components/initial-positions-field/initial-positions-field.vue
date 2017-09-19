@@ -193,7 +193,10 @@ export default {
 
       if (this.movingAgent) {
         this.clearCoordinate(this.movingAgent.coordinate)
-        this.initialPositions.fixed_positions[this.movingAgent.agent.id].push(coordinate)
+
+        let position = { ...coordinate, id: this.movingAgent.coordinate.id }
+        this.initialPositions.fixed_positions[this.movingAgent.agent.id].push(position)
+
         this.movingAgent = null
       } else {
         this.addingAgent = coordinate
