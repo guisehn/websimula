@@ -1,12 +1,16 @@
 <h2>Agentes</h2>
 
-<div class="agent-list clearfix">
-  <% @agents.each do |agent| %>
-    <%= link_to edit_project_agent_path(@project, agent), class: 'agent pixelated' do %>
-      <%= image_tag agent_image(agent) %>
-      <p class="agent-label"><%= agent.name %></p>
+<% if @agents.empty? %>
+  <p>Não há agentes.</p>
+<% else %>
+  <div class="agent-list clearfix">
+    <% @agents.each do |agent| %>
+      <%= link_to edit_project_agent_path(@project, agent), class: 'agent pixelated' do %>
+        <%= image_tag agent_image(agent) %>
+        <p class="agent-label"><%= agent.name %></p>
+      <% end %>
     <% end %>
-  <% end %>
-</div>
+  </div>
+<% end %>
 
 <%= link_to 'Novo agente', new_project_agent_path(@project), class: 'btn btn-sm btn-success' %>

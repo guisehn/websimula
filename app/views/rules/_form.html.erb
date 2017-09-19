@@ -30,6 +30,8 @@
         <condition-field
           ref="conditionField"
           :value="<%= @rule.condition.to_json %>"
+          :agents="<%= @project.agents.to_json %>"
+          :variables="<%= @project.variables.to_json %>"
           :function-types="['condition', 'agent_condition']"
           help-message="Caso as condições acima sejam atendidas na visão do agente, esta regra será executada se uma regra com mais prioridade não for executada."
           no-condition-message="Nenhuma condição (esta ação sempre será executada caso não haja outra com mais prioridade)."></condition-field>
@@ -41,6 +43,8 @@
         <!-- Located in /app/javascript/packs/components/action-field/action-field.vue -->
         <action-field
           ref="actionField"
+          :agents="<%= @project.agents.to_json %>"
+          :variables="<%= @project.variables.to_json %>"
           :value="<%= @rule.action.to_json %>"></action-field>
       </div>
     </div>
@@ -59,8 +63,6 @@
 <% end %>
 
 <script>
-  window.projectDefinition = <%= raw render(template: 'projects/show.json') %>
-
   $('form.new_rule, form.edit_rule').submit(function () {
     let conditionField = window.vue.$refs.conditionField
     let actionField = window.vue.$refs.actionField

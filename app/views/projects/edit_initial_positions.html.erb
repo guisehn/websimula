@@ -1,0 +1,36 @@
+<%= render 'header', project: @project, internal: true %>
+
+<div class="container">
+  <h2>Definir posições iniciais dos agentes</h2>
+
+  <%= simple_form_for @project do |f| %>
+    <div id="vue-container">
+      <initial-positions-field
+        ref="initialPositions"
+        :value="<%= @project.initial_positions.to_json %>"
+        :agents="<%= @project.agents.to_json %>"></initial-positions-field>
+    </div>
+
+    <%= f.input :initial_positions, as: :hidden %>
+
+    <div class="form-actions">
+      <hr>
+      <%= f.button :submit, class: 'btn btn-primary' %>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  $('form.edit_project').submit(function () {
+    let initialPositionsField = window.vue.$refs.initialPositions
+    let data = JSON.stringify(initialPositionsField.getData())
+    console.log('Initial positions data:', data)
+
+    $('#project_initial_positions').val(data)
+
+    // don't submit the form if there's ?debug in the URL
+    if (window.location.search.indexOf('debug') !== -1) {
+      return false
+    }
+  })
+</script>

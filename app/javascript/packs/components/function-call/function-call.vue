@@ -39,7 +39,7 @@ import _ from 'lodash'
 
 export default {
   name: 'function-call',
-  props: ['value', 'functionTypes', 'emptyLabel', 'readOnly'],
+  props: ['value', 'functionTypes', 'emptyLabel', 'readOnly', 'agents', 'variables'],
 
   data () {
     return {
@@ -50,14 +50,6 @@ export default {
   computed: {
     simulationFunctions () {
       return window.simulationFunctions
-    },
-
-    agents () {
-      return window.projectDefinition.agents
-    },
-
-    variables () {
-      return window.projectDefinition.variables
     },
 
     availableFunctions () {

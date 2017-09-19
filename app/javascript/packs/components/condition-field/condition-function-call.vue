@@ -7,6 +7,8 @@
         :value="itemData"
         :read-only="readOnly"
         :function-types="functionTypes"
+        :agents="agents"
+        :variables="variables"
         empty-label="Escolha uma condição"></function-call>
 
       <a class="negate" v-on:click="negate($event)" href="" v-if="showNegateFunction">
@@ -27,11 +29,9 @@
 <script>
 import FunctionCall from '../function-call/function-call.vue'
 
-let simulationFunctions = window.simulationFunctions
-
 export default {
   name: 'condition-function-call',
-  props: ['item', 'index', 'functionTypes', 'readOnly'],
+  props: ['item', 'index', 'functionTypes', 'readOnly', 'agents', 'variables'],
 
   data () {
     return {

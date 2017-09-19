@@ -1,5 +1,5 @@
 <template>
-  <div class="condition-group" v-bind:class="{ child: !isRoot, and: itemData.operator === 'and', or: itemData.operator === 'or' }">
+  <div class="condition-group" v-bind:class="{ 'root': isRoot, 'child': !isRoot, 'and': itemData.operator === 'and', 'or': itemData.operator === 'or', 'one-child-only': itemData.children.length === 1, 'read-only': readOnly }">
     <div class="horizontal-line"></div>
 
     <header>
@@ -29,6 +29,8 @@
           :item="child"
           :function-types="functionTypes"
           :read-only="readOnly"
+          :agents="agents"
+          :variables="variables"
           @update="updateChild"
           @destroy="destroyChild"></condition-function-call>
 
@@ -39,6 +41,8 @@
           :item="child"
           :read-only="readOnly"
           :function-types="functionTypes"
+          :agents="agents"
+          :variables="variables"
           @update="updateChild"
           @destroy="destroyChild"></condition-logical-operator>
       </div>
@@ -74,7 +78,7 @@ import uuid from 'uuid/v4'
 
 export default {
   name: 'condition-logical-operator',
-  props: ['index', 'item', 'level', 'functionTypes', 'readOnly'],
+  props: ['index', 'item', 'level', 'functionTypes', 'readOnly', 'agents', 'variables'],
 
   data () {
     return {

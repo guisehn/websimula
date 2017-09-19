@@ -14,6 +14,8 @@
         :item="item"
         :level="1"
         :function-types="functionTypes"
+        :agents="agents"
+        :variables="variables"
         :read-only="readOnly"
         @destroy="reset"></condition-logical-operator>
 
@@ -33,7 +35,7 @@ import _ from 'lodash'
 export default {
   name: 'condition-field',
   replace: false,
-  props: ['value', 'functionTypes', 'noConditionMessage', 'helpMessage', 'readOnly'],
+  props: ['value', 'functionTypes', 'agents', 'variables', 'noConditionMessage', 'helpMessage', 'readOnly'],
 
   data () {
     let value = this.value
@@ -138,6 +140,29 @@ export default {
       border: 1px solid rgba(0, 0, 0, .1);
       border-radius: 4px;
       padding: 7px;
+    }
+
+    &.root.read-only.one-child-only {
+      > header {
+        display: none;
+      }
+
+      > content {
+        margin-left: 0;
+        border-left: 0;
+
+        .condition {
+          border: 0;
+
+          .horizontal-line {
+            display: none;
+          }
+        }
+      }
+
+      .child {
+        margin-left: 0;
+      }
     }
 
     &.or > header {

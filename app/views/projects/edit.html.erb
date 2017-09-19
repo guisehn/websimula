@@ -1,6 +1,64 @@
-<h1>Editing Project</h1>
+<%= render 'header', project: @project, internal: true %>
 
-<%= render 'form', project: @project %>
+<div class="container">
+  <h2>Ajustes do projeto</h2>
 
-<%= link_to 'Show', @project %> |
-<%= link_to 'Back', projects_path %>
+  <div class="row">
+    <div class="col-md-7">
+      <div class="form-group">
+        <label>Nome do projeto</label>
+
+        <p class="form-control-static">
+          <%= @project.name %>
+          &nbsp;
+          <a href="" class="btn btn-xs btn-default">Editar nome</a>
+        </p>
+      </div>
+
+      <div class="form-group">
+        <label>Visibilidade</label>
+
+        <p class="form-control-static">
+          Privado
+          &nbsp;
+          <a href="" class="btn btn-xs btn-default">Editar visibilidade</a>
+        </p>
+
+        <!--
+        <p class="help-block">Caso seja definido como público, todos os usuários do sistema poderão
+          visualizar a definição do projeto e executar simulações sobre ele, no entanto,
+          ele apenas poderá ser editado pelos membros da equipe do projeto.</p>
+        -->
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+      <h5>Equipe do projeto</h5>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th width="50%">Membro</th>
+            <th width="50%">E-mail</th>
+            <th>Permissão</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @project_users.each do |project_user| %>
+            <tr>
+              <td><%= project_user.user.name %></td>
+              <td><%= project_user.user.email %></td>
+              <td nowrap><%= project_user.role %></td>
+              <td nowrap><button type="button" class="btn btn-xs btn-danger">Remover</button></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+      <a href="" class="btn btn-sm btn-success">Adicionar membro</a>
+    </div>
+  </div>
+</div>

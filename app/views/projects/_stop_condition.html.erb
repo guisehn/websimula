@@ -4,6 +4,8 @@
   <condition-field
     :read-only="true"
     :value="<%= @project.stop_condition.to_json %>"
+    :agents="<%= @project.agents.to_json %>"
+    :variables="<%= @project.agents.to_json %>"
     :function-types="['condition']"></condition-field>
 
   <br>

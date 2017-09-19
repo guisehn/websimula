@@ -1,6 +1,8 @@
 <h2>Variáveis</h2>
 
-<% if @variables.length > 0 %>
+<% if @variables.empty? %>
+  <p>Não há variáveis.</p>
+<% else %>
   <table class="table">
     <thead>
       <tr>

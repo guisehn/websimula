@@ -12,13 +12,50 @@
 .simulator-stage {
   position: relative;
 
+  .coordinate {
+    position: absolute;
+    border: 0 dashed #eee;
+    border-width: 0 1px 1px 0;
+  }
+
   .agent {
     position: absolute;
+    z-index: 2;
     transition: top 0.05s linear,
       left 0.05s linear,
       transform 0.15s linear,
       box-shadow 0.25s linear,
       margin-top 0.15s linear;
+  }
+
+  .empty {
+    cursor: default;
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    text-align: center;
+    margin-top: -20px;
+    z-index: 2;
+
+    .text {
+      color: #999;
+      font-size: 25px;
+    }
+  }
+
+  &.edit-mode {
+    .coordinate {
+      cursor: none;
+
+      &:hover, &.selected {
+        background: #c2ffbf;
+        border: 1px dashed #8ad486;
+      }
+    }
+
+    .agent {
+      cursor: pointer;
+    }
   }
 
   &.moving-agent {

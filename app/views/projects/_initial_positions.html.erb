@@ -1,0 +1,6 @@
+<h2>Posições iniciais dos agentes</h2>
+
+<initial-positions-field read-only="true" :value="<%= @project.initial_positions.to_json %>" :agents="<%= @project.agents.to_json %>"></initial-positions-field>
+
+<br>
+<%= link_to 'Editar posições iniciais', edit_initial_positions_project_path(@project), class: 'btn btn-sm btn-success' %>

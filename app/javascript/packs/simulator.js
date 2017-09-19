@@ -342,19 +342,23 @@ class Simulator {
     // add fixed position agents
     let fixedPositions = _.get(this.definition.initial_positions, 'fixed_positions', [])
 
-    fixedPositions.forEach(pos => {
-      let agentDefinition = this.definition.agents.filter(a => a.id === pos.agent_id)[0]
-      this.buildAgent(agentDefinition, pos.x, pos.y)
+    _.forEach(fixedPositions, (positions, agentId) => {
+      agentId = parseInt(agentId, 10)
+
+      let agentDefinition = _.find(this.definition.agents, { id: agentId })
+      positions.forEach(pos => this.buildAgent(agentDefinition, pos.x, pos.y))
     })
 
     // add random agents
     let freePositions = this._getFreePositions()
     let randomPositions = _.get(this.definition.initial_positions, 'random_positions', [])
 
-    randomPositions.forEach(item => {
-      let agentDefinition = this.definition.agents.filter(a => a.id === item.agent_id)[0]
+    _.forEach(randomPositions, (quantity, agentId) => {
+      agentId = parseInt(agentId, 10)
 
-      _.times(item.quantity, () => {
+      let agentDefinition = _.find(this.definition.agents, { id: agentId })
+
+      _.times(quantity, () => {
         let index = _.random(0, freePositions.length - 1)
         let pos = freePositions.splice(index, 1)[0]
 

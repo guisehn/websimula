@@ -35,14 +35,9 @@
     <div class="row">
       <div class="col-md-12">
         <section class="initial-positions-section" id="initial-positions-section">
-          <h2>Posição inicial dos agentes</h2>
-          <p>TO-DO:<br>Aqui será exibida a disposição inicial dos agentes no ambiente no canvas, com botão para editar</p>
+          <%= render 'initial_positions' %>
         </section>
       </div>
     </div>
   </div>
 </div>
-
-<script>
-  window.projectDefinition = <%= raw render(template: 'projects/show.json') %>
-</script>

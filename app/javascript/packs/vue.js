@@ -1,11 +1,14 @@
 /* eslint no-console: 0 */
 import Vue from 'vue/dist/vue.esm'
+
 import ActionField from './components/action-field/action-field.vue'
 import ConditionField from './components/condition-field/condition-field.vue'
+import InitialPositionsField from './components/initial-positions-field/initial-positions-field.vue'
 
 const components = {
   ActionField,
-  ConditionField
+  ConditionField,
+  InitialPositionsField
 }
 
 function loadComponents() {

@@ -14,7 +14,7 @@
 
     <% unless local_assigns[:internal] %>
       <div class="project-actions">
-        <%= link_to 'javascript:alert("TO-DO")', class: 'action' do %>
+        <%= link_to edit_project_path(@project), class: 'action', id: 'project-settings-link' do %>
           <span class="glyphicon glyphicon glyphicon-wrench"></span>
           <label>Ajustes</label>
         <% end %>

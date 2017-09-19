@@ -12,6 +12,8 @@
           <function-call
             :value="action"
             :function-types="['action']"
+            :agents="agents"
+            :variables="variables"
             empty-label="Escolha uma ação"></function-call>
 
           <a class="remove" v-on:click="destroyAction(index, $event)" href="">
@@ -38,7 +40,7 @@ import uuid from 'uuid/v4'
 export default {
   name: 'action-field',
   replace: false,
-  props: ['value'],
+  props: ['value', 'agents', 'variables'],
 
   data () {
     return {
