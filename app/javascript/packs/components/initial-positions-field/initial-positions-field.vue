@@ -10,7 +10,6 @@
 
       <div class="simulator-stage-container" oncontextmenu="return false">
         <div class="simulator-stage"
-          @keyup.esc="escKey"
           :style="{ width: `${stageElementSize}px`, height: `${stageElementSize}px` }"
           :class="{ 'edit-mode': !readOnly, 'moving-agent': movingAgent }">
           <!-- show coordinate squares -->
@@ -37,7 +36,7 @@
             <img
               class="agent pixelated"
               :src="agent.image"
-              :key="`${coordinate.x},${coordinate.y}`"
+              :key="coordinate.id"
               :style="calculatePosition(coordinate)"
               :class="agentClass(agent, coordinate)"
               v-on:click.stop="selectAgent(agent, coordinate)"
@@ -115,6 +114,7 @@
 import Vue from 'vue/dist/vue.esm'
 import Constants from '../../constants'
 import _ from 'lodash'
+import uuid from 'uuid/v4'
 
 export default {
   name: 'initial-positions-field',
@@ -181,6 +181,8 @@ export default {
         if (!initialPositions.random_positions[agent.id]) {
           initialPositions.random_positions[agent.id] = 0
         }
+
+        initialPositions.fixed_positions[agent.id].forEach(pos => { pos.id = uuid() })
       })
 
       return initialPositions
@@ -201,6 +203,7 @@ export default {
 
     addAgent (agent) {
       this.initialPositions.fixed_positions[agent.id].push({
+        id: uuid(),
         x: this.addingAgent.x,
         y: this.addingAgent.y
       })
@@ -210,6 +213,11 @@ export default {
 
     selectAgent (agent, coordinate) {
       if (this.readOnly) return
+
+      if (this.movingAgent && this.isSameCoordinate(this.movingAgent.coordinate, coordinate)) {
+        this.movingAgent = null
+        return
+      }
 
       this.selectedAgent = { agent: agent, coordinate: coordinate }
       this.addingAgent = null
@@ -240,7 +248,7 @@ export default {
       return c1.x === c2.x && c1.y === c2.y
     },
 
-    escKey () {
+    cancelEdits () {
       this.addingAgent = null
       this.selectedAgent = null
       this.movingAgent = null
@@ -255,6 +263,10 @@ export default {
     getData () {
       let positions = _.cloneDeep(this.initialPositions)
 
+      _.forEach(positions.fixed_positions, positions => {
+        positions.forEach(pos => { delete pos.id })
+      })
+
       _.forEach(positions.random_positions, (val, key) => {
         positions.random_positions[key] = parseInt(val, 10)
       })
@@ -264,15 +276,21 @@ export default {
   },
 
   mounted () {
-    this._bodyClickListener = () => {
-      Vue.nextTick(() => this.escKey())
+    this._cancelListener = e => {
+      if (e.type === 'keyup' && e.key.toLowerCase() !== 'escape') {
+        return
+      }
+
+      Vue.nextTick(() => this.cancelEdits())
     }
 
-    document.body.addEventListener('click', this._bodyClickListener)
+    document.body.addEventListener('click', this._cancelListener)
+    document.body.addEventListener('keyup', this._cancelListener)
   },
 
   destroyed () {
-    document.body.removeEventListener('click', this._bodyClickListener)
+    document.body.removeEventListener('click', this._cancelListener)
+    document.body.removeEventListener('keyup', this._cancelListener)
   }
 }
 </script>
