@@ -11,7 +11,7 @@ class ApplicationRecord < ActiveRecord::Base
 
       project_id = instance.read_attribute(:project_id) || instance.id
 
-      data = { action: action, model: instance.class.name, id: instance.id }
+      data = { action: action, model: instance.class.name, id: instance.id, changes: previous_changes.keys }
       ActionCable.server.broadcast "project_#{project_id}", data
     end
 end
