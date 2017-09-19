@@ -187,6 +187,8 @@ export default {
     },
 
     selectCoordinate (coordinate) {
+      if (this.readOnly) return
+
       if (this.movingAgent) {
         this.clearCoordinate(this.movingAgent.coordinate)
         this.initialPositions.fixed_positions[this.movingAgent.agent.id].push(coordinate)
@@ -207,6 +209,8 @@ export default {
     },
 
     selectAgent (agent, coordinate) {
+      if (this.readOnly) return
+
       this.selectedAgent = { agent: agent, coordinate: coordinate }
       this.addingAgent = null
     },
