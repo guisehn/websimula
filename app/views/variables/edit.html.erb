@@ -2,7 +2,11 @@
 
 <div class="container">
   <div class="form">
-    <h2>Atualizar variável</h2>
+    <% if @project.can_be_edited_by?(current_user) %>
+      <h2>Variável</h2>
+    <% else %>
+      <h2>Variável "<%= @variable.name %>"</h2>
+    <% end %>
 
     <%= render 'form', project: @project, variable: @variable %>
   </div>

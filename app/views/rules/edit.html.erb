@@ -5,7 +5,11 @@
     <%= link_to "← Voltar para #{@agent.name}", edit_project_agent_path(@project, @agent) %>
   </div>
 
-  <h2>Editar regra</h2>
+  <% if @project.can_be_edited_by?(current_user) %>
+    <h2>Editar regra</h2>
+  <% else %>
+    <h2>Regra do agente</h2>
+  <% end %>
 
   <%= render 'form' %>
 </div>

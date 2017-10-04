@@ -1,9 +1,29 @@
+import _ from 'lodash'
 
 let currentProjectId = null
 
 $(document).on('turbolinks:load', function () {
   let projectId = window.location.pathname.match(/^\/projects\/([0-9])+/)
   projectId = projectId ? projectId[1] : null
+
+  function updateBindings(modelName, model) {
+    _.forEach(model, (value, key) => {
+      // skip keys starting with _
+      if (key[0] === '_') return;
+
+      $(`[data-bind=${modelName}-${key}]`).each(function () {
+        let label = model[`_${key}_label`] ? model[`_${key}_label`] : value
+
+        if ($(this).text() !== label) {
+          $(this).text(label).hide().fadeIn(500)
+        }
+
+        if ($(this).data('editable')) {
+          $(this).editable('setValue', value)
+        }
+      })
+    })
+  }
 
   if (!projectId || projectId !== currentProjectId) {
     App.cable.subscriptions.subscriptions.forEach(subscription => {
@@ -31,7 +51,7 @@ $(document).on('turbolinks:load', function () {
       received: (data) => {
         if (data.model === 'Project') {
           $.get(`/projects/${projectId}.json`, project => {
-            $('#project-name').text(project.name).hide().fadeIn(500)
+            updateBindings('project', project)
 
             $('#stop-condition-section').load(`/projects/${projectId}/stop_condition`, () => {
               document.dispatchEvent(new Event('simula:reload-project'))

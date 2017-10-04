@@ -1,8 +1,7 @@
 class VariablesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_project_and_check_access!
-  before_action :check_project_edit_permission!, only: [:create, :update, :destroy]
-
+  before_action :check_project_edit_permission!, only: [:new, :create, :update, :destroy]
   before_action :set_variable, only: [:edit, :update, :destroy]
 
   helper_method :variable_data_type_options

@@ -1,6 +1,7 @@
 class RulesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_project_and_check_access!
+  before_action :check_project_edit_permission!, only: [:new, :create, :update, :destroy]
   before_action :set_agent
   before_action :set_rule, only: [:edit, :update]
 

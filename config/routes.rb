@@ -1,9 +1,12 @@
 Rails.application.routes.draw do
+  resources :tests
   devise_for :users, controllers: {
     registrations: 'users/registrations'
   }
 
   root to: 'home#index'
+
+  get 'projects/open' => 'projects#open', as: 'open_projects'
 
   resources :projects do
     resources :users

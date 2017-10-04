@@ -1,4 +1,6 @@
-json.extract! @project, :id, :name, :stop_condition, :initial_positions, :created_at, :updated_at
+json.extract! @project, :id, :name, :stop_condition, :initial_positions, :visibility, :created_at, :updated_at
+
+json._visibility_label project_visibility(@project)
 
 json.agents @project.agents do |agent|
   json.extract! agent, :id, :name, :perception_area, :image, :created_at, :updated_at

@@ -4,14 +4,14 @@
   <div class="form-inputs">
     <div class="row">
       <div class="col-md-6">
-        <%= f.input :name %>
+        <%= f.input :name, readonly: !@project.can_be_edited_by?(current_user) %>
         <!-- <p class="help-block">Digite nesse campo um nome que descreva qual o papel desta regra para o agente.</p> -->
       </div>
     </div>
 
     <div class="row">
       <div class="col-md-3">
-        <%= f.input :priority %>
+        <%= f.input :priority, readonly: !@project.can_be_edited_by?(current_user) %>
         <!--
         <p class="help-block">
           Quanto menor o número, maior a prioridade desta regra em relação às demais deste agente.<br>
@@ -29,6 +29,7 @@
         <!-- Located in /app/javascript/packs/components/condition-field/condition-field.vue -->
         <condition-field
           ref="conditionField"
+          :read-only="<%= (!@project.can_be_edited_by?(current_user)).to_json %>"
           :value="<%= @rule.condition.to_json %>"
           :agents="<%= @project.agents.to_json %>"
           :variables="<%= @project.variables.to_json %>"
@@ -43,6 +44,7 @@
         <!-- Located in /app/javascript/packs/components/action-field/action-field.vue -->
         <action-field
           ref="actionField"
+          :read-only="<%= (!@project.can_be_edited_by?(current_user)).to_json %>"
           :agents="<%= @project.agents.to_json %>"
           :variables="<%= @project.variables.to_json %>"
           :value="<%= @rule.action.to_json %>"></action-field>
@@ -53,14 +55,16 @@
     <%= f.input :action, as: :hidden %>
   </div>
 
-  <div class="form-actions">
-    <hr>
-    <%= f.button :submit, class: @rule.new_record? ? 'btn-success' : 'btn-primary' %>
-  </div>
+  <% if @project.can_be_edited_by?(current_user) %>
+    <div class="form-actions">
+      <hr>
+      <%= f.button :submit, class: @rule.new_record? ? 'btn-success' : 'btn-primary' %>
+    </div>
 
-  <br>
+    <br>
 
-  <%= link_to 'Cancelar', edit_project_agent_path(@project, @agent) %>
+    <%= link_to 'Cancelar', edit_project_agent_path(@project, @agent) %>
+  <% end %>
 <% end %>
 
 <script>

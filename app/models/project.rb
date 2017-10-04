@@ -6,10 +6,13 @@ class Project < ApplicationRecord
   has_many :project_users
   has_many :users, through: :project_users
 
+  enum visibility: [ :secret, :open ]
+
   validates :name, presence: true
+  validates :visibility, presence: true
 
   def can_be_viewed_by?(user)
-    project_users.find_by(user: user)
+    open? || project_users.find_by(user: user)
   end
 
   def can_be_edited_by?(user)
