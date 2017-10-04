@@ -1822,6 +1822,10 @@ expand-range@^1.8.1:
   dependencies:
     fill-range "^2.1.0"
 
+expr-eval@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/expr-eval/-/expr-eval-1.2.0.tgz#9a9d7f6ba8d958d441df5a874a0eb9522fb10a7a"
+
 express@^4.13.3:
   version "4.15.4"
   resolved "https://registry.yarnpkg.com/express/-/express-4.15.4.tgz#032e2253489cf8fce02666beca3d11ed7a2daed1"

@@ -3,6 +3,7 @@
   "private": true,
   "dependencies": {
     "@rails/webpacker": "^3.0.1",
+    "expr-eval": "^1.2.0",
     "lodash": "^4.17.4",
     "uuid": "^3.1.0",
     "vue": "^2.4.2",

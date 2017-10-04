@@ -1,3 +1,5 @@
+import _ from 'lodash'
+import ExpressionParser from 'expr-eval'
 import Constants from './constants'
 
 let global = window
@@ -21,6 +23,7 @@ class Simulator {
     this._buildAgentsTable()
     this._setStageDimensions()
     this._sortAgentRulesByPriority()
+    this._buildExpressionParser()
   }
 
   reset() {
@@ -143,6 +146,28 @@ class Simulator {
     _.remove(this.agents, a => a === agent)
 
     this._renderAgent(agent)
+  }
+
+  _buildExpressionParser() {
+    this.expressionParser = new ExpressionParser.Parser()
+  }
+
+  _parseInput(input, func) {
+    let parsedInput = null
+
+    func.input.forEach(arg => {
+      if (arg.type === 'string') {
+        // only clone the input if we need to (performance)
+        if (!parsedInput) parsedInput = _.cloneDeep(input)
+
+        // to-do: do expression parsing on initialization instead of every cycle
+        input[arg.name] = input[arg.name].replace(/[^\\]?[{]{2}(.*)[}]{2}/g, (_, before, expr) => {
+          return before + this.expressionParser.parse(expr).evaluate()
+        })
+      }
+    })
+
+    return parsedInput ? parsedInput : input
   }
 
   _incrementCycleCount() {
@@ -414,7 +439,8 @@ class Simulator {
   _evaluateCondition(node, agent) {
     if (node.type === 'function_call') {
       let func = this._getFunction(node.function)
-      let returnValue = func.definition(this, agent, node.input)
+      let input = this._parseInput(node.input, func)
+      let returnValue = func.definition(this, agent, input)
 
       return node.negate ? !returnValue : returnValue
     }
