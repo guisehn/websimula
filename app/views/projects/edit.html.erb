@@ -33,14 +33,16 @@
     </div>
   </div>
 
+  <hr>
+
   <div class="row">
     <div class="col-md-8">
-      <h5>Equipe do projeto</h5>
+      <h4>Equipe do projeto</h5>
 
       <table class="table">
         <thead>
           <tr>
-            <th width="50%">Membro</th>
+            <th width="50%">Nome do membro</th>
             <th width="50%">E-mail</th>
             <th>Permissão</th>
             <th></th>
@@ -51,14 +53,149 @@
             <tr>
               <td><%= project_user.user.name %></td>
               <td><%= project_user.user.email %></td>
-              <td nowrap><%= project_user.role %></td>
-              <td nowrap><button type="button" class="btn btn-xs btn-danger">Remover</button></td>
+              <td nowrap><%= project_user_role(project_user) %></td>
+              <td nowrap>
+                <% if current_user.can_delete_user_from_project?(project_user.user, @project) %>
+                  <%= link_to 'Remover', project_user_path(@project, project_user.user.id), data: { method: :delete, confirm: "Tem certeza que deseja remover o membro #{project_user.user.name} da equipe do projeto?" }, class: 'btn btn-xs btn-danger' %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+
+          <% if @project_invites.count > 0 %>
+          <tr class="table-section-header">
+            <td colspan="4">
+              <h4>Convites enviados</h4>
+              <p>
+                As contas abaixo não foram encontrados no Simula.<br>
+                Uma mensagem foi enviada para estes e-mails com um link para realizar o cadastro e acessar o projeto.
+              </p>
+            </td>
+          </tr>
+          <% end %>
+
+          <% @project_invites.each do |project_invite| %>
+            <tr>
+              <td>&mdash;</td>
+              <td><%= project_invite.email %></td>
+              <td nowrap><%= project_user_role(project_invite) %></td>
+              <td nowrap>
+                <% if @project.can_be_managed_by?(current_user) %>
+                  <%= link_to 'Remover', project_user_path(@project, "invite:#{project_invite.id}"), data: { method: :delete, confirm: "Tem certeza que deseja remover o convite para #{project_invite.email}? O link recebido por e-mail será expirado." }, class: 'btn btn-xs btn-danger' %>
+                <% end %>
+              </td>
             </tr>
           <% end %>
         </tbody>
       </table>
 
-      <a href="" class="btn btn-sm btn-success">Adicionar membro</a>
+      <% if @project.can_be_managed_by?(current_user) %>
+        <a href="" class="btn btn-sm btn-success" id="btn-add-member">Adicionar membro</a>
+      <% end %>
     </div>
   </div>
+
+  <% if @project.can_be_managed_by?(current_user) %>
+    <hr>
+    <h4>Excluir projeto</h5>
+    <p>Clique no botão abaixo caso queira excluir o projeto.</p>
+    <%= link_to 'Excluir projeto', '#', class: 'btn btn-sm btn-danger', data: { toggle: 'modal', target: '#destroy-project-modal' } %>
+
+    <div class="modal fade" id="destroy-project-modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Tem certeza que deseja excluir o projeto?</h4>
+          </div>
+          <div class="modal-body">
+            <p>Esta ação <b>NÃO PODE</b> ser desfeita. Caso este projeto seja excluído, todas as configurações como agentes, regras de comportamento e variáveis serão removidos, e todos os membros perderão acesso ao projeto.</p>
+
+            <p>Digite o nome do projeto no campo abaixo para confirmar.</p>
+
+            <div class="form-group">
+              <input type="text" class="form-control" id="txt-confirm-destroy-project">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <%= link_to 'Eu entendo as consequências, excluir este projeto', @project, method: :delete, class: 'btn btn-danger disabled', id: 'btn-confirm-destroy-project' %>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
 </div>
+
+<script>
+$(function () {
+  var addMemberButton = $('#btn-add-member');
+  var originalText = addMemberButton.text();
+
+  $('#txt-confirm-destroy-project').keyup(function () {
+    var isNameCorrect = ($(this).val().trim() !== '<%= @project.name %>');
+    $('#btn-confirm-destroy-project').toggleClass('disabled', isNameCorrect);
+  });
+
+  addMemberButton.editable({
+    type: 'text',
+    title: 'Digite o e-mail do usuário convidado',
+    value: '',
+    placeholder: 'E-mail',
+    highlight: false,
+    tpl: '<input type="text" size="30">',
+
+    display: function() {
+      $(this).text(originalText);
+    },
+
+    validate: function(value) {
+      if (value.trim() === '') {
+        return 'Preencha o e-mail';
+      }
+
+      if (!Utils.validateEmail(value)) {
+        return 'E-mail inválido';
+      }
+    },
+
+    success: function(response, newValue) {
+      setTimeout(function() {
+        // reload page
+        Turbolinks.visit(window.location.toString());
+
+        addMemberButton.editable('setValue', '');
+      }, 10);
+    },
+
+    error: function(response, newValue) {
+      var message = '';
+
+      if (response.responseJSON && response.responseJSON.error) {
+        message = response.responseJSON.error;
+      } else {
+        message = 'Ocorreu um erro ao convidar este usuário. Por favor, tente novamente.';
+      }
+
+      addMemberButton.data('editableContainer').$form
+        .find('.editable-error-block')
+        .text(message);
+    },
+
+    url: function(params) {
+      return $.ajax({
+        type: 'POST',
+        url: '<%= project_users_path(@project, set_flash: 1) %>',
+        dataType: 'json',
+        beforeSend: function() {
+          addMemberButton.data('editableContainer').$form
+            .find('.editable-error-block')
+            .text('');
+        },
+        data: {
+          user: { email: params.value }
+        }
+      });
+    }
+  });
+});
+</script>

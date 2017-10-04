@@ -1,15 +1,24 @@
-<h2>Forgot your password?</h2>
+<div class="container">
+  <h2>Esqueceu sua senha?</h2>
 
-<%= simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
-  <%= f.error_notification %>
+  <p>Sem problemas. Digite seu e-mail abaixo e enviaremos um e-mail com instruções para recuperar a sua senha.</p>
 
-  <div class="form-inputs">
-    <%= f.input :email, required: true, autofocus: true %>
+  <div class="row">
+    <div class="col-md-5">
+      <%= simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+        <%= f.error_notification %>
+
+        <div class="form-inputs">
+          <%= f.input :email, required: true, autofocus: true %>
+        </div>
+
+        <div class="form-actions">
+          <%= f.button :submit, 'Enviar instruções de recuperação', class: 'btn-primary' %>
+        </div>
+
+        <br>
+        <%= link_to 'Cancelar', new_session_path(resource_name) %>
+      <% end %>
+    </div>
   </div>
-
-  <div class="form-actions">
-    <%= f.button :submit, "Send me reset password instructions" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>

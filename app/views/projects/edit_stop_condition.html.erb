@@ -21,18 +21,21 @@
       <hr>
       <%= f.button :submit, class: 'btn btn-primary' %>
     </div>
+
+    <br>
+    <%= link_to 'Cancelar', project_path(@project) %>
   <% end %>
 </div>
 
 <script>
   $('form.edit_project').submit(function () {
-    let conditionField = window.vue.$refs.conditionField
+    var conditionField = window.vue.$refs.conditionField
 
     if (!conditionField.validate()) {
       return false
     }
 
-    let data = JSON.stringify(conditionField.getData())
+    var data = JSON.stringify(conditionField.getData())
     console.log('Condition data:', data)
 
     $('#project_stop_condition').val(data)

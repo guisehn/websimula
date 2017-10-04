@@ -14,7 +14,7 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require bootstrap-sprockets
+//= require bootstrap-editable
 //= require spectrum
 //= require spectrum.pt-br
-//= require lodash
 //= require_tree .

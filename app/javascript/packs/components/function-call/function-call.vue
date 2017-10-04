@@ -74,10 +74,6 @@ export default {
       return this.agents[agentId].name
     },
 
-    getAgentName (agentId) {
-      return this.agents[agentId].name
-    },
-
     changeFunction () {
       let inputs = this.selectedFunctionInputs
       let previousInput = this.item.input

@@ -17,13 +17,16 @@
       <hr>
       <%= f.button :submit, class: 'btn btn-primary' %>
     </div>
+
+    <br>
+    <%= link_to 'Cancelar', project_path(@project) %>
   <% end %>
 </div>
 
 <script>
   $('form.edit_project').submit(function () {
-    let initialPositionsField = window.vue.$refs.initialPositions
-    let data = JSON.stringify(initialPositionsField.getData())
+    var initialPositionsField = window.vue.$refs.initialPositions
+    var data = JSON.stringify(initialPositionsField.getData())
     console.log('Initial positions data:', data)
 
     $('#project_initial_positions').val(data)

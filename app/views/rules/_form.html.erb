@@ -10,7 +10,7 @@
     </div>
 
     <div class="row">
-      <div class="col-md-2">
+      <div class="col-md-3">
         <%= f.input :priority %>
         <!--
         <p class="help-block">
@@ -55,11 +55,12 @@
 
   <div class="form-actions">
     <hr>
-    <%= f.button :submit, class: 'btn btn-primary' %>
-    <%= link_to 'Cancelar', edit_project_agent_path(@project, @agent), class: 'btn btn-default cancel-button' %>
+    <%= f.button :submit, class: @rule.new_record? ? 'btn-success' : 'btn-primary' %>
   </div>
 
   <br>
+
+  <%= link_to 'Cancelar', edit_project_agent_path(@project, @agent) %>
 <% end %>
 
 <script>

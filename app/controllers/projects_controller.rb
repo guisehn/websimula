@@ -1,13 +1,14 @@
 class ProjectsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_project_and_check_access!, only: [:show, :edit, :update, :destroy, :agents, :variables, :stop_condition, :edit_stop_condition, :initial_positions, :edit_initial_positions, :settings]
-  before_action :check_project_management_permission!, only: [:edit, :update, :destroy, :edit_stop_condition, :edit_initial_positions]
+  before_action :check_project_management_permission!, only: [:destroy]
+  before_action :check_project_edit_permission!, only: [:edit_stop_condition, :edit_initial_positions, :update]
 
   before_action :load_agents, only: [:show, :agents]
   before_action :load_variables, only: [:show, :variables]
 
   def index
-    @projects = Project.all
+    @projects = current_user.projects.all
   end
 
   def agents
@@ -35,6 +36,7 @@ class ProjectsController < ApplicationController
 
   def edit
     @project_users = @project.project_users.includes(:user)
+    @project_invites = @project.project_invites
   end
 
   def edit_stop_condition
@@ -49,7 +51,7 @@ class ProjectsController < ApplicationController
     ActiveRecord::Base.transaction do
       if @project.save
         @project.project_users.create!(user: current_user, role: :admin)
-        redirect_to @project, notice: 'Project was successfully created.'
+        redirect_to @project, notice: 'Bem vindo ao seu novo projeto.'
       else
         render :new
       end
@@ -71,7 +73,10 @@ class ProjectsController < ApplicationController
 
   private
     def project_params
-      p = params.require(:project).permit(:name, :initial_positions, :stop_condition)
+      allowed_params = [:initial_positions, :stop_condition]
+      allowed_params << :name if !@project || @project.can_be_managed_by?(current_user)
+
+      p = params.require(:project).permit(allowed_params)
       param_to_json(p, :initial_positions)
       param_to_json(p, :stop_condition)
       p

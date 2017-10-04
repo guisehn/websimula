@@ -1,6 +1,7 @@
 class Project < ApplicationRecord
   has_many :agents
   has_many :variables
+  has_many :project_invites
 
   has_many :project_users
   has_many :users, through: :project_users

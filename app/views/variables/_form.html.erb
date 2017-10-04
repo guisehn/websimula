@@ -5,18 +5,21 @@
     <div class="row">
       <div class="col-md-4">
         <%= f.input :name %>
-        <%= f.input :data_type, collection: Variable.data_types.keys %>
+        <%= f.input :data_type, collection: variable_data_type_options,
+          value_method: 'first', label_method: 'last', include_blank: false %>
         <%= f.input :initial_value %>
       </div>
     </div>
   </div>
 
   <div class="form-actions">
-    <%= f.button :submit, class: 'btn-success' %>
-    <%= link_to 'Cancelar', edit_project_path(@project), class: 'btn btn-default cancel-button' %>
+    <%= f.button :submit, class: variable.new_record? ? 'btn-success' : 'btn-primary' %>
 
     <% unless variable.new_record? %>
-      <%= link_to 'Excluir', project_variable_path(project, variable), class: 'btn btn-danger', method: :delete, data: { confirm: 'Tem certeza de que deseja excluir esta variável?' } %>
+      <%= link_to 'Excluir Variável', project_variable_path(project, variable), class: 'btn btn-danger', method: :delete, data: { confirm: 'Tem certeza de que deseja excluir esta variável?' } %>
     <% end %>
   </div>
+
+  <br>
+  <%= link_to 'Cancelar', project_path(@project) %>
 <% end %>

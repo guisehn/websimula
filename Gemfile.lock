@@ -65,6 +65,8 @@ GEM
     erubis (2.7.0)
     execjs (2.7.0)
     ffi (1.9.17)
+    figaro (1.1.1)
+      thor (~> 0.14)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
     i18n (0.7.0)
@@ -75,11 +77,10 @@ GEM
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
+    json (2.1.0)
     listen (3.0.8)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
-    lodash-rails (4.17.4)
-      railties (>= 3.1)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
     mail (2.6.4)
@@ -96,6 +97,12 @@ GEM
       mini_portile2 (~> 2.1.0)
     orm_adapter (0.5.0)
     pg (0.18.4)
+    postmark (1.10.0)
+      json
+      rake
+    postmark-rails (0.15.0)
+      actionmailer (>= 3.0.0)
+      postmark (~> 1.10.0)
     puma (3.6.2)
     rack (2.0.1)
     rack-proxy (0.6.2)
@@ -192,11 +199,12 @@ DEPENDENCIES
   byebug
   coffee-rails (~> 4.2)
   devise
+  figaro
   jbuilder (~> 2.5)
   jquery-rails
   listen (~> 3.0.5)
-  lodash-rails
   pg
+  postmark-rails (~> 0.15.0)
   puma (~> 3.0)
   rails (~> 5.0.0, >= 5.0.0.1)
   rails_12factor
@@ -210,6 +218,9 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   web-console
   webpacker (~> 3.0)
+
+RUBY VERSION
+   ruby 2.2.2p95
 
 BUNDLED WITH
    1.12.5

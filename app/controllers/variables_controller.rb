@@ -5,6 +5,8 @@ class VariablesController < ApplicationController
 
   before_action :set_variable, only: [:edit, :update, :destroy]
 
+  helper_method :variable_data_type_options
+
   def new
     @variable = @project.variables.new
   end
@@ -36,6 +38,10 @@ class VariablesController < ApplicationController
   end
 
   private
+    def variable_data_type_options
+      Variable.data_types.keys.map { |type| [type, t("activerecord.attributes.variable.data_types.#{type}")] }
+    end
+
     def variable_params
       params.require(:variable).permit(:name, :data_type, :initial_value)
     end

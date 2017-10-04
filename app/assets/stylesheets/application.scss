@@ -12,6 +12,7 @@
  *
  *= require_tree .
  *= require spectrum
+ *= require bootstrap-editable
  *= require_self
  */
 
@@ -29,10 +30,6 @@ body {
 
 .btn {
   box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset;
-}
-
-.cancel-button {
-  margin-left: 10px;
 }
 
 h2 {
@@ -112,6 +109,23 @@ h2 {
 
       .glyphicon-play-circle { color: green; }
     }
+  }
+}
+
+.table-section-header {
+  background: #eee;
+
+  h4 {
+    font-weight: bold;
+    font-size: 12px;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  p {
+    font-size: 12px;
+    margin-top: 4px;
+    margin-bottom: 0;
   }
 }
 

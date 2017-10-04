@@ -1,0 +1,43 @@
+pt-BR:
+  activerecord:
+    models:
+      agent: Agente
+      project: Projeto
+      project_invite: Convite
+      project_user: Membro
+      rule: Regra
+      user: Usuário
+      variable: Variável
+    attributes:
+      agent:
+        name: Nome
+        perception_area: Área de percepção
+        image: Imagem do agente
+      rule:
+        name: Nome da regra
+        priority: Prioridade da regra
+        condition: Condições
+        action: Ações
+      user:
+        name: Nome
+        email: E-mail
+        password: Senha
+        password_confirmation: Confirmar senha
+        remember_me: Manter-me conectado
+        current_password: Senha atual
+        reset_password_token: Link
+      project:
+        name: Nome do projeto
+      project_user:
+        role: Permissão
+        roles:
+          admin: Administrador
+          editor: Editor
+          viewer: Visualizador
+      variable:
+        name: Nome da variávei
+        data_type: Tipo de dado
+        data_types:
+          number: Número
+          string: Texto
+        initial_value: Valor inicial

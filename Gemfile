@@ -32,9 +32,10 @@ gem 'redis', '~> 3.0'
 
 gem 'bootstrap-sass', '~> 3.3.6'
 gem 'devise'
+gem 'figaro'
 gem 'simple_form'
-gem 'lodash-rails'
 gem 'webpacker', '~> 3.0'
+gem 'postmark-rails', '~> 0.15.0'
 
 gem 'rails_12factor', group: :production
 

@@ -8,4 +8,8 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
+
+  def can_delete_user_from_project?(user, project)
+    project.can_be_managed_by?(self) && user.id != self.id
+  end
 end

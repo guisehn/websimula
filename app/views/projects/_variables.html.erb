@@ -15,7 +15,7 @@
       <% @variables.each do |variable| %>
         <tr>
           <td><%= link_to variable.name, edit_project_variable_path(@project, variable) %></td>
-          <td nowrap><%= variable.data_type %></td>
+          <td nowrap><%= variable_data_type(variable) %></td>
           <td nowrap><%= variable.initial_value %></td>
         </tr>
       <% end %>

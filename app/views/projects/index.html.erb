@@ -1,28 +1,24 @@
 <div class="container">
-  <h1>Meus projetos</h1>
+  <h2>Meus projetos</h2>
 
-  <div class="row">
-    <div class="col-md-5">
-      <table class="table">
-        <thead>
-          <tr>
-            <th width="100%">Name</th>
-            <th colspan="3"></th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <% @projects.each do |project| %>
-            <tr>
-              <td><%= project.name %></td>
-              <td nowrap><%= link_to 'Abrir', project %></td>
-              <td nowrap><%= link_to 'Excluir', project, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+  <% if @projects.length > 0 %>
+    <div class="row">
+      <div class="col-md-5">
+        <table class="table">
+          <tbody>
+            <% @projects.each do |project| %>
+              <tr>
+                <td><%= link_to project.name, project %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
     </div>
-  </div>
+  <% else %>
+    <p>Você não tem nenhum projeto.</p>
+    <br>
+  <% end %>
 
   <%= link_to 'Novo projeto', new_project_path, class: 'btn btn-success' %>
 </div>
