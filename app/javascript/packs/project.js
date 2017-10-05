@@ -3,7 +3,7 @@ import _ from 'lodash'
 let currentProjectId = null
 
 $(document).on('turbolinks:load', function () {
-  let projectId = window.location.pathname.match(/^\/projects\/([0-9])+/)
+  let projectId = window.location.pathname.match(/^\/projects\/([0-9]+)/)
   projectId = projectId ? projectId[1] : null
 
   function updateBindings(modelName, model) {
