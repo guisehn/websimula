@@ -21,8 +21,8 @@
         <%= link_to 'Excluir Variável', project_variable_path(project, variable), class: 'btn btn-danger', method: :delete, data: { confirm: 'Tem certeza de que deseja excluir esta variável?' } %>
       <% end %>
     </div>
-  <% end %>
 
-  <br>
-  <%= link_to 'Cancelar', project_path(@project) %>
+    <br>
+    <%= link_to 'Cancelar', project_path(@project) %>
+  <% end %>
 <% end %>
