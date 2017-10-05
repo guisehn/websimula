@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import ExpressionParser from 'expr-eval'
+import ExpressionEvaluator from 'expr-eval'
 import Constants from './constants'
 
 let global = window
@@ -149,7 +149,7 @@ class Simulator {
   }
 
   _buildExpressionParser() {
-    this.expressionParser = new ExpressionParser.Parser()
+    this.expressionParser = new ExpressionEvaluator.Parser()
   }
 
   _parseInput(input, func) {
@@ -163,10 +163,8 @@ class Simulator {
         parsedInput[arg.name] = this._injectVariables(parsedInput[arg.name]);
 
         // to-do: do expression parsing on initialization instead of every cycle
-        parsedInput[arg.name] = parsedInput[arg.name].replace(/([^\\])?[{]{2}(.*)[}]{2}/g, (_, before, expr) => {
-          console.log(expr)
-          return (before || '') + this.expressionParser.parse(expr).evaluate()
-        })
+        parsedInput[arg.name] = parsedInput[arg.name].replace(/([^\\])?[{]{2}(.*)[}]{2}/g,
+          (_, before, expr) => (before || '') + this.expressionParser.parse(expr).evaluate())
       }
     })
 
