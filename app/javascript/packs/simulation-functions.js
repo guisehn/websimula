@@ -429,5 +429,32 @@ global.simulationFunctions = {
       let variable = env.variables[input.variable_id]
       ++variable.value
     }
+  },
+
+  set_variable: {
+    order: 6,
+    type: 'action',
+    label: 'Definir valor de variável',
+    input: [
+      {
+        name: 'variable_id',
+        type: 'variable',
+        label: 'Qual variável?',
+        defaultValue: null,
+        nullLabel: 'Selecione a variável',
+        required: true
+      },
+      {
+        name: 'value',
+        type: 'string',
+        label: 'Valor',
+        defaultValue: null,
+        required: true
+      }
+    ],
+    definition: (env, agent, input) => {
+      let variable = env.variables[input.variable_id]
+      variable.value = variable.definition.data_type === 'number' ? Number(input.value) : input.value
+    }
   }
 }

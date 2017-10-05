@@ -160,14 +160,35 @@ class Simulator {
         // only clone the input if we need to (performance)
         if (!parsedInput) parsedInput = _.cloneDeep(input)
 
+        parsedInput[arg.name] = this._injectVariables(parsedInput[arg.name]);
+
         // to-do: do expression parsing on initialization instead of every cycle
-        input[arg.name] = input[arg.name].replace(/[^\\]?[{]{2}(.*)[}]{2}/g, (_, before, expr) => {
-          return before + this.expressionParser.parse(expr).evaluate()
+        parsedInput[arg.name] = parsedInput[arg.name].replace(/([^\\])?[{]{2}(.*)[}]{2}/g, (_, before, expr) => {
+          console.log(expr)
+          return (before || '') + this.expressionParser.parse(expr).evaluate()
         })
       }
     })
 
     return parsedInput ? parsedInput : input
+  }
+
+  _injectVariables(str) {
+    _.forEach(this.variables, variable => {
+      let value
+
+      if (_.isNaN(variable.value)) {
+        value = '0'
+      } else if (_.isNil(variable.value)) {
+        value = ''
+      } else {
+        value = JSON.stringify(variable.value)
+      }
+
+      str = str.replace(variable.replacementRegex, value)
+    })
+
+    return str
   }
 
   _incrementCycleCount() {
@@ -313,7 +334,13 @@ class Simulator {
   _refreshVariablesTable() {
     _.forEach(this.variables, variable => {
       let id = variable.definition.id
-      this.simulatorElement.find(`[data-bind-variable=${id}]`).text(variable.value)
+      let el = this.simulatorElement.find(`[data-bind-variable=${id}]`)
+
+      if (_.isNaN(variable.value)) {
+        el.html('<i>Número inválido</i>')
+      } else {
+        el.text(variable.value)
+      }
     })
   }
 
@@ -345,7 +372,14 @@ class Simulator {
           throw new Error(`Unknown variable type "${variable_data_type}"`)
       }
 
-      this.variables[variable.id] = { definition: variable, value: value }
+      let escapedName = _.escapeRegExp(variable.name)
+      let regex = new RegExp(`\\[${escapedName}\\]`, 'g')
+
+      this.variables[variable.id] = {
+        definition: variable,
+        replacementRegex: regex,
+        value: value
+      }
     })
 
     this._refreshVariablesTable()
@@ -431,7 +465,7 @@ class Simulator {
 
     return actions.map(action => {
       let func = this._getFunction(action.function)
-      let input = action.input || {}
+      let input = this._parseInput(action.input || {}, func)
       return func.definition(this, agent, input)
     })
   }

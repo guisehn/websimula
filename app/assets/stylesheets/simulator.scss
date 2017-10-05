@@ -147,11 +147,13 @@
         margin-top: 8px;
 
         td:first-child {
+          white-space: nowrap;
           padding-left: 0;
         }
 
         td:last-child {
           text-align: right;
+          word-break: break-all;
           padding-right: 0;
         }
       }
