@@ -6,7 +6,7 @@
   <div class="row">
     <div class="col-md-7">
       <div class="form-group">
-        <label>Nome do projeto</label>
+        <label>Nome do agente</label>
 
         <p class="form-control-static">
           <% if @project.can_be_managed_by?(current_user) %>
@@ -15,11 +15,12 @@
               data-type="text"
               data-placement="bottom"
               data-model-url="<%= project_path(@project) %>"
+              data-model-id="<%= @project.id %>"
               data-model="project"
               data-property="name"
               data-bind="project-name"><%= @project.name %></a>
           <% else %>
-            <span data-bind="project-name"><%= @project.name %></span>
+            <span data-bind="project-name" data-model-id="<%= @project.id %>"><%= @project.name %></span>
           <% end %>
         </p>
       </div>
@@ -35,6 +36,7 @@
                 type: 'select',
                 placement: 'bottom',
                 model_url: project_path(@project),
+                model_id: @project.id,
                 model: 'project',
                 property: 'visibility',
                 value: @project.visibility,

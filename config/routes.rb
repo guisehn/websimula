@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  resources :tests
   devise_for :users, controllers: {
     registrations: 'users/registrations'
   }
@@ -13,7 +12,7 @@ Rails.application.routes.draw do
     resources :simulations, except: [:edit, :update]
     resources :variables, except: [:index, :show]
 
-    resources :agents, except: [:index, :show] do
+    resources :agents, except: [:index] do
       resources :rules, except: [:index, :show]
     end
 

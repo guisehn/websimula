@@ -11,11 +11,21 @@ $(document).on('turbolinks:load', function () {
       // skip keys starting with _
       if (key[0] === '_') return;
 
-      $(`[data-bind=${modelName}-${key}]`).each(function () {
-        let label = model[`_${key}_label`] ? model[`_${key}_label`] : value
+      let selector = `[data-bind=${modelName}-${key.replace(/_/g, '-')}][data-model-id=${model.id}]`
 
-        if ($(this).text() !== label) {
-          $(this).text(label).hide().fadeIn(500)
+      $(selector).each(function () {
+        let label = model[`_${key}_label`] ? model[`_${key}_label`] : value
+        let bindAttribute = $(this).data('bind-attribute')
+        let currentValue = bindAttribute ? $(this).attr(bindAttribute) : $(this).text();
+
+        if (currentValue !== String(label)) {
+          if (bindAttribute) {
+            $(this).attr(bindAttribute, label)
+          } else {
+            $(this).text(label)
+          }
+
+          $(this).hide().fadeIn(500)
         }
 
         if ($(this).data('editable')) {
@@ -60,15 +70,15 @@ $(document).on('turbolinks:load', function () {
         }
 
         if (data.model === 'Agent') {
-          $('#agents-section').load(`/projects/${projectId}/agents`, () => {
-            $('#agents-section').hide().fadeIn(500)
+          $('#agents-section').load(`/projects/${projectId}/agents`)
+
+          $.get(`/projects/${projectId}/agents/${data.id}.json`, agent => {
+            updateBindings('agent', agent)
           })
         }
 
-        if (data.model === 'letiable') {
-          $('#letiables-section').load(`/projects/${projectId}/letiables`, () => {
-            $('#letiables-section').hide().fadeIn(500)
-          })
+        if (data.model === 'Variable') {
+          $('#variables-section').load(`/projects/${projectId}/variables`)
         }
 
         console.log(`Project ${projectId}: received`, data)

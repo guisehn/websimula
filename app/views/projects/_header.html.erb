@@ -4,11 +4,11 @@
       <% if local_assigns[:internal] %>
         <h1>
           <%= link_to @project do %>
-            ← <span id="project-name" data-bind="project-name"><%= project.name %></span>
+            ← <span id="project-name" data-bind="project-name" data-model-id="<%= project.id %>"><%= project.name %></span>
           <% end %>
         </h1>
       <% else %>
-        <h1><span id="project-name" data-bind="project-name"><%= project.name %></span></h1>
+        <h1><span id="project-name" data-bind="project-name" data-model-id="<%= project.id %>"><%= project.name %></span></h1>
       <% end %>
     </div>
 

@@ -3,6 +3,6 @@ class Agent < ApplicationRecord
   has_many :rules
 
   validates :project_id, presence: true
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: { scope: :project_id }
   validates :perception_area, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 end

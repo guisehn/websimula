@@ -41,7 +41,7 @@ function simulaEditableOptions() {
       var prop = $(this).data('property');
 
       if (response.responseJSON && response.responseJSON[prop]) {
-        message = response.responseJSON[prop].join(', ');
+        message = response.responseJSON[prop][0];
       } else {
         message = 'Ocorreu um erro. Por favor, tente novamente.';
       }
