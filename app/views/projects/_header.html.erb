@@ -4,19 +4,21 @@
       <% if local_assigns[:internal] %>
         <h1>
           <%= link_to @project do %>
-            ← <span id="project-name"><%= project.name %></span>
+            ← <span id="project-name" data-bind="project-name" data-model-id="<%= project.id %>"><%= project.name %></span>
           <% end %>
         </h1>
       <% else %>
-        <h1><span id="project-name"><%= project.name %></span></h1>
+        <h1><span id="project-name" data-bind="project-name" data-model-id="<%= project.id %>"><%= project.name %></span></h1>
       <% end %>
     </div>
 
     <% unless local_assigns[:internal] %>
       <div class="project-actions">
-        <%= link_to edit_project_path(@project), class: 'action', id: 'project-settings-link' do %>
-          <span class="glyphicon glyphicon glyphicon-wrench"></span>
-          <label>Ajustes</label>
+        <% if @project.can_be_edited_by?(current_user) %>
+          <%= link_to edit_project_path(@project), class: 'action', id: 'project-settings-link' do %>
+            <span class="glyphicon glyphicon glyphicon-wrench"></span>
+            <label>Ajustes</label>
+          <% end %>
         <% end %>
 
         <%= link_to new_project_simulation_path(@project), class: 'action' do %>

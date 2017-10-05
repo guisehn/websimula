@@ -5,7 +5,16 @@
     <%= link_to "← Voltar para #{@agent.name}", edit_project_agent_path(@project, @agent) %>
   </div>
 
-  <h2>Editar regra</h2>
+  <% if @project.can_be_edited_by?(current_user) %>
+    <h2>Editar regra</h2>
+  <% else %>
+    <h2>Regra do agente</h2>
+  <% end %>
 
   <%= render 'form' %>
+
+  <% if @project.can_be_edited_by?(current_user) %>
+    <hr>
+    <%= link_to 'Excluir regra', project_agent_rule_path(@project, @agent, @rule), method: :delete, class: 'btn btn-sm btn-danger', data: { confirm: 'Tem certeza que deseja excluir esta regra? Esta ação é irreversível.' } %>
+  <% end %>
 </div>

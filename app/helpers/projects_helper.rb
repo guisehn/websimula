@@ -11,6 +11,10 @@ module ProjectsHelper
     end
   end
 
+  def project_visibility(project)
+    I18n.t("activerecord.attributes.project.visibilities.#{project.visibility}")
+  end
+
   def project_user_role(project_user)
     I18n.t("activerecord.attributes.project_user.roles.#{project_user.role}")
   end

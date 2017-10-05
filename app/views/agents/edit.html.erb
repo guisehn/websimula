@@ -1,10 +1,75 @@
 <%= render 'projects/header', project: @project, internal: true %>
 
 <div class="container">
-  <h2>Agente "<%= @agent.name %>"</h2>
+  <h2>Agente "<span data-bind="agent-name" data-model-id="<%= @agent.id %>"><%= @agent.name %></span>"</h2>
 
-  TO-DO: editar nome, área de percepção e imagem
-  <br><br>
+  <div class="form-group">
+    <label><%= t('activerecord.attributes.agent.name') %></label>
+
+    <p class="form-control-static">
+      <% if @project.can_be_edited_by?(current_user) %>
+        <a href="#"
+          id="edit-agent-name"
+          data-type="text"
+          data-placement="bottom"
+          data-model-url="<%= project_agent_path(@project, @agent) %>"
+          data-model-id="<%= @agent.id %>"
+          data-model="agent"
+          data-property="name"
+          data-bind="agent-name"><%= @agent.name %></a>
+      <% else %>
+        <span data-bind="agent-name" data-model-id="<%= @agent.id %>"><%= @agent.name %></span>
+      <% end %>
+    </p>
+  </div>
+
+  <div class="form-group">
+    <label><%= t('activerecord.attributes.agent.perception_area') %></label>
+
+    <p class="form-control-static">
+      <% if @project.can_be_edited_by?(current_user) %>
+        <a href="#"
+          id="edit-perception-area"
+          data-type="number"
+          data-placement="bottom"
+          data-model-url="<%= project_agent_path(@project, @agent) %>"
+          data-model-id="<%= @agent.id %>"
+          data-model="agent"
+          data-property="perception_area"
+          data-bind="agent-perception-area"><%= @agent.perception_area %></a>
+      <% else %>
+        <span data-bind="agent-perception-area" data-model-id="<%= @agent.id %>"><%= @agent.perception_area %></span>
+      <% end %>
+    </p>
+  </div>
+
+  <div class="form-group">
+    <label><%= t('activerecord.attributes.agent.image') %></label>
+
+    <div class="form-control-static">
+      <%= content_tag(@project.can_be_edited_by?(current_user) ? :a : :span,
+        class: @project.can_be_edited_by?(current_user) ? 'edit-agent-image' : '',
+        id: @project.can_be_edited_by?(current_user) ? 'edit-agent-image' : '',
+        href: @project.can_be_edited_by?(current_user) ? '#' : nil) do %>
+        <img src="<%= @agent.image %>"
+          data-bind="agent-image"
+          data-bind-attribute="src"
+          data-model-id="<%= @agent.id %>"
+          class="pixelated"
+          width="100"
+          height="100">
+      <% end %>
+
+      <div id="edit-agent-image-container" class="edit-agent-image-container hidden">
+        <div id="agent-image-editor-container" class="editor"></div>
+
+        <button type="button" class="btn btn-primary" data-action="save">Salvar imagem</button>
+        <button type="button" class="btn btn-default" data-action="cancel">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <hr>
 
   <div class="row">
     <div class="col-md-5">
@@ -29,7 +94,71 @@
         </table>
       <% end %>
 
-      <%= link_to (@rules.empty? ? 'Adicione a primeira regra' : 'Nova regra'), new_project_agent_rule_path(@project, @agent), class: 'btn btn-sm btn-success' %>
+      <% if @project.can_be_edited_by?(current_user) %>
+        <%= link_to (@rules.empty? ? 'Adicione a primeira regra' : 'Nova regra'), new_project_agent_rule_path(@project, @agent), class: 'btn btn-sm btn-success' %>
+      <% end %>
     </div>
   </div>
+
+  <% if @project.can_be_edited_by?(current_user) %>
+    <hr>
+    <%= link_to 'Excluir agente', project_agent_path(@project, @agent), method: :delete, class: 'btn btn-sm btn-danger', data: { confirm: 'Tem certeza que deseja excluir este agente? Esta ação é irreversível.' } %>
+  <% end %>
 </div>
+
+<script>
+$(function () {
+  $('#edit-agent-name, #edit-perception-area').editable(simulaEditableOptions());
+
+  $('#edit-agent-image').click(function (e) {
+    var src = $(this).find('img').attr('src');
+
+    $(this).addClass('hidden');
+
+    var input = $('<input type="hidden">').val(src).appendTo('body');
+
+    $('#edit-agent-image-container').removeClass('hidden');
+
+    $('#agent-image-editor-container')
+      .html('')
+      .data('input', input)
+      .imageEditor({ input: input });
+
+    $('#edit-agent-image-container [data-action]').removeAttr('disabled');
+
+    e.preventDefault();
+  });
+
+  $('#edit-agent-image-container').find('[data-action=cancel]').click(function () {
+    $('#edit-agent-image').removeClass('hidden');
+    $('#edit-agent-image-container').addClass('hidden');
+  });
+
+  $('#edit-agent-image-container').find('[data-action=save]').click(function () {
+    var $this = $(this);
+    var originalText = $this.text();
+    var src = $('#agent-image-editor-container').data('input').val();
+
+    $('#edit-agent-image-container [data-action]').attr('disabled', 'disabled');
+    $this.text('Salvando...');
+
+    $.ajax({
+      type: 'PUT',
+      url: '<%= project_agent_path(@project, @agent) %>',
+      dataType: 'json',
+      data: { agent: { image: src } },
+      success: function () {
+        $('#edit-agent-image-container').find('[data-action=cancel]').click();
+        $('#edit-agent-image img').attr('src', src);
+      },
+      error: function () {
+        alert('Ocorreu um erro ao salvar a imagem. Por favor tente novamnte.');
+      },
+      complete: function () {
+        $this.text(originalText);
+        $('#edit-agent-image-container [data-action]').removeAttr('disabled');
+      }
+    });
+  });
+});
+</script>

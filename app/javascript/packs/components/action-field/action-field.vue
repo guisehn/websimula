@@ -10,13 +10,14 @@
           <span class="order">#{{ index + 1 }}</span>
 
           <function-call
+            :readOnly="readOnly"
             :value="action"
             :function-types="['action']"
             :agents="agents"
             :variables="variables"
             empty-label="Escolha uma ação"></function-call>
 
-          <a class="remove" v-on:click="destroyAction(index, $event)" href="">
+          <a class="remove" v-on:click="destroyAction(index, $event)" href="" v-if="!readOnly">
             <span class="glyphicon glyphicon-remove-circle" title="Remover ação"></span>
             <span class="sr-only">Remover ação</span>
           </a>
@@ -26,7 +27,7 @@
       </div>
     </div>
 
-    <a href="" v-on:click="addAction($event)" class="btn btn-sm btn-default">
+    <a href="" v-on:click="addAction($event)" class="btn btn-sm btn-default" v-if="!readOnly">
       <span class="glyphicon glyphicon-plus-sign"></span>
       Adicionar ação
     </a>
@@ -40,7 +41,7 @@ import uuid from 'uuid/v4'
 export default {
   name: 'action-field',
   replace: false,
-  props: ['value', 'agents', 'variables'],
+  props: ['value', 'agents', 'variables', 'readOnly'],
 
   data () {
     return {

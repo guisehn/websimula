@@ -28,6 +28,10 @@ pt-BR:
         reset_password_token: Link
       project:
         name: Nome do projeto
+        visibility: Visibilidade
+        visibilities:
+          open: Público
+          secret: Privado
       project_user:
         role: Permissão
         roles:

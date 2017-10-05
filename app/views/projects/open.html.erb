@@ -1,5 +1,8 @@
 <div class="container">
-  <h2>Meus projetos</h2>
+  <h2>Projetos públicos</h2>
+
+  <p>Nessa página você encontra projetos de simulação públicos criados por outros usuários da ferramenta.<br> Você pode executar simulações sobre estes projetos e ver as suas definições.</p>
+  <br>
 
   <% if @projects.length > 0 %>
     <div class="row">
@@ -15,13 +18,5 @@
         </table>
       </div>
     </div>
-  <% else %>
-    <p>Você não tem nenhum projeto.</p>
-    <br>
   <% end %>
-
-  <%= link_to 'Novo projeto', new_project_path, class: 'btn btn-success' %>
-
-  <br><br>
-  <%= link_to 'Ver projetos públicos', open_projects_path %>
 </div>

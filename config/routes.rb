@@ -5,12 +5,14 @@ Rails.application.routes.draw do
 
   root to: 'home#index'
 
+  get 'projects/open' => 'projects#open', as: 'open_projects'
+
   resources :projects do
     resources :users
     resources :simulations, except: [:edit, :update]
     resources :variables, except: [:index, :show]
 
-    resources :agents, except: [:index, :show] do
+    resources :agents, except: [:index] do
       resources :rules, except: [:index, :show]
     end
 

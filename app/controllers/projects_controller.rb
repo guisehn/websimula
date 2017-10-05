@@ -2,13 +2,19 @@ class ProjectsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_project_and_check_access!, only: [:show, :edit, :update, :destroy, :agents, :variables, :stop_condition, :edit_stop_condition, :initial_positions, :edit_initial_positions, :settings]
   before_action :check_project_management_permission!, only: [:destroy]
-  before_action :check_project_edit_permission!, only: [:edit_stop_condition, :edit_initial_positions, :update]
+  before_action :check_project_edit_permission!, only: [:edit, :edit_stop_condition, :edit_initial_positions, :update]
 
   before_action :load_agents, only: [:show, :agents]
   before_action :load_variables, only: [:show, :variables]
 
+  helper_method :project_visibility_options
+
   def index
-    @projects = current_user.projects.all
+    @projects = current_user.projects.order('LOWER(name) asc')
+  end
+
+  def open
+    @projects = Project.where(visibility: :open).order('LOWER(name) asc')
   end
 
   def agents
@@ -59,10 +65,14 @@ class ProjectsController < ApplicationController
   end
 
   def update
-    if @project.update(project_params)
-      redirect_to @project
-    else
-      render :edit
+    respond_to do |format|
+      if @project.update(project_params)
+        format.html { redirect_to @project }
+        format.json { render :show, status: :ok }
+      else
+        format.html { render :new }
+        format.json { render json: @project.errors, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -74,12 +84,21 @@ class ProjectsController < ApplicationController
   private
     def project_params
       allowed_params = [:initial_positions, :stop_condition]
-      allowed_params << :name if !@project || @project.can_be_managed_by?(current_user)
+      allowed_params << :name << :visibility if !@project || @project.can_be_managed_by?(current_user)
 
       p = params.require(:project).permit(allowed_params)
       param_to_json(p, :initial_positions)
       param_to_json(p, :stop_condition)
       p
+    end
+
+    def project_visibility_options
+      Project.visibilities.keys.map do |visibility|
+        {
+          value: visibility,
+          text: t("activerecord.attributes.project.visibilities.#{visibility}")
+        }
+      end
     end
 
     def load_agents

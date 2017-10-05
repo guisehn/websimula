@@ -4,22 +4,25 @@
   <div class="form-inputs">
     <div class="row">
       <div class="col-md-4">
-        <%= f.input :name %>
+        <%= f.input :name, readonly: !@project.can_be_edited_by?(current_user) %>
         <%= f.input :data_type, collection: variable_data_type_options,
-          value_method: 'first', label_method: 'last', include_blank: false %>
-        <%= f.input :initial_value %>
+          value_method: 'first', label_method: 'last', include_blank: false,
+          readonly: !@project.can_be_edited_by?(current_user) %>
+        <%= f.input :initial_value, readonly: !@project.can_be_edited_by?(current_user) %>
       </div>
     </div>
   </div>
 
-  <div class="form-actions">
-    <%= f.button :submit, class: variable.new_record? ? 'btn-success' : 'btn-primary' %>
+  <% if @project.can_be_edited_by?(current_user) %>
+    <div class="form-actions">
+      <%= f.button :submit, class: variable.new_record? ? 'btn-success' : 'btn-primary' %>
 
-    <% unless variable.new_record? %>
-      <%= link_to 'Excluir Variável', project_variable_path(project, variable), class: 'btn btn-danger', method: :delete, data: { confirm: 'Tem certeza de que deseja excluir esta variável?' } %>
-    <% end %>
-  </div>
+      <% unless variable.new_record? %>
+        <%= link_to 'Excluir Variável', project_variable_path(project, variable), class: 'btn btn-danger', method: :delete, data: { confirm: 'Tem certeza de que deseja excluir esta variável?' } %>
+      <% end %>
+    </div>
 
-  <br>
-  <%= link_to 'Cancelar', project_path(@project) %>
+    <br>
+    <%= link_to 'Cancelar', project_path(@project) %>
+  <% end %>
 <% end %>

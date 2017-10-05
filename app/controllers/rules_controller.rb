@@ -1,8 +1,9 @@
 class RulesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_project_and_check_access!
+  before_action :check_project_edit_permission!, only: [:new, :create, :update, :destroy]
   before_action :set_agent
-  before_action :set_rule, only: [:edit, :update]
+  before_action :set_rule, only: [:edit, :update, :destroy]
 
   def new
     @rule = @agent.rules.new
@@ -12,7 +13,7 @@ class RulesController < ApplicationController
     @rule = @agent.rules.new(rule_params)
 
     if @rule.save
-      redirect_to edit_project_agent_path(@project, @agent), notice: 'Regra criada com sucesso.'
+      redirect_to edit_project_agent_path(@project, @agent), notice: 'Regra criada.'
     else
       render :new
     end
@@ -23,10 +24,15 @@ class RulesController < ApplicationController
 
   def update
     if @rule.update(rule_params)
-      redirect_to edit_project_agent_path(@project, @agent), notice: 'Regra atualizada com sucesso.'
+      redirect_to edit_project_agent_path(@project, @agent), notice: 'Regra atualizada.'
     else
       render :edit
     end
+  end
+
+  def destroy
+    @rule.destroy!
+    redirect_to edit_project_agent_path(@project, @agent), notice: 'Regra excluída.'
   end
 
   private

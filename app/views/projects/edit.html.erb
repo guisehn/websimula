@@ -6,12 +6,22 @@
   <div class="row">
     <div class="col-md-7">
       <div class="form-group">
-        <label>Nome do projeto</label>
+        <label>Nome do agente</label>
 
         <p class="form-control-static">
-          <%= @project.name %>
-          &nbsp;
-          <a href="" class="btn btn-xs btn-default">Editar nome</a>
+          <% if @project.can_be_managed_by?(current_user) %>
+            <a href="#"
+              id="edit-project-name"
+              data-type="text"
+              data-placement="bottom"
+              data-model-url="<%= project_path(@project) %>"
+              data-model-id="<%= @project.id %>"
+              data-model="project"
+              data-property="name"
+              data-bind="project-name"><%= @project.name %></a>
+          <% else %>
+            <span data-bind="project-name" data-model-id="<%= @project.id %>"><%= @project.name %></span>
+          <% end %>
         </p>
       </div>
 
@@ -19,16 +29,28 @@
         <label>Visibilidade</label>
 
         <p class="form-control-static">
-          Privado
-          &nbsp;
-          <a href="" class="btn btn-xs btn-default">Editar visibilidade</a>
-        </p>
+          <% if @project.can_be_managed_by?(current_user) %>
+            <%= link_to project_visibility(@project), '#',
+              id: 'edit-project-visibility',
+              data: {
+                type: 'select',
+                placement: 'bottom',
+                model_url: project_path(@project),
+                model_id: @project.id,
+                model: 'project',
+                property: 'visibility',
+                value: @project.visibility,
+                source: project_visibility_options.to_json,
+                bind: 'project-visibility'
+              } %>
 
-        <!--
-        <p class="help-block">Caso seja definido como público, todos os usuários do sistema poderão
-          visualizar a definição do projeto e executar simulações sobre ele, no entanto,
-          ele apenas poderá ser editado pelos membros da equipe do projeto.</p>
-        -->
+            <p class="help-block">Caso seja definido como público, todos os usuários do sistema poderão
+              visualizar a definição do projeto e executar simulações sobre ele, no entanto,
+              ele apenas poderá ser editado pelos membros da equipe do projeto.</p>
+          <% else %>
+            <span data-bind="project-visibility"><%= project_visibility(@project) %></span>
+          <% end %>
+        </p>
       </div>
     </div>
   </div>
@@ -136,6 +158,8 @@ $(function () {
     $('#btn-confirm-destroy-project').toggleClass('disabled', isNameCorrect);
   });
 
+  $('#edit-project-name, #edit-project-visibility').editable(simulaEditableOptions());
+
   addMemberButton.editable({
     type: 'text',
     title: 'Digite o e-mail do usuário convidado',
@@ -176,9 +200,7 @@ $(function () {
         message = 'Ocorreu um erro ao convidar este usuário. Por favor, tente novamente.';
       }
 
-      addMemberButton.data('editableContainer').$form
-        .find('.editable-error-block')
-        .text(message);
+      return message;
     },
 
     url: function(params) {

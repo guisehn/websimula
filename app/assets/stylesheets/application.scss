@@ -129,6 +129,22 @@ h2 {
   }
 }
 
+.edit-agent-image {
+  display: inline-block;
+  border: 2px dashed #ccc;
+  padding: 6px;
+
+  &:hover {
+    border-color: #069;
+  }
+}
+
+.edit-agent-image-container {
+  .editor {
+    margin-bottom: 10px;
+  }
+}
+
 .back-link-container {
   padding-top: 20px;
 }

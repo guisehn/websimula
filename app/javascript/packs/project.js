@@ -1,9 +1,39 @@
+import _ from 'lodash'
 
 let currentProjectId = null
 
 $(document).on('turbolinks:load', function () {
   let projectId = window.location.pathname.match(/^\/projects\/([0-9])+/)
   projectId = projectId ? projectId[1] : null
+
+  function updateBindings(modelName, model) {
+    _.forEach(model, (value, key) => {
+      // skip keys starting with _
+      if (key[0] === '_') return;
+
+      let selector = `[data-bind=${modelName}-${key.replace(/_/g, '-')}][data-model-id=${model.id}]`
+
+      $(selector).each(function () {
+        let label = model[`_${key}_label`] ? model[`_${key}_label`] : value
+        let bindAttribute = $(this).data('bind-attribute')
+        let currentValue = bindAttribute ? $(this).attr(bindAttribute) : $(this).text();
+
+        if (currentValue !== String(label)) {
+          if (bindAttribute) {
+            $(this).attr(bindAttribute, label)
+          } else {
+            $(this).text(label)
+          }
+
+          $(this).hide().fadeIn(500)
+        }
+
+        if ($(this).data('editable')) {
+          $(this).editable('setValue', value)
+        }
+      })
+    })
+  }
 
   if (!projectId || projectId !== currentProjectId) {
     App.cable.subscriptions.subscriptions.forEach(subscription => {
@@ -31,7 +61,7 @@ $(document).on('turbolinks:load', function () {
       received: (data) => {
         if (data.model === 'Project') {
           $.get(`/projects/${projectId}.json`, project => {
-            $('#project-name').text(project.name).hide().fadeIn(500)
+            updateBindings('project', project)
 
             $('#stop-condition-section').load(`/projects/${projectId}/stop_condition`, () => {
               document.dispatchEvent(new Event('simula:reload-project'))
@@ -40,15 +70,15 @@ $(document).on('turbolinks:load', function () {
         }
 
         if (data.model === 'Agent') {
-          $('#agents-section').load(`/projects/${projectId}/agents`, () => {
-            $('#agents-section').hide().fadeIn(500)
+          $('#agents-section').load(`/projects/${projectId}/agents`)
+
+          $.get(`/projects/${projectId}/agents/${data.id}.json`, agent => {
+            updateBindings('agent', agent)
           })
         }
 
-        if (data.model === 'letiable') {
-          $('#letiables-section').load(`/projects/${projectId}/letiables`, () => {
-            $('#letiables-section').hide().fadeIn(500)
-          })
+        if (data.model === 'Variable') {
+          $('#variables-section').load(`/projects/${projectId}/variables`)
         }
 
         console.log(`Project ${projectId}: received`, data)
