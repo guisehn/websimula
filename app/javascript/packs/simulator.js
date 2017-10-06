@@ -105,7 +105,7 @@ class Simulator {
     }
   }
 
-  buildAgent(definition, x, y) {
+  buildAgent(definition, x, y, age, render) {
     if (this.positions[y][x]) {
       throw new Error(`Error trying to create agent ${definition.name}. ` +
         `Position ${x}:${y} is already occupied`)
@@ -115,12 +115,16 @@ class Simulator {
       id: ++this.agentAutoIncrement,
       definition: definition,
       position: { x: x, y: y },
-      age: 0,
+      age: age || 0,
       element: null
     }
 
     this.positions[y][x] = { type: 'agent', agent: agent }
     this.agents.push(agent)
+
+    if (render) {
+      this.renderAgent(agent)
+    }
 
     return agent
   }
@@ -130,7 +134,7 @@ class Simulator {
     this.positions[agent.position.y][agent.position.x] = null
 
     agent.position = { x: x, y: y }
-    this._renderAgent(agent)
+    this.renderAgent(agent)
   }
 
   killAgent(agent) {
@@ -145,7 +149,7 @@ class Simulator {
     // of _.remove, otherwise lodash will remove all agents with the same properties such as age, etc.
     _.remove(this.agents, a => a === agent)
 
-    this._renderAgent(agent)
+    this.renderAgent(agent)
   }
 
   _buildExpressionParser() {
@@ -155,16 +159,28 @@ class Simulator {
   _parseInput(input, func) {
     let parsedInput = null
 
+    let buildParsedInput = () => {
+      if (!parsedInput) {
+        parsedInput = _.cloneDeep(input)
+      }
+    }
+
     func.input.forEach(arg => {
       if (arg.type === 'string') {
-        // only clone the input if we need to (performance)
-        if (!parsedInput) parsedInput = _.cloneDeep(input)
-
-        parsedInput[arg.name] = this._injectVariables(parsedInput[arg.name]);
+        buildParsedInput()
+        parsedInput[arg.name] = this._injectVariables(parsedInput[arg.name])
 
         // to-do: do expression parsing on initialization instead of every cycle
         parsedInput[arg.name] = parsedInput[arg.name].replace(/([^\\])?[{]{2}(.*)[}]{2}/g,
           (_, before, expr) => (before || '') + this.expressionParser.parse(expr).evaluate())
+
+        return
+      }
+
+      if (arg.type === 'number') {
+        buildParsedInput()
+        parsedInput[arg.name] = Number(parsedInput[arg.name])
+        return
       }
     })
 
@@ -243,7 +259,7 @@ class Simulator {
       e.preventDefault()
     })
 
-    this.stage.on('contextmenu', '.agent', function (e) {
+    this.stage.on('click contextmenu', '.agent', function (e) {
       if (!simulator.finished) {
         simulator._createContextMenu($(this).data('agent'))
       }
@@ -506,7 +522,7 @@ class Simulator {
     throw new Error(`Unexpected node type ${node.type}`)
   }
 
-  _renderAgent(agent) {
+  renderAgent(agent, reRender) {
     if (agent.dead) {
       if (agent.element) {
         agent.element.css({ transform: 'scale(0)' })
@@ -520,7 +536,9 @@ class Simulator {
       return
     }
 
-    if (!agent.element) {
+    if (!agent.element || reRender) {
+      if (agent.element) agent.element.remove();
+
       agent.element = $('<img class="agent pixelated" />')
         .attr('src', agent.definition.image)
         .data('agent', agent)
@@ -535,7 +553,7 @@ class Simulator {
 
   _render() {
     this.stage.html('')
-    this.agents.forEach(agent => this._renderAgent(agent))
+    this.agents.forEach(agent => this.renderAgent(agent))
   }
 
   _createContextMenu(agent) {
@@ -547,6 +565,10 @@ class Simulator {
 
     let template = $('#agent-context-menu-template').html().trim()
     let menu = $(template).data('agent', agent).appendTo(this.stage)
+
+    menu.find('[data-bind=agent-name]').text(agent.definition.name)
+    menu.find('[data-bind=agent-age]').text(agent.age)
+    menu.find('[data-bind=agent-age-plural]').text(agent.age !== 1 ? 's' : '')
 
     menu.on('contextmenu', e => e.preventDefault())
 

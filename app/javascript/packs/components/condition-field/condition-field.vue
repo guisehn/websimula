@@ -211,12 +211,16 @@ export default {
         padding: 7px;
         vertical-align: top;
 
-        @media (max-width: 992px) {
+        @media (min-width: 769px) and (max-width: 992px) {
           max-width: 600px;
 
           .form-control {
             margin-bottom: 5px;
           }
+        }
+
+        @media (max-width: 768px) {
+          width: calc(100% - 20px);
         }
 
         .form-control {

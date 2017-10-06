@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 const global = window
 
 function getAdjacentCoordinates(env, x, y, radius = 1, findFunctionReturnAll, findFunction) {
@@ -287,6 +289,24 @@ global.simulationFunctions = {
     }
   },
 
+  reach_age: {
+    order: 6,
+    type: 'agent_condition',
+    label: 'Atinge tempo de vida',
+    input: [
+      {
+        name: 'age',
+        type: 'number',
+        label: 'Idade',
+        defaultValue: 0,
+        required: true
+      }
+    ],
+    definition: (env, agent, input) => {
+      return agent.age >= input.age
+    }
+  },
+
   move_random: {
     order: 1,
     type: 'action',
@@ -405,14 +425,73 @@ global.simulationFunctions = {
       })
 
       if (coordinateWithAgent) {
-        let agent = env.positions[coordinateWithAgent.y][coordinateWithAgent.x].agent
-        env.killAgent(agent)
+        let agentFound = env.positions[coordinateWithAgent.y][coordinateWithAgent.x].agent
+        env.killAgent(agentFound)
       }
     }
   },
 
-  increment_variable: {
+  die: {
     order: 5,
+    type: 'action',
+    label: 'Morrer',
+    input: [],
+    definition: (env, agent, input) => {
+      env.killAgent(agent)
+    }
+  },
+
+  transform: {
+    order: 6,
+    type: 'action',
+    label: 'Transformar',
+    input: [
+      {
+        name: 'agent_id',
+        type: 'agent',
+        label: 'Qual agente?',
+        defaultValue: null,
+        nullLabel: 'Selecionar agente',
+        required: true
+      },
+      {
+        name: 'keep_age',
+        type: 'boolean',
+        label: 'Manter idade',
+        defaultValue: true,
+        required: true
+      }
+    ],
+    definition: (env, agent, input) => {
+      let agentDefinition = _.find(env.definition.agents, { id: input.agent_id })
+
+      agent.definition = agentDefinition
+      agent.age = input.keep_age ? agent.age : 0
+
+      env.renderAgent(agent, true)
+    }
+  },
+
+  set_age: {
+    order: 7,
+    type: 'action',
+    label: 'Definir idade do agente',
+    input: [
+      {
+        name: 'age',
+        type: 'number',
+        label: 'Idade',
+        defaultValue: 0,
+        required: true
+      }
+    ],
+    definition: (env, agent, input) => {
+      agent.age = _.isNaN(input.age) ? 0 : input.age
+    }
+  },
+
+  increment_variable: {
+    order: 8,
     type: 'action',
     label: 'Incrementar variável',
     input: [
@@ -431,8 +510,28 @@ global.simulationFunctions = {
     }
   },
 
+  decrement_variable: {
+    order: 9,
+    type: 'action',
+    label: 'Decrementar variável',
+    input: [
+      {
+        name: 'variable_id',
+        type: 'variable',
+        label: 'Qual variável?',
+        defaultValue: null,
+        nullLabel: 'Selecione a variável',
+        required: true
+      }
+    ],
+    definition: (env, agent, input) => {
+      let variable = env.variables[input.variable_id]
+      --variable.value
+    }
+  },
+
   set_variable: {
-    order: 6,
+    order: 10,
     type: 'action',
     label: 'Definir valor de variável',
     input: [

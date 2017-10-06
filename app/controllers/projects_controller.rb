@@ -1,6 +1,6 @@
 class ProjectsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_project_and_check_access!, only: [:show, :edit, :update, :destroy, :agents, :variables, :stop_condition, :edit_stop_condition, :initial_positions, :edit_initial_positions, :settings]
+  before_action :set_project_and_check_access!, except: [:index, :open]
   before_action :check_project_management_permission!, only: [:destroy]
   before_action :check_project_edit_permission!, only: [:edit, :edit_stop_condition, :edit_initial_positions, :update]
 
