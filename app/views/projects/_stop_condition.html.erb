@@ -14,5 +14,5 @@
 <% end %>
 
 <% if @project.can_be_edited_by?(current_user) %>
-  <%= link_to 'Definir condição', edit_stop_condition_project_path(@project), class: 'btn btn-sm btn-success' %>
+  <%= link_to 'Definir condição', edit_stop_condition_project_path(@project), class: 'btn btn-sm btn-success' + (@project.agents.count == 0 && @project.variables.count == 0 ? ' disabled' : '') %>
 <% end %>
