@@ -20,11 +20,19 @@ function getAdjacentCoordinates(env, x, y, radius = 1, findFunctionReturnAll, fi
 
         // if we have a findFunction, we check the coordinate against this function
         // and return the coordinate if it returns true
-        if (findFunction && findFunction(px, py)) {
-          if (findFunctionReturnAll) {
-            coordinates.push(xy)
-          } else {
-            return xy
+        if (findFunction) {
+          let result = findFunction(px, py)
+
+          if (result === false) {
+            break
+          }
+
+          if (result) {
+            if (findFunctionReturnAll) {
+              coordinates.push(xy)
+            } else {
+              return xy
+            }
           }
         } else {
           coordinates.push(xy)
@@ -45,6 +53,10 @@ function getAdjacentCoordinates(env, x, y, radius = 1, findFunctionReturnAll, fi
 
 function isPositionOcuppied(env, x, y) {
   return _.get(env.positions[y][x], 'type') === 'agent'
+}
+
+function isDiagonalBlocked(env, x1, y1, x2, y2) {
+  return (x1 !== x2 || y1 !== y2) && isPositionOcuppied(env, x1, y2) && isPositionOcuppied(env, x2, y1)
 }
 
 // TODO: use A* for improvement, this one gets stuck very easily
@@ -266,19 +278,12 @@ global.simulationFunctions = {
         defaultValue: null,
         nullLabel: 'Qualquer agente',
         required: false
-      },
-      {
-        name: 'allow_diagonal',
-        type: 'boolean',
-        label: 'Permitir diagonal?',
-        defaultValue: false,
-        required: true
       }
     ],
     definition: (env, agent, input) => {
       let coordinateWithAgent = getAdjacentCoordinates(env, agent.position.x, agent.position.y, 1, false, (x, y) => {
-        if (!input.allow_diagonal && x !== agent.position.x && y !== agent.position.y) {
-          return false
+        if (isDiagonalBlocked(env, x, y, agent.position.x, agent.position.y)) {
+          return
         }
 
         let position = env.positions[y][x]
@@ -405,19 +410,12 @@ global.simulationFunctions = {
         defaultValue: null,
         nullLabel: 'Qualquer agente',
         required: false
-      },
-      {
-        name: 'allow_diagonal',
-        type: 'boolean',
-        label: 'Permitir diagonal?',
-        defaultValue: false,
-        required: true
       }
     ],
     definition: (env, agent, input) => {
       let coordinateWithAgent = getAdjacentCoordinates(env, agent.position.x, agent.position.y, 1, false, (x, y) => {
-        if (!input.allow_diagonal && x !== agent.position.x && y !== agent.position.y) {
-          return false
+        if (isDiagonalBlocked(env, x, y, agent.position.x, agent.position.y)) {
+          return
         }
 
         let position = env.positions[y][x]
@@ -487,6 +485,44 @@ global.simulationFunctions = {
     ],
     definition: (env, agent, input) => {
       agent.age = _.isNaN(input.age) ? 0 : input.age
+    }
+  },
+
+  breed: {
+    order: 8,
+    type: 'action',
+    label: 'Reproduzir agente',
+    input: [
+      {
+        name: 'agent_id',
+        type: 'agent',
+        label: 'Agente',
+        defaultValue: null,
+        nullLabel: 'Selecione o agente',
+        required: true
+      },
+      {
+        name: 'quantity',
+        type: 'number',
+        label: 'Quantidade',
+        defaultValue: 1,
+        required: true
+      },
+    ],
+    definition: (env, agent, input) => {
+      let agentDefinition = _.find(env.definition.agents, { id: input.agent_id })
+      let quantityCreated = 0
+
+      getAdjacentCoordinates(env, agent.position.x, agent.position.y, env.stageSize, true, (x, y) => {
+        if (quantityCreated >= input.quantity) {
+          return false
+        }
+
+        if (!isPositionOcuppied(env, x, y)) {
+          env.buildAgent(agentDefinition, x, y, 0, true)
+          quantityCreated++
+        }
+      })
     }
   },
 

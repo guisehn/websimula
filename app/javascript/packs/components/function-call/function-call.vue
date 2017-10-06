@@ -28,7 +28,7 @@
       </span>
 
       <span v-if="input.type === 'number'">
-        <input type="number" v-model="item.input[input.name]" class="form-control" :disabled="readOnly">
+        <input type="text" v-model="item.input[input.name]" class="form-control" :disabled="readOnly">
       </span>
 
       <span v-if="input.type === 'string' && !input.options">

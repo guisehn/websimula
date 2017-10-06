@@ -166,7 +166,7 @@ class Simulator {
     }
 
     func.input.forEach(arg => {
-      if (arg.type === 'string') {
+      if (arg.type === 'string' || arg.type === 'number') {
         buildParsedInput()
         parsedInput[arg.name] = this._injectVariables(parsedInput[arg.name])
 
@@ -174,13 +174,9 @@ class Simulator {
         parsedInput[arg.name] = parsedInput[arg.name].replace(/([^\\])?[{]{2}(.*)[}]{2}/g,
           (_, before, expr) => (before || '') + this.expressionParser.parse(expr).evaluate())
 
-        return
-      }
-
-      if (arg.type === 'number') {
-        buildParsedInput()
-        parsedInput[arg.name] = Number(parsedInput[arg.name])
-        return
+        if (arg.type === 'number') {
+          parsedInput[arg.name] = Number(parsedInput[arg.name])
+        }
       }
     })
 
