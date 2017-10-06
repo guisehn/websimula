@@ -555,5 +555,40 @@ global.simulationFunctions = {
       let variable = env.variables[input.variable_id]
       variable.value = variable.definition.data_type === 'number' ? Number(input.value) : input.value
     }
+  },
+
+  set_random_value: {
+    order: 11,
+    type: 'action',
+    label: 'Definir valor aleatório para variável',
+    input: [
+      {
+        name: 'variable_id',
+        type: 'variable',
+        label: 'Qual variável?',
+        defaultValue: null,
+        nullLabel: 'Selecione a variável',
+        required: true
+      },
+      {
+        name: 'min',
+        type: 'number',
+        label: 'Valor mínimo',
+        defaultValue: 1,
+        required: true
+      },
+      {
+        name: 'max',
+        type: 'number',
+        label: 'Valor máximo',
+        defaultValue: 10,
+        required: true
+      }
+    ],
+    definition: (env, agent, input) => {
+      let variable = env.variables[input.variable_id]
+      let rand = Math.floor(Math.random() * (input.max - input.min + 1)) + input.min
+      variable.value = variable.type === 'string' ? String(rand) : rand
+    }
   }
 }
