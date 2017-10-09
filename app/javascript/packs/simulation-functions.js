@@ -2,6 +2,26 @@ import _ from 'lodash'
 
 const global = window
 
+const COMPARISON_OPTIONS = [
+  { value: '=', label: 'É igual a' },
+  { value: '!=', label: 'É diferente de' },
+  { value: '>', label: 'É maior que' },
+  { value: '>=', label: 'É maior ou igual que' },
+  { value: '<', label: 'É menor que' },
+  { value: '<=', label: 'É menor ou igual a' }
+]
+
+const DIRECTION_OPTIONS = [
+  { value: 'N', label: 'Norte' },
+  { value: 'S', label: 'Sul' },
+  { value: 'E', label: 'Leste' },
+  { value: 'W', label: 'Oeste' },
+  { value: 'NE', label: 'Nordeste' },
+  { value: 'NW', label: 'Noroeste' },
+  { value: 'SE', label: 'Sudeste' },
+  { value: 'SW', label: 'Sudoeste' }
+]
+
 function getAdjacentCoordinates(env, x, y, radius = 1, findFunctionReturnAll, findFunction) {
   let z = 2 * radius + 1
   let _x = 0, _y = 0, dx = 0, dy = -1
@@ -82,8 +102,6 @@ function generateCoordinateFromMovement(env, x, y, direction, steps = 1) {
     y = env.stageSize - 1
   }
 
-  console.log(x,y)
-
   return { x: x, y: y }
 }
 
@@ -154,14 +172,7 @@ global.simulationFunctions = {
         label: 'Comparação',
         defaultValue: '=',
         required: true,
-        options: [
-          { value: '=', label: 'É igual a' },
-          { value: '!=', label: 'É diferente de' },
-          { value: '>', label: 'É maior que' },
-          { value: '>=', label: 'É maior ou igual que' },
-          { value: '<', label: 'É menor que' },
-          { value: '<=', label: 'É menor ou igual a' }
-        ]
+        options: COMPARISON_OPTIONS
       },
       {
         name: 'value',
@@ -196,14 +207,7 @@ global.simulationFunctions = {
         label: 'Comparação',
         defaultValue: '=',
         required: true,
-        options: [
-          { value: '=', label: 'É igual a' },
-          { value: '!=', label: 'É diferente de' },
-          { value: '>', label: 'É maior que' },
-          { value: '>=', label: 'É maior ou igual que' },
-          { value: '<', label: 'É menor que' },
-          { value: '<=', label: 'É menor ou igual a' }
-        ]
+        options: COMPARISON_OPTIONS
       },
       {
         name: 'variable2_id',
@@ -240,14 +244,7 @@ global.simulationFunctions = {
         label: 'Comparação',
         defaultValue: '=',
         required: true,
-        options: [
-          { value: '=', label: 'É igual a' },
-          { value: '!=', label: 'É diferente de' },
-          { value: '>', label: 'É maior que' },
-          { value: '>=', label: 'É maior ou igual que' },
-          { value: '<', label: 'É menor que' },
-          { value: '<=', label: 'É menor ou igual a' }
-        ]
+        options: COMPARISON_OPTIONS
       },
       {
         name: 'value',
@@ -263,8 +260,60 @@ global.simulationFunctions = {
     }
   },
 
-  perceive_agent: {
+  agent_x_coordinate_comparison: {
     order: 4,
+    type: 'agent_condition',
+    label: 'Comparar coordenada X (horizontal)',
+    input: [
+      {
+        name: 'comparison',
+        type: 'string',
+        label: 'Comparação',
+        defaultValue: '=',
+        required: true,
+        options: COMPARISON_OPTIONS
+      },
+      {
+        name: 'value',
+        type: 'number',
+        label: 'Qual valor?',
+        defaultValue: '',
+        required: true
+      }
+    ],
+    definition: (env, agent, input) => {
+      return performComparison(agent.position.x + 1, input.value, input.comparison)
+    }
+  },
+
+  agent_y_coordinate_comparison: {
+    order: 4,
+    type: 'agent_condition',
+    label: 'Comparar coordenada Y (vertical)',
+    input: [
+      {
+        name: 'comparison',
+        type: 'string',
+        label: 'Comparação',
+        defaultValue: '=',
+        required: true,
+        options: COMPARISON_OPTIONS
+      },
+      {
+        name: 'value',
+        type: 'number',
+        label: 'Qual valor?',
+        defaultValue: '',
+        required: true
+      }
+    ],
+    definition: (env, agent, input) => {
+      return performComparison(agent.position.y + 1, input.value, input.comparison)
+    }
+  },
+
+  perceive_agent: {
+    order: 5,
     type: 'agent_condition',
     label: 'Perceber agente',
     input: [
@@ -383,16 +432,7 @@ global.simulationFunctions = {
         defaultValue: null,
         nullLabel: 'Direção',
         required: true,
-        options: [
-          { value: 'N', label: 'Norte' },
-          { value: 'S', label: 'Sul' },
-          { value: 'E', label: 'Leste' },
-          { value: 'W', label: 'Oeste' },
-          { value: 'NE', label: 'Nordeste' },
-          { value: 'NW', label: 'Noroeste' },
-          { value: 'SE', label: 'Sudeste' },
-          { value: 'SW', label: 'Sudoeste' }
-        ]
+        options: DIRECTION_OPTIONS
       },
       {
         name: 'steps',
