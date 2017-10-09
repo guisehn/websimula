@@ -13,10 +13,14 @@
         <span v-if="itemData.operator === 'or'">{{ orLabel }}</span>
       </span>
 
-      <a class="remove" v-on:click="destroy($event)" href="" v-if="!readOnly">
-        <span class="glyphicon glyphicon-remove-circle" v-bind:title="destroyLabel"></span>
-        <span class="sr-only">{{ destroyLabel }}</span>
-      </a>
+      <div class="actions">
+        <a class="remove" v-on:click="destroy($event)" href="" v-if="!readOnly">
+          <span class="glyphicon glyphicon-remove-circle" v-bind:title="destroyLabel"></span>
+          <span class="sr-only">{{ destroyLabel }}</span>
+        </a>
+      </div>
+
+      <div class="clearfix"></div>
     </header>
 
     <div class="clearfix"></div>

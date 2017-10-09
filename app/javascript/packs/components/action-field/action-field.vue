@@ -17,13 +17,15 @@
                 <span class="handle-icon glyphicon glyphicon-th"></span>
               </span>
 
-              <function-call
-                :readOnly="readOnly"
-                :value="action"
-                :function-types="['action']"
-                :agents="agents"
-                :variables="variables"
-                empty-label="Escolha uma ação"></function-call>
+              <div class="function-call-container">
+                <function-call
+                  :readOnly="readOnly"
+                  :value="action"
+                  :function-types="['action']"
+                  :agents="agents"
+                  :variables="variables"
+                  empty-label="Escolha uma ação"></function-call>
+              </div>
 
               <a class="remove" v-on:click="destroyAction(index, $event)" href="" v-if="!readOnly">
                 <span class="glyphicon glyphicon-remove-circle" title="Remover ação"></span>
@@ -119,7 +121,9 @@ export default {
 
 <style lang="scss">
 .edit-rule-action-field {
-  .sortable-ghost { opacity: 0; }
+  .sortable-ghost {
+    opacity: 0;
+  }
 
   .action {
     float: left;
@@ -130,7 +134,8 @@ export default {
     padding: 7px;
 
     .remove {
-      display: inline-block;
+      display: block;
+      float: right;
       height: 26px;
       color: #c00;
       text-decoration: none;
@@ -154,8 +159,13 @@ export default {
       padding: 2px 4px;
     }
 
+    .function-call-container {
+      float: left;
+    }
+
     .handle {
-      display: inline-block;
+      float: left;
+      display: block;
       width: 34px;
       height: 26px;
       text-align: center;

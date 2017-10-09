@@ -173,6 +173,7 @@ global.simulationFunctions = {
         name: 'comparison',
         type: 'string',
         label: 'Comparação',
+        hideLabel: true,
         defaultValue: '=',
         required: true,
         options: COMPARISON_OPTIONS
@@ -207,6 +208,7 @@ global.simulationFunctions = {
         name: 'comparison',
         type: 'string',
         label: 'Comparação',
+        hideLabel: true,
         defaultValue: '=',
         required: true,
         options: COMPARISON_OPTIONS
@@ -229,12 +231,12 @@ global.simulationFunctions = {
   agent_quantity_comparison: {
     order: 3,
     type: 'condition',
-    label: 'Comparar quantidade de agentes com valor',
+    label: 'Comparar quantidade de agentes',
     input: [
       {
         name: 'agent_id',
         type: 'agent',
-        label: 'Qual agente?',
+        label: 'Quantidade de agentes do tipo',
         defaultValue: null,
         required: true
       },
@@ -242,6 +244,7 @@ global.simulationFunctions = {
         name: 'comparison',
         type: 'string',
         label: 'Comparação',
+        hideLabel: true,
         defaultValue: '=',
         required: true,
         options: COMPARISON_OPTIONS
@@ -275,14 +278,14 @@ global.simulationFunctions = {
       {
         name: 'y',
         type: 'number',
-        label: 'Y (horizontal)',
+        label: 'Y (vertical)',
         defaultValue: 1,
         required: true
       },
       {
         name: 'agent_id',
         type: 'agent',
-        label: 'Qual agente?',
+        label: 'Por qual agente?',
         defaultValue: null,
         nullLabel: 'Qualquer agente',
         required: false
@@ -303,12 +306,12 @@ global.simulationFunctions = {
   agent_x_coordinate_comparison: {
     order: 5,
     type: 'agent_condition',
-    label: 'Comparar coordenada X (horizontal)',
+    label: 'Comparar coordenada X (horizontal) do agente',
     input: [
       {
         name: 'comparison',
         type: 'string',
-        label: 'Comparação',
+        label: 'Coordenada X do agente',
         defaultValue: '=',
         required: true,
         options: COMPARISON_OPTIONS
@@ -316,7 +319,8 @@ global.simulationFunctions = {
       {
         name: 'value',
         type: 'number',
-        label: 'Qual valor?',
+        label: 'Coordenada X',
+        hideLabel: true,
         defaultValue: '',
         required: true
       }
@@ -329,12 +333,12 @@ global.simulationFunctions = {
   agent_y_coordinate_comparison: {
     order: 6,
     type: 'agent_condition',
-    label: 'Comparar coordenada Y (vertical)',
+    label: 'Comparar coordenada Y (vertical) do agente',
     input: [
       {
         name: 'comparison',
         type: 'string',
-        label: 'Comparação',
+        label: 'Coordenada Y do agente',
         defaultValue: '=',
         required: true,
         options: COMPARISON_OPTIONS
@@ -342,7 +346,8 @@ global.simulationFunctions = {
       {
         name: 'value',
         type: 'number',
-        label: 'Qual valor?',
+        label: 'Coordenada Y',
+        hideLabel: true,
         defaultValue: '',
         required: true
       }
@@ -414,12 +419,12 @@ global.simulationFunctions = {
   reach_age: {
     order: 9,
     type: 'agent_condition',
-    label: 'Atinge tempo de vida',
+    label: 'Atingir tempo de vida',
     input: [
       {
         name: 'age',
         type: 'number',
-        label: 'Idade',
+        label: 'Idade (em ciclos)',
         defaultValue: 0,
         required: true
       }
@@ -470,7 +475,7 @@ global.simulationFunctions = {
         type: 'string',
         label: 'Direção',
         defaultValue: null,
-        nullLabel: 'Direção',
+        nullLabel: 'Escolha a direção',
         required: true,
         options: DIRECTION_OPTIONS
       },
@@ -503,7 +508,7 @@ global.simulationFunctions = {
       {
         name: 'y',
         type: 'number',
-        label: 'Y (horizontal)',
+        label: 'Y (vertical)',
         defaultValue: 1,
         required: true
       }
@@ -623,7 +628,7 @@ global.simulationFunctions = {
       {
         name: 'agent_id',
         type: 'agent',
-        label: 'Qual agente?',
+        label: 'Em qual agente?',
         defaultValue: null,
         required: true
       },
@@ -653,7 +658,7 @@ global.simulationFunctions = {
       {
         name: 'age',
         type: 'number',
-        label: 'Idade',
+        label: 'Idade (em ciclos)',
         defaultValue: 0,
         required: true
       }

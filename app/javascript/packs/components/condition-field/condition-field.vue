@@ -125,14 +125,19 @@ export default {
       font-size: 18px;
       opacity: 0.3;
       vertical-align: top;
-      border-left: 1px solid rgba(0, 0, 0, .2);
-      margin: 0 3px 0 8px;
       padding: 2px 0 0 8px;
       transition: opacity .1s linear;
 
       &:hover {
         opacity: 1;
       }
+    }
+
+    .actions {
+      float: right;
+      border-left: 1px solid rgba(0, 0, 0, .2);
+      margin-right: 4px;
+      margin-left: 8px;
     }
 
     > header {
@@ -212,6 +217,10 @@ export default {
         padding: 7px;
         vertical-align: top;
 
+        > .function-call-container {
+          float: left;
+        }
+
         @media (min-width: 769px) and (max-width: 992px) {
           max-width: 600px;
 
@@ -223,18 +232,16 @@ export default {
         @media (max-width: 768px) {
           width: calc(100% - 20px);
         }
-
-        .form-control {
-          margin-right: 8px;
-
-          &:last-child {
-            margin-right: 0;
-          }
-        }
       }
 
       &.negated > content {
         background-color: #eacbcb;
+
+        .negate {
+          opacity: 0.8;
+
+          &:hover { opacity: 1; }
+        }
       }
     }
 

@@ -3,23 +3,29 @@
     <div class="horizontal-line"></div>
 
     <content>
-      <function-call
-        :value="itemData"
-        :read-only="readOnly"
-        :function-types="functionTypes"
-        :agents="agents"
-        :variables="variables"
-        empty-label="Escolha uma condição"></function-call>
+      <div class="function-call-container">
+        <function-call
+          :value="itemData"
+          :read-only="readOnly"
+          :function-types="functionTypes"
+          :agents="agents"
+          :variables="variables"
+          empty-label="Escolha uma condição"></function-call>
+      </div>
 
-      <a class="negate" v-on:click="negate($event)" href="" v-if="showNegateFunction">
-        <span class="glyphicon glyphicon-exclamation-sign" title="Negar condição"></span>
-        <span class="sr-only">Negar condição</span>
-      </a>
+      <div class="actions">
+        <a class="negate" v-on:click="negate($event)" href="" v-if="showNegateFunction">
+          <span class="glyphicon glyphicon-exclamation-sign" title="Negar condição"></span>
+          <span class="sr-only">Negar condição</span>
+        </a>
 
-      <a class="remove" v-on:click="destroy($event)" href="" v-if="!readOnly">
-        <span class="glyphicon glyphicon-remove-circle" title="Remover condição"></span>
-        <span class="sr-only">Remover condição</span>
-      </a>
+        <a class="remove" v-on:click="destroy($event)" href="" v-if="!readOnly">
+          <span class="glyphicon glyphicon-remove-circle" title="Remover condição"></span>
+          <span class="sr-only">Remover condição</span>
+        </a>
+      </div>
+
+      <div class="clearfix"></div>
     </content>
 
     <div class="clearfix"></div>

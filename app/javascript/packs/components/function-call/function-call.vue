@@ -1,48 +1,60 @@
 <template>
-  <span>
-    <select class="form-control" v-model="item.function" v-on:change="changeFunction" :disabled="readOnly">
-      <option v-if="!item.function" :value="null">{{ emptyLabel }}</option>
-      <option v-for="func in availableFunctions" :value="func.key">{{ func.data.label }}</option>
-    </select>
+  <div class="function-call">
+    <div class="function-selector">
+      <select class="form-control" v-model="item.function" v-on:change="changeFunction" :disabled="readOnly">
+        <option v-if="!item.function" :value="null">{{ emptyLabel }}</option>
+        <option v-for="func in availableFunctions" :value="func.key">{{ func.data.label }}</option>
+      </select>
+    </div>
 
-    <span v-for="input in selectedFunctionInputs">
-      <span v-if="input.type === 'variable'">
-        <select v-model="item.input[input.name]" class="form-control" :disabled="readOnly">
-          <option :disabled="input.required" :value="null">{{ input.nullLabel || 'Escolha a variável' }}</option>
-          <option v-for="variable in variables" :value="variable.id">{{ variable.name }}</option>
-        </select>
-      </span>
+    <div class="function-inputs" v-if="item['function'] && selectedFunctionInputs.length > 0">
+      <div class="function-input" v-for="input in selectedFunctionInputs">
+        <div class="input-label">
+          <label :class="{ 'sr-only': input.hideLabel }" v-if="input.type !== 'boolean'">
+            {{ input.label }}
+          </label>
+        </div>
 
-      <span v-if="input.type === 'agent'">
-        <select v-model="item.input[input.name]" class="form-control" :disabled="readOnly">
-          <option :disabled="input.required" :value="null">{{ input.nullLabel || 'Escolha o agente' }}</option>
-          <option v-for="agent in agents" :value="agent.id">{{ agent.name }}</option>
-        </select>
-      </span>
+        <div class="input-value">
+          <span v-if="input.type === 'variable'">
+            <select v-model="item.input[input.name]" class="form-control" :disabled="readOnly">
+              <option :disabled="input.required" :value="null">{{ input.nullLabel || 'Escolha a variável' }}</option>
+              <option v-for="variable in variables" :value="variable.id">{{ variable.name }}</option>
+            </select>
+          </span>
 
-      <span v-if="input.type === 'string' && input.options">
-        <select v-model="item.input[input.name]" class="form-control" :disabled="readOnly">
-          <option :disabled="input.required" :value="null" v-if="!input.defaultValue">{{ input.nullLabel }}</option>
-          <option v-for="option in input.options" :value="option.value">{{ option.label }}</option>
-        </select>
-      </span>
+          <span v-if="input.type === 'agent'">
+            <select v-model="item.input[input.name]" class="form-control" :disabled="readOnly">
+              <option :disabled="input.required" :value="null">{{ input.nullLabel || 'Escolha o agente' }}</option>
+              <option v-for="agent in agents" :value="agent.id">{{ agent.name }}</option>
+            </select>
+          </span>
 
-      <span v-if="input.type === 'number'">
-        <input type="text" v-model="item.input[input.name]" class="form-control" :disabled="readOnly">
-      </span>
+          <span v-if="input.type === 'string' && input.options">
+            <select v-model="item.input[input.name]" class="form-control" :disabled="readOnly">
+              <option :disabled="input.required" :value="null" v-if="!input.defaultValue">{{ input.nullLabel }}</option>
+              <option v-for="option in input.options" :value="option.value">{{ option.label }}</option>
+            </select>
+          </span>
 
-      <span v-if="input.type === 'string' && !input.options">
-        <input type="text" v-model="item.input[input.name]" class="form-control" :disabled="readOnly">
-      </span>
+          <span v-if="input.type === 'number'">
+            <input type="text" v-model="item.input[input.name]" class="form-control" :disabled="readOnly">
+          </span>
 
-      <span v-if="input.type === 'boolean'">
-        <label>
-          <input type="checkbox" v-model="item.input[input.name]" :disabled="readOnly">
-          {{ input.label }}
-        </label>
-      </span>
-    </span>
-  </span>
+          <span v-if="input.type === 'string' && !input.options">
+            <input type="text" v-model="item.input[input.name]" class="form-control" :disabled="readOnly">
+          </span>
+
+          <span v-if="input.type === 'boolean'">
+            <label class="checkbox-label">
+              <input type="checkbox" v-model="item.input[input.name]" :disabled="readOnly">
+              {{ input.label }}
+            </label>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -72,7 +84,8 @@ export default {
     },
 
     selectedFunctionInputs () {
-      return this.item.function ? this.simulationFunctions[this.item.function].input : []
+      let func = this.item['function']
+      return func ? (this.simulationFunctions[func].input || []) : []
     }
   },
 
@@ -98,3 +111,35 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.function-inputs {
+  margin-top: 5px;
+  display: table;
+}
+
+.function-input {
+  display: table-row;
+}
+
+.input-label,
+.input-value {
+  display: table-cell;
+  padding: 3px 0;
+}
+
+.input-label {
+  text-align: right;
+  white-space: nowrap;
+  padding-left: 6px;
+  padding-right: 6px;
+
+  label {
+    font-weight: normal;
+  }
+}
+
+.checkbox-label {
+  font-weight: normal;
+}
+</style>
