@@ -112,6 +112,7 @@ export default {
     .form-control {
       width: auto;
       display: inline-block;
+      padding: 2px 4px;
       height: 26px;
     }
 

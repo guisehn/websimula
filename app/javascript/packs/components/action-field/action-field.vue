@@ -151,6 +151,7 @@ export default {
       display: inline-block;
       width: auto;
       height: 26px;
+      padding: 2px 4px;
     }
 
     .handle {
