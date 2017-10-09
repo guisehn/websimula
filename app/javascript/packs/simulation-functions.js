@@ -75,12 +75,12 @@ function isCoordinateInsideStage(env, x, y) {
   return x >= 0 && y >= 0 && x < env.stageSize && y < env.stageSize
 }
 
-function isPositionOcuppied(env, x, y) {
+function isCoordinateOccupied(env, x, y) {
   return _.get(env.positions[y][x], 'type') === 'agent'
 }
 
 function isDiagonalBlocked(env, x1, y1, x2, y2) {
-  return (x1 !== x2 || y1 !== y2) && isPositionOcuppied(env, x1, y2) && isPositionOcuppied(env, x2, y1)
+  return (x1 !== x2 || y1 !== y2) && isCoordinateOccupied(env, x1, y2) && isCoordinateOccupied(env, x2, y1)
 }
 
 function generateCoordinateFromMovement(env, x, y, direction, steps = 1) {
@@ -90,6 +90,10 @@ function generateCoordinateFromMovement(env, x, y, direction, steps = 1) {
   if (direction.indexOf('N') !== -1) y -= steps
   if (direction.indexOf('S') !== -1) y += steps
 
+  return ensureCoordinateIsInsideStage(env, x, y)
+}
+
+function ensureCoordinateIsInsideStage(env, x, y) {
   if (x < 0) {
     x = 0
   } else if (x >= env.stageSize) {
@@ -122,9 +126,9 @@ function findPathTo(env, agent, x, y) {
     --closerY
   }
 
-  let isHorizontalOccupied = isPositionOcuppied(env, closerX, agent.position.y)
-  let isVerticalOccupied = isPositionOcuppied(env, agent.position.x, closerY)
-  let isDiagonalOccupied = isPositionOcuppied(env, closerX, closerY)
+  let isHorizontalOccupied = isCoordinateOccupied(env, closerX, agent.position.y)
+  let isVerticalOccupied = isCoordinateOccupied(env, agent.position.x, closerY)
+  let isDiagonalOccupied = isCoordinateOccupied(env, closerX, closerY)
 
   if (!isDiagonalOccupied && (!isHorizontalOccupied || !isVerticalOccupied)) {
     return { x: closerX, y: closerY }
@@ -163,7 +167,6 @@ global.simulationFunctions = {
         type: 'variable',
         label: 'Qual variável?',
         defaultValue: null,
-        nullLabel: 'Selecione a variável',
         required: true
       },
       {
@@ -198,7 +201,6 @@ global.simulationFunctions = {
         type: 'variable',
         label: 'Qual variável?',
         defaultValue: null,
-        nullLabel: 'Selecione a variável',
         required: true
       },
       {
@@ -214,7 +216,6 @@ global.simulationFunctions = {
         type: 'variable',
         label: 'Qual variável?',
         defaultValue: null,
-        nullLabel: 'Selecione a variável',
         required: true
       }
     ],
@@ -235,7 +236,6 @@ global.simulationFunctions = {
         type: 'agent',
         label: 'Qual agente?',
         defaultValue: null,
-        nullLabel: 'Selecione o agente',
         required: true
       },
       {
@@ -260,8 +260,48 @@ global.simulationFunctions = {
     }
   },
 
-  agent_x_coordinate_comparison: {
+  check_coordinate_occupation: {
     order: 4,
+    type: 'condition',
+    label: 'Verificar se coordenada está ocupada',
+    input: [
+      {
+        name: 'x',
+        type: 'number',
+        label: 'X (horizontal)',
+        defaultValue: 1,
+        required: true
+      },
+      {
+        name: 'y',
+        type: 'number',
+        label: 'Y (horizontal)',
+        defaultValue: 1,
+        required: true
+      },
+      {
+        name: 'agent_id',
+        type: 'agent',
+        label: 'Qual agente?',
+        defaultValue: null,
+        nullLabel: 'Qualquer agente',
+        required: false
+      }
+    ],
+    definition: (env, agent, input) => {
+      let x = input.x - 1
+      let y = input.y - 1
+
+      if (!isCoordinateOccupied(env, x, y)) {
+        return false
+      }
+
+      return input.agent_id ? (env.positions[y][x].agent.definition.id == input.agent_id) : true
+    }
+  },
+
+  agent_x_coordinate_comparison: {
+    order: 5,
     type: 'agent_condition',
     label: 'Comparar coordenada X (horizontal)',
     input: [
@@ -287,7 +327,7 @@ global.simulationFunctions = {
   },
 
   agent_y_coordinate_comparison: {
-    order: 4,
+    order: 6,
     type: 'agent_condition',
     label: 'Comparar coordenada Y (vertical)',
     input: [
@@ -313,7 +353,7 @@ global.simulationFunctions = {
   },
 
   perceive_agent: {
-    order: 5,
+    order: 7,
     type: 'agent_condition',
     label: 'Perceber agente',
     input: [
@@ -335,7 +375,7 @@ global.simulationFunctions = {
         false,
         (x, y) => {
           let position = env.positions[y][x]
-          return position && position.agent.definition.id === input.agent_id
+          return position && (!input.agent_id || position.agent.definition.id === input.agent_id)
         }
       )
 
@@ -344,7 +384,7 @@ global.simulationFunctions = {
   },
 
   touch_agent: {
-    order: 5,
+    order: 8,
     type: 'agent_condition',
     label: 'Atingir agente',
     input: [
@@ -364,7 +404,7 @@ global.simulationFunctions = {
         }
 
         let position = env.positions[y][x]
-        return position && position.agent.definition.id === input.agent_id
+        return position && (!input.agent_id || position.agent.definition.id === input.agent_id)
       })
 
       return Boolean(coordinateWithAgent)
@@ -372,7 +412,7 @@ global.simulationFunctions = {
   },
 
   reach_age: {
-    order: 6,
+    order: 9,
     type: 'agent_condition',
     label: 'Atinge tempo de vida',
     input: [
@@ -448,8 +488,37 @@ global.simulationFunctions = {
     }
   },
 
+  move_to_coordinate: {
+    order: 3,
+    type: 'action',
+    label: 'Mover para coordenada',
+    input: [
+      {
+        name: 'x',
+        type: 'number',
+        label: 'X (horizontal)',
+        defaultValue: 1,
+        required: true
+      },
+      {
+        name: 'y',
+        type: 'number',
+        label: 'Y (horizontal)',
+        defaultValue: 1,
+        required: true
+      }
+    ],
+    definition: (env, agent, input) => {
+      let coordinate = ensureCoordinateIsInsideStage(env, input.x - 1, input.y - 1)
+
+      if (!isCoordinateOccupied(env, coordinate.x, coordinate.y)) {
+        env.moveAgent(agent, coordinate.x, coordinate.y)
+      }
+    }
+  },
+
   follow_agent: {
-    order: 2,
+    order: 4,
     type: 'action',
     label: 'Seguir agente',
     input: [
@@ -487,7 +556,7 @@ global.simulationFunctions = {
   },
 
   escape_from_agent: {
-    order: 3,
+    order: 5,
     type: 'action',
     label: 'Escapar de agente',
     input: [
@@ -506,7 +575,7 @@ global.simulationFunctions = {
   },
 
   kill_agent: {
-    order: 4,
+    order: 6,
     type: 'action',
     label: 'Matar agente',
     input: [
@@ -516,7 +585,7 @@ global.simulationFunctions = {
         label: 'Qual agente?',
         defaultValue: null,
         nullLabel: 'Qualquer agente',
-        required: false
+        required: false,
       }
     ],
     definition: (env, agent, input) => {
@@ -526,7 +595,7 @@ global.simulationFunctions = {
         }
 
         let position = env.positions[y][x]
-        return position && position.agent.definition.id === input.agent_id
+        return position && (!input.agent_id || position.agent.definition.id === input.agent_id)
       })
 
       if (coordinateWithAgent) {
@@ -537,7 +606,7 @@ global.simulationFunctions = {
   },
 
   die: {
-    order: 5,
+    order: 7,
     type: 'action',
     label: 'Morrer',
     input: [],
@@ -547,7 +616,7 @@ global.simulationFunctions = {
   },
 
   transform: {
-    order: 6,
+    order: 8,
     type: 'action',
     label: 'Transformar',
     input: [
@@ -556,7 +625,6 @@ global.simulationFunctions = {
         type: 'agent',
         label: 'Qual agente?',
         defaultValue: null,
-        nullLabel: 'Selecionar agente',
         required: true
       },
       {
@@ -578,7 +646,7 @@ global.simulationFunctions = {
   },
 
   set_age: {
-    order: 7,
+    order: 9,
     type: 'action',
     label: 'Definir idade do agente',
     input: [
@@ -596,7 +664,7 @@ global.simulationFunctions = {
   },
 
   breed: {
-    order: 8,
+    order: 10,
     type: 'action',
     label: 'Reproduzir agente',
     input: [
@@ -605,7 +673,6 @@ global.simulationFunctions = {
         type: 'agent',
         label: 'Agente',
         defaultValue: null,
-        nullLabel: 'Selecione o agente',
         required: true
       },
       {
@@ -625,7 +692,7 @@ global.simulationFunctions = {
           return false
         }
 
-        if (!isPositionOcuppied(env, x, y)) {
+        if (!isCoordinateOccupied(env, x, y)) {
           env.buildAgent(agentDefinition, x, y, 0, true)
           quantityCreated++
         }
@@ -634,7 +701,7 @@ global.simulationFunctions = {
   },
 
   increment_variable: {
-    order: 8,
+    order: 11,
     type: 'action',
     label: 'Incrementar variável',
     input: [
@@ -643,7 +710,6 @@ global.simulationFunctions = {
         type: 'variable',
         label: 'Qual variável?',
         defaultValue: null,
-        nullLabel: 'Selecione a variável',
         required: true
       }
     ],
@@ -654,7 +720,7 @@ global.simulationFunctions = {
   },
 
   decrement_variable: {
-    order: 9,
+    order: 12,
     type: 'action',
     label: 'Decrementar variável',
     input: [
@@ -663,7 +729,6 @@ global.simulationFunctions = {
         type: 'variable',
         label: 'Qual variável?',
         defaultValue: null,
-        nullLabel: 'Selecione a variável',
         required: true
       }
     ],
@@ -674,7 +739,7 @@ global.simulationFunctions = {
   },
 
   set_variable: {
-    order: 10,
+    order: 13,
     type: 'action',
     label: 'Definir valor de variável',
     input: [
@@ -683,7 +748,6 @@ global.simulationFunctions = {
         type: 'variable',
         label: 'Qual variável?',
         defaultValue: null,
-        nullLabel: 'Selecione a variável',
         required: true
       },
       {
@@ -701,7 +765,7 @@ global.simulationFunctions = {
   },
 
   set_random_value: {
-    order: 11,
+    order: 14,
     type: 'action',
     label: 'Definir valor aleatório para variável',
     input: [
@@ -710,7 +774,6 @@ global.simulationFunctions = {
         type: 'variable',
         label: 'Qual variável?',
         defaultValue: null,
-        nullLabel: 'Selecione a variável',
         required: true
       },
       {
@@ -736,7 +799,7 @@ global.simulationFunctions = {
   },
 
   execute_next_rule: {
-    order: 12,
+    order: 15,
     type: 'action',
     label: 'Executar próxima regra do agente',
     definition: (env, agent, input) => {
