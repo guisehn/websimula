@@ -329,7 +329,9 @@ global.simulationFunctions = {
       let adjacentCoordinates = getAdjacentCoordinates(env, agent.position.x, agent.position.y)
       let freeAdjacentCoordinates = adjacentCoordinates.filter(c => !env.positions[c.y][c.x])
 
-      if (!input.allow_diagonal) {
+      if (input.allow_diagonal) {
+        freeAdjacentCoordinates = freeAdjacentCoordinates.filter(c => !isDiagonalBlocked(env, agent.position.x, agent.position.y, c.x, c.y))
+      } else {
         freeAdjacentCoordinates = freeAdjacentCoordinates.filter(c => c.x === agent.position.x || c.y === agent.position.y)
       }
 
