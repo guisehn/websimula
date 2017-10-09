@@ -7,6 +7,29 @@
       margin-bottom: 20px;
     }
   }
+
+  .color-picker-container {
+    label {
+      font-weight: normal;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .or {
+      display: inline-block;
+      margin: 0 5px;
+    }
+  }
+
+  .btn-eyedropper {
+    height: 32px;
+    padding: 4px 14px;
+
+    img {
+      width: 15px;
+      height: 15px;
+    }
+  }
 }
 
 .image-editor-grid,

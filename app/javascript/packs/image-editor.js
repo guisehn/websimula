@@ -1,4 +1,7 @@
+import _ from 'lodash'
+
 import Constants from './constants'
+import eyedropperToolImage from '../images/eyedropper-icon.png'
 
 function refreshInputValue(input, grid) {
   let canvas = $('<canvas></canvas>').attr('width', Constants.AGENT_SIZE).attr('height', Constants.AGENT_SIZE)
@@ -25,7 +28,7 @@ function setColor(cell, color) {
   return previousColor !== rgba
 }
 
-function activateGrid(grid, colorPickerInput, dataUrlInput) {
+function activateGrid(imageEditor, grid, colorPickerInput, dataUrlInput) {
   let painting = false
 
   for (let i = 0; i < Constants.AGENT_SIZE; i++) {
@@ -37,29 +40,59 @@ function activateGrid(grid, colorPickerInput, dataUrlInput) {
   }
 
   grid.on('mousedown', () => { painting = true })
-  grid.on('mouseup mouseleave', () => { painting = false })
+
+  grid.on('mouseup mouseleave', () => {
+    if (painting && imageEditor.data('isEyedropperToolSelected')) {
+      toggleEyedropperTool(imageEditor, false)
+    }
+
+    painting = false
+  })
 
   grid.on('mousedown mouseover', 'td', function (e) {
     if (e.type === 'mousedown' || painting) {
-      let color = colorPickerInput.spectrum('get')
-      color = color ? color.toRgb() : { r: 0, g: 0, b: 0, a: 0 }
+      if (imageEditor.data('isEyedropperToolSelected')) {
+        colorPickerInput.spectrum('set', $(this).data('color'))
+      } else {
+        let color = colorPickerInput.spectrum('get')
+        color = color ? color.toRgb() : { r: 0, g: 0, b: 0, a: 0 }
 
-      let changed = setColor($(this), color)
+        let changed = setColor($(this), color)
 
-      if (changed) {
-        refreshInputValue(dataUrlInput, grid)
+        if (changed) {
+          refreshInputValue(dataUrlInput, grid)
+        }
       }
     }
   })
 }
 
-function activateColorPicker(input) {
+function activateColorPicker(imageEditor, input) {
   input.spectrum({
     allowEmpty: true,
     color: '#000',
     preferredFormat: 'rgb',
     showButtons: false,
-    showInput: true
+    showInput: true,
+    show: () => toggleEyedropperTool(imageEditor, false)
+  })
+}
+
+function toggleEyedropperTool(imageEditor, selected) {
+  if (_.isNil(selected)) {
+    selected = !imageEditor.data('isEyedropperToolSelected')
+  }
+
+  imageEditor.data('isEyedropperToolSelected', selected)
+  imageEditor.find('.btn-eyedropper').toggleClass('active', selected)
+}
+
+function activateEyedropperTool(imageEditor) {
+  imageEditor.data('isEyedropperToolSelected', false)
+
+  imageEditor.find('.btn-eyedropper').on('click', e => {
+    toggleEyedropperTool(imageEditor)
+    e.preventDefault()
   })
 }
 
@@ -123,8 +156,14 @@ $.fn.imageEditor = function (options) {
       <table class="image-editor-grid"></table>
       <div class="right-pane">
         <div class="color-picker-container">
-          Selecionar cor:<br>
+          <label>Selecionar cor:</label>
           <input type="hidden">
+
+          <span class="or">ou</span>
+
+          <a href="" class="btn-eyedropper btn btn-default" title="Ferramenta conta-gotas">
+            <img src="${eyedropperToolImage}" alt="">
+          </a>
         </div>
         <div class="file-selector-container">
           Enviar imagem:<br>
@@ -138,8 +177,9 @@ $.fn.imageEditor = function (options) {
     let colorPickerInput = imageEditor.find('.color-picker-container input')
     let imageFileInput = imageEditor.find('.file-selector-container input')
 
-    activateGrid(grid, colorPickerInput, dataUrlInput)
-    activateColorPicker(colorPickerInput)
+    activateGrid(imageEditor, grid, colorPickerInput, dataUrlInput)
+    activateColorPicker(imageEditor, colorPickerInput)
+    activateEyedropperTool(imageEditor)
     activateImageFileInput(imageFileInput, dataUrlInput, grid)
     refreshGridFromDataUrlInput(grid, dataUrlInput)
   })

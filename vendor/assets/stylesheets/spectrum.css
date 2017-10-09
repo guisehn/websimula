@@ -372,13 +372,18 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
     *zoom: 1;
     *display: inline;
     border: solid 1px #aaa;
-    background: #eee;
+    border-radius: 4px;
+    background: #fff;
     color: #333;
     vertical-align: middle;
 }
 .sp-replacer:hover, .sp-replacer.sp-active {
     border-color: #aaa;
+    background: #ddd;
     color: #111;
+}
+.sp-replacer.sp-active {
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
 .sp-replacer.sp-disabled {
     cursor:default;
