@@ -8,21 +8,21 @@
     <span v-for="input in selectedFunctionInputs">
       <span v-if="input.type === 'variable'">
         <select v-model="item.input[input.name]" class="form-control" :disabled="readOnly">
-          <option disabled :value="null">Escolha a variável</option>
+          <option :disabled="input.required" :value="null">{{ input.nullLabel || 'Escolha a variável' }}</option>
           <option v-for="variable in variables" :value="variable.id">{{ variable.name }}</option>
         </select>
       </span>
 
       <span v-if="input.type === 'agent'">
         <select v-model="item.input[input.name]" class="form-control" :disabled="readOnly">
-          <option disabled :value="null">Escolha o agente</option>
+          <option :disabled="input.required" :value="null">{{ input.nullLabel || 'Escolha o agente' }}</option>
           <option v-for="agent in agents" :value="agent.id">{{ agent.name }}</option>
         </select>
       </span>
 
       <span v-if="input.type === 'string' && input.options">
         <select v-model="item.input[input.name]" class="form-control" :disabled="readOnly">
-          <option disabled :value="null" v-if="!input.defaultValue">{{ input.nullLabel }}</option>
+          <option :disabled="input.required" :value="null" v-if="!input.defaultValue">{{ input.nullLabel }}</option>
           <option v-for="option in input.options" :value="option.value">{{ option.label }}</option>
         </select>
       </span>
