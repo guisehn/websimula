@@ -69,18 +69,18 @@
 
 <script>
   $('form.new_rule, form.edit_rule').submit(function () {
-    let conditionField = window.vue.$refs.conditionField
-    let actionField = window.vue.$refs.actionField
+    var conditionField = window.vue.$refs.conditionField
+    var actionField = window.vue.$refs.actionField
 
-    let isConditionFieldValid = conditionField.validate()
-    let isActionFieldValid = conditionField.validate()
+    var isConditionFieldValid = conditionField.validate()
+    var isActionFieldValid = conditionField.validate()
 
     if (!isConditionFieldValid || !isActionFieldValid) {
       return false
     }
 
-    let conditionData = JSON.stringify(conditionField.getData())
-    let actionData = JSON.stringify(actionField.getData())
+    var conditionData = JSON.stringify(conditionField.getData())
+    var actionData = JSON.stringify(actionField.getData())
 
     console.log('Condition data:', conditionData)
     console.log('Action data:', actionData)
