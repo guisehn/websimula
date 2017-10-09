@@ -10,7 +10,6 @@
         @start="dragging = true"
         @end="dragging = false"
         :options="{ handle: '.handle', animation: 150 }">
-        <transition-group>
           <div v-for="(action, index) in actions" :key="action.id">
             <div class="action" :class="{ 'dragging': dragging }">
               <span class="handle">
@@ -34,7 +33,6 @@
 
             <div class="clearfix"></div>
           </div>
-        </transition-group>
       </draggable>
     </div>
 
@@ -115,6 +113,8 @@ export default {
 
 <style lang="scss">
 .edit-rule-action-field {
+  .sortable-ghost { opacity: 0; }
+
   .action {
     float: left;
     background: #eee;
