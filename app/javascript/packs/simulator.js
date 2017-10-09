@@ -181,6 +181,8 @@ class Simulator {
       func.input.forEach(arg => {
         if (arg.type === 'string' || arg.type === 'number') {
           buildParsedInput()
+
+          parsedInput[arg.name] = String(parsedInput[arg.name])
           parsedInput[arg.name] = this._injectVariables(parsedInput[arg.name])
 
           // to-do: do expression parsing on initialization instead of every cycle
@@ -209,7 +211,7 @@ class Simulator {
         value = JSON.stringify(variable.value)
       }
 
-      str = String(str).replace(variable.replacementRegex, value)
+      str = str.replace(variable.replacementRegex, value)
     })
 
     return str
