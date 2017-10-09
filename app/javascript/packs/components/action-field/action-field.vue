@@ -5,26 +5,37 @@
     </div>
 
     <div v-if="actions.length">
-      <div v-for="(action, index) in actions" :key="action.id">
-        <div class="action">
-          <span class="order">#{{ index + 1 }}</span>
+      <draggable
+        v-model="actions"
+        @start="dragging = true"
+        @end="dragging = false"
+        :options="{ handle: '.handle', animation: 150 }">
+        <transition-group>
+          <div v-for="(action, index) in actions" :key="action.id">
+            <div class="action" :class="{ 'dragging': dragging }">
+              <span class="handle">
+                <span class="order">#{{ index + 1 }}</span>
+                <span class="handle-icon glyphicon glyphicon-th"></span>
+              </span>
 
-          <function-call
-            :readOnly="readOnly"
-            :value="action"
-            :function-types="['action']"
-            :agents="agents"
-            :variables="variables"
-            empty-label="Escolha uma ação"></function-call>
+              <function-call
+                :readOnly="readOnly"
+                :value="action"
+                :function-types="['action']"
+                :agents="agents"
+                :variables="variables"
+                empty-label="Escolha uma ação"></function-call>
 
-          <a class="remove" v-on:click="destroyAction(index, $event)" href="" v-if="!readOnly">
-            <span class="glyphicon glyphicon-remove-circle" title="Remover ação"></span>
-            <span class="sr-only">Remover ação</span>
-          </a>
-        </div>
+              <a class="remove" v-on:click="destroyAction(index, $event)" href="" v-if="!readOnly">
+                <span class="glyphicon glyphicon-remove-circle" title="Remover ação"></span>
+                <span class="sr-only">Remover ação</span>
+              </a>
+            </div>
 
-        <div class="clearfix"></div>
-      </div>
+            <div class="clearfix"></div>
+          </div>
+        </transition-group>
+      </draggable>
     </div>
 
     <a href="" v-on:click="addAction($event)" class="btn btn-sm btn-default" v-if="!readOnly">
@@ -36,6 +47,7 @@
 
 <script>
 import FunctionCall from '../function-call/function-call.vue'
+import draggable from 'vuedraggable'
 import uuid from 'uuid/v4'
 
 export default {
@@ -45,12 +57,14 @@ export default {
 
   data () {
     return {
-      actions: this.applyId(this.value || [])
+      actions: this.applyId(this.value || []),
+      dragging: false
     }
   },
 
   components: {
-    FunctionCall
+    FunctionCall,
+    draggable
   },
 
   methods: {
@@ -133,7 +147,8 @@ export default {
       height: 26px;
     }
 
-    .order {
+    .handle {
+      cursor: move;
       display: inline-block;
       width: 34px;
       height: 26px;
@@ -145,6 +160,8 @@ export default {
       margin-right: 6px;
       padding-top: 1px;
       padding-right: 6px;
+
+      .handle-icon { display: none; }
     }
   }
 }

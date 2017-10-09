@@ -8,7 +8,8 @@
     "uuid": "^3.1.0",
     "vue": "^2.4.2",
     "vue-loader": "^13.0.4",
-    "vue-template-compiler": "^2.4.2"
+    "vue-template-compiler": "^2.4.2",
+    "vuedraggable": "^2.14.1"
   },
   "devDependencies": {
     "webpack-dev-server": "^2.7.1"
