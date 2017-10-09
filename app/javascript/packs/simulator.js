@@ -22,7 +22,7 @@ class Simulator {
     this._buildVariablesTable()
     this._buildAgentsTable()
     this._setStageDimensions()
-    this._sortAgentRulesByPriority()
+    this._sortAgentRules()
     this._buildExpressionParser()
   }
 
@@ -62,14 +62,22 @@ class Simulator {
 
         ++agent.age
 
-        let rule = this._selectRule(agent)
+        let fromIndex = 0
 
-        if (rule) {
-          if (global.debug) console.log('Agent', agent, 'selected rule', rule)
-          this._performRuleAction(agent, rule)
-        } else {
-          if (global.debug) console.log('Agent', agent, 'has no selected rule')
-        }
+        do {
+          this.shouldExecuteNextRule = false
+
+          let [ruleIndex, rule] = this._selectRule(agent, fromIndex)
+
+          if (rule) {
+            if (global.debug) console.log('Agent', agent, 'selected rule', rule)
+            this._performRuleAction(agent, rule)
+          } else {
+            if (global.debug) console.log('Agent', agent, 'has no selected rule')
+          }
+
+          fromIndex = ruleIndex + 1
+        } while (this.shouldExecuteNextRule)
       })
 
       if (this.definition.stop_condition) {
@@ -87,6 +95,10 @@ class Simulator {
       alert('Ocorreu um erro na execução da simulação.')
       this.stopLoop()
     }
+  }
+
+  executeNextRule() {
+    this.shouldExecuteNextRule = true
   }
 
   startLoop() {
@@ -130,8 +142,8 @@ class Simulator {
   }
 
   moveAgent(agent, x, y) {
-    this.positions[y][x] = { type: 'agent', agent: agent }
     this.positions[agent.position.y][agent.position.x] = null
+    this.positions[y][x] = { type: 'agent', agent: agent }
 
     agent.position = { x: x, y: y }
     this.renderAgent(agent)
@@ -159,26 +171,28 @@ class Simulator {
   _parseInput(input, func) {
     let parsedInput = null
 
-    let buildParsedInput = () => {
-      if (!parsedInput) {
-        parsedInput = _.cloneDeep(input)
-      }
-    }
-
-    func.input.forEach(arg => {
-      if (arg.type === 'string' || arg.type === 'number') {
-        buildParsedInput()
-        parsedInput[arg.name] = this._injectVariables(parsedInput[arg.name])
-
-        // to-do: do expression parsing on initialization instead of every cycle
-        parsedInput[arg.name] = parsedInput[arg.name].replace(/([^\\])?[{]{2}(.*)[}]{2}/g,
-          (_, before, expr) => (before || '') + this.expressionParser.parse(expr).evaluate())
-
-        if (arg.type === 'number') {
-          parsedInput[arg.name] = Number(parsedInput[arg.name])
+    if (func.input) {
+      let buildParsedInput = () => {
+        if (!parsedInput) {
+          parsedInput = _.cloneDeep(input)
         }
       }
-    })
+
+      func.input.forEach(arg => {
+        if (arg.type === 'string' || arg.type === 'number') {
+          buildParsedInput()
+          parsedInput[arg.name] = this._injectVariables(parsedInput[arg.name])
+
+          // to-do: do expression parsing on initialization instead of every cycle
+          parsedInput[arg.name] = parsedInput[arg.name].replace(/([^\\])?[{]{2}(.*)[}]{2}/g,
+            (_, before, expr) => (before || '') + this.expressionParser.parse(expr).evaluate())
+
+          if (arg.type === 'number') {
+            parsedInput[arg.name] = Number(parsedInput[arg.name])
+          }
+        }
+      })
+    }
 
     return parsedInput ? parsedInput : input
   }
@@ -195,7 +209,7 @@ class Simulator {
         value = JSON.stringify(variable.value)
       }
 
-      str = str.replace(variable.replacementRegex, value)
+      str = String(str).replace(variable.replacementRegex, value)
     })
 
     return str
@@ -452,15 +466,20 @@ class Simulator {
     return freePositions
   }
 
-  _sortAgentRulesByPriority() {
+  _sortAgentRules() {
     this.definition.agents.forEach(agent => {
-      agent.rules = _.sortBy(agent.rules, 'priority')
+      agent.rules = _.sortBy(agent.rules, ['priority', r => r.name.toLowerCase()])
     })
   }
 
-  _selectRule(agent) {
-    return _.find(agent.definition.rules,
-      rule => rule.condition === null || this._evaluateCondition(rule.condition, agent))
+  _selectRule(agent, fromIndex = 0) {
+    let index = _.findIndex(
+      agent.definition.rules,
+      rule => rule.condition === null || this._evaluateCondition(rule.condition, agent),
+      fromIndex
+    )
+
+    return [index, agent.definition.rules[index]]
   }
 
   _getFunction(functionName) {

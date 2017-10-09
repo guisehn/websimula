@@ -15,7 +15,7 @@ function getAdjacentCoordinates(env, x, y, radius = 1, findFunctionReturnAll, fi
       let py = _y + y
 
       // is this coordinate in the stage?
-      if (px >= 0 && py >= 0 && px < env.stageSize && py < env.stageSize) {
+      if (isCoordinateInsideStage(env, px, py)) {
         let xy = { x: px, y: py }
 
         // if we have a findFunction, we check the coordinate against this function
@@ -51,12 +51,40 @@ function getAdjacentCoordinates(env, x, y, radius = 1, findFunctionReturnAll, fi
   return findFunction && !findFunctionReturnAll ? null : coordinates
 }
 
+function isCoordinateInsideStage(env, x, y) {
+  return x >= 0 && y >= 0 && x < env.stageSize && y < env.stageSize
+}
+
 function isPositionOcuppied(env, x, y) {
   return _.get(env.positions[y][x], 'type') === 'agent'
 }
 
 function isDiagonalBlocked(env, x1, y1, x2, y2) {
   return (x1 !== x2 || y1 !== y2) && isPositionOcuppied(env, x1, y2) && isPositionOcuppied(env, x2, y1)
+}
+
+function generateCoordinateFromMovement(env, x, y, direction, steps = 1) {
+  if (direction.indexOf('W') !== -1) x -= steps
+  if (direction.indexOf('E') !== -1) x += steps
+
+  if (direction.indexOf('N') !== -1) y -= steps
+  if (direction.indexOf('S') !== -1) y += steps
+
+  if (x < 0) {
+    x = 0
+  } else if (x >= env.stageSize) {
+    x = env.stageSize - 1
+  }
+
+  if (y < 0) {
+    y = 0
+  } else if (y >= env.stageSize) {
+    y = env.stageSize - 1
+  }
+
+  console.log(x,y)
+
+  return { x: x, y: y }
 }
 
 // TODO: use A* for improvement, this one gets stuck very easily
@@ -340,6 +368,43 @@ global.simulationFunctions = {
       if (randomCoordinate) {
         env.moveAgent(agent, randomCoordinate.x, randomCoordinate.y)
       }
+    }
+  },
+
+  move: {
+    order: 2,
+    type: 'action',
+    label: 'Mover em direção',
+    input: [
+      {
+        name: 'direction',
+        type: 'string',
+        label: 'Direção',
+        defaultValue: null,
+        nullLabel: 'Direção',
+        required: true,
+        options: [
+          { value: 'N', label: 'Norte' },
+          { value: 'S', label: 'Sul' },
+          { value: 'E', label: 'Leste' },
+          { value: 'W', label: 'Oeste' },
+          { value: 'NE', label: 'Nordeste' },
+          { value: 'NW', label: 'Noroeste' },
+          { value: 'SE', label: 'Sudeste' },
+          { value: 'SW', label: 'Sudoeste' }
+        ]
+      },
+      {
+        name: 'steps',
+        type: 'number',
+        label: 'Quantidade de posições',
+        required: true,
+        defaultValue: 1
+      }
+    ],
+    definition: (env, agent, input) => {
+      let coordinate = generateCoordinateFromMovement(env, agent.position.x, agent.position.y, input.direction, input.steps)
+      env.moveAgent(agent, coordinate.x, coordinate.y)
     }
   },
 
@@ -627,6 +692,15 @@ global.simulationFunctions = {
       let variable = env.variables[input.variable_id]
       let rand = Math.floor(Math.random() * (input.max - input.min + 1)) + input.min
       variable.value = variable.type === 'string' ? String(rand) : rand
+    }
+  },
+
+  execute_next_rule: {
+    order: 12,
+    type: 'action',
+    label: 'Executar próxima regra do agente',
+    definition: (env, agent, input) => {
+      env.executeNextRule()
     }
   }
 }
