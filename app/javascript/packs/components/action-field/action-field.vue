@@ -1,5 +1,5 @@
 <template>
-  <div class="edit-rule-action-field">
+  <div class="edit-rule-action-field" :class="{ 'drag-allowed': isDragAllowed }">
     <div v-if="!actions.length" class="empty">
       <p>Nenhuma ação (o agente irá ficar parado).</p>
     </div>
@@ -9,7 +9,7 @@
         v-model="actions"
         @start="dragging = true"
         @end="dragging = false"
-        :options="{ handle: '.handle', animation: 150 }">
+        :options="{ handle: '.handle', animation: 150, disabled: !isDragAllowed }">
           <div v-for="(action, index) in actions" :key="action.id">
             <div class="action" :class="{ 'dragging': dragging }">
               <span class="handle">
@@ -63,6 +63,12 @@ export default {
   components: {
     FunctionCall,
     draggable
+  },
+
+  computed: {
+    isDragAllowed () {
+      return this.actions.length > 1
+    }
   },
 
   methods: {
@@ -148,7 +154,6 @@ export default {
     }
 
     .handle {
-      cursor: move;
       display: inline-block;
       width: 34px;
       height: 26px;
@@ -163,6 +168,10 @@ export default {
 
       .handle-icon { display: none; }
     }
+  }
+
+  &.drag-allowed .action .handle {
+    cursor: move;
   }
 }
 </style>
