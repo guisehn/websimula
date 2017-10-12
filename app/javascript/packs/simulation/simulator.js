@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import ExpressionEvaluator from 'expr-eval'
-import Constants from './constants'
+
+import Constants from '../constants'
 
 let global = window
 

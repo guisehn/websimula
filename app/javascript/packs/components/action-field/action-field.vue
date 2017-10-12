@@ -24,10 +24,11 @@
                   :function-types="['action']"
                   :agents="agents"
                   :variables="variables"
+                  :last-validation="lastValidation"
                   empty-label="Escolha uma ação"></function-call>
               </div>
 
-              <a class="remove" v-on:click="destroyAction(index, $event)" href="" v-if="!readOnly">
+              <a class="remove" v-on:click.prevent="destroyAction(index)" href="" v-if="!readOnly">
                 <span class="glyphicon glyphicon-remove-circle" title="Remover ação"></span>
                 <span class="sr-only">Remover ação</span>
               </a>
@@ -38,7 +39,7 @@
       </draggable>
     </div>
 
-    <a href="" v-on:click="addAction($event)" class="btn btn-sm btn-default" v-if="!readOnly">
+    <a href="" v-on:click.prevent="addAction()" class="btn btn-sm btn-default" v-if="!readOnly">
       <span class="glyphicon glyphicon-plus-sign"></span>
       Adicionar ação
     </a>
@@ -47,6 +48,8 @@
 
 <script>
 import FunctionCall from '../function-call/function-call.vue'
+import InputValidator from '../../simulation/input-validator'
+
 import draggable from 'vuedraggable'
 import uuid from 'uuid/v4'
 
@@ -58,7 +61,8 @@ export default {
   data () {
     return {
       actions: this.applyId(this.value || []),
-      dragging: false
+      dragging: false,
+      lastValidation: null
     }
   },
 
@@ -74,9 +78,7 @@ export default {
   },
 
   methods: {
-    addAction ($event) {
-      if ($event) $event.preventDefault()
-
+    addAction () {
       this.actions.push({
         id: uuid(),
         function: null,
@@ -85,17 +87,28 @@ export default {
       })
     },
 
-    destroyAction (index, $event) {
-      if ($event) $event.preventDefault()
-
+    destroyAction (index) {
       if (!this.actions[index].function || window.confirm('Tem certeza que deseja remover esta ação?')) {
         this.actions.splice(index, 1)
       }
     },
 
-    validate () {
-      // TO-DO: implement
-      return true
+    validate (callback) {
+      // triggers validation on child components
+      this.lastValidation = new Date()
+
+      // checks if there is any invalid field
+      let simulationFunctions = window.simulationFunctions
+
+      let hasInvalidAction = _.some(this.actions, action => {
+        if (!action.function) return true
+
+        let invalidInputs = InputValidator.getInvalidInputs(action.input, simulationFunctions[action.function])
+
+        return invalidInputs.length > 0
+      })
+
+      return !hasInvalidAction
     },
 
     getData () {

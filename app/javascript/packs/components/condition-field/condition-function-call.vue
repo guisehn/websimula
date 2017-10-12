@@ -10,16 +10,17 @@
           :function-types="functionTypes"
           :agents="agents"
           :variables="variables"
+          :last-validation="lastValidation"
           empty-label="Escolha uma condição"></function-call>
       </div>
 
       <div class="actions">
-        <a class="negate" v-on:click="negate($event)" href="" v-if="showNegateFunction">
+        <a class="negate" v-on:click.prevent="negate()" href="" v-if="showNegateFunction">
           <span class="glyphicon glyphicon-exclamation-sign" title="Negar condição"></span>
           <span class="sr-only">Negar condição</span>
         </a>
 
-        <a class="remove" v-on:click="destroy($event)" href="" v-if="!readOnly">
+        <a class="remove" v-on:click.prevent="destroy()" href="" v-if="!readOnly">
           <span class="glyphicon glyphicon-remove-circle" title="Remover condição"></span>
           <span class="sr-only">Remover condição</span>
         </a>
@@ -37,7 +38,7 @@ import FunctionCall from '../function-call/function-call.vue'
 
 export default {
   name: 'condition-function-call',
-  props: ['item', 'index', 'functionTypes', 'readOnly', 'agents', 'variables'],
+  props: ['item', 'index', 'functionTypes', 'readOnly', 'agents', 'variables', 'lastValidation'],
 
   data () {
     return {
@@ -56,14 +57,11 @@ export default {
   },
 
   methods: {
-    negate ($event) {
-      if ($event) $event.preventDefault()
+    negate () {
       this.itemData.negate = !this.itemData.negate
     },
 
-    destroy ($event) {
-      if ($event) $event.preventDefault()
-
+    destroy () {
       if (!this.itemData.function || window.confirm('Tem certeza que deseja remover esta condição?')) {
         this.$emit('destroy', this.index)
       }

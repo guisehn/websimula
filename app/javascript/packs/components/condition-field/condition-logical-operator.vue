@@ -14,7 +14,7 @@
       </span>
 
       <div class="actions">
-        <a class="remove" v-on:click="destroy($event)" href="" v-if="!readOnly">
+        <a class="remove" v-on:click.prevent="destroy()" href="" v-if="!readOnly">
           <span class="glyphicon glyphicon-remove-circle" v-bind:title="destroyLabel"></span>
           <span class="sr-only">{{ destroyLabel }}</span>
         </a>
@@ -35,6 +35,7 @@
           :read-only="readOnly"
           :agents="agents"
           :variables="variables"
+          :last-validation="lastValidation"
           @update="updateChild"
           @destroy="destroyChild"></condition-function-call>
 
@@ -47,6 +48,7 @@
           :function-types="functionTypes"
           :agents="agents"
           :variables="variables"
+          :last-validation="lastValidation"
           @update="updateChild"
           @destroy="destroyChild"></condition-logical-operator>
       </div>
@@ -64,8 +66,8 @@
             </button>
 
             <ul class="dropdown-menu">
-              <li><a href="" v-on:click="addFunctionCall($event)">Adicionar condição</a></li>
-              <li><a href="" v-on:click="addLogicalOperator($event)" v-if="isAddLogicalOperatorAllowed">Adicionar grupo de condições</a></li>
+              <li><a href="" v-on:click.prevent="addFunctionCall()">Adicionar condição</a></li>
+              <li><a href="" v-on:click.prevent="addLogicalOperator()" v-if="isAddLogicalOperatorAllowed">Adicionar grupo de condições</a></li>
             </ul>
           </div>
         </div>
@@ -82,7 +84,8 @@ import uuid from 'uuid/v4'
 
 export default {
   name: 'condition-logical-operator',
-  props: ['index', 'item', 'level', 'functionTypes', 'readOnly', 'agents', 'variables'],
+  props: ['index', 'item', 'level', 'functionTypes', 'readOnly', 'agents',
+    'variables', 'lastValidation'],
 
   data () {
     return {
@@ -120,9 +123,7 @@ export default {
   },
 
   methods: {
-    addFunctionCall ($event) {
-      if ($event) $event.preventDefault()
-
+    addFunctionCall () {
       this.itemData.children.push({
         id: uuid(),
         type: 'function_call',
@@ -132,9 +133,7 @@ export default {
       })
     },
 
-    addLogicalOperator ($event) {
-      if ($event) $event.preventDefault()
-
+    addLogicalOperator () {
       this.itemData.children.push({
         id: uuid(),
         type: 'logical_operator',
@@ -151,9 +150,7 @@ export default {
       this.itemData.children.splice(index, 1)
     },
 
-    destroy ($event) {
-      if ($event) $event.preventDefault()
-
+    destroy () {
       if (this.itemData.children.length === 0 || window.confirm(this.confirmDestroyMessage)) {
         this.$emit('destroy', this.index)
       }

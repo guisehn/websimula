@@ -8,6 +8,7 @@
 // layout file, like app/views/layouts/application.html.erb
 
 import './image-editor'
-import './simulation-functions'
-import './simulator'
 import './project'
+
+import './simulation/functions'
+import './simulation/simulator'

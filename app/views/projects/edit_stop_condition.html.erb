@@ -32,6 +32,12 @@
     var conditionField = window.vue.$refs.conditionField
 
     if (!conditionField.validate()) {
+      var firstError = $('#vue-container .has-error:first')
+
+      if (firstError.length) {
+        $('html, body').stop().animate({ scrollTop: firstError.offset().top - 20 }, 500)
+      }
+
       return false
     }
 

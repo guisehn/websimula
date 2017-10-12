@@ -73,9 +73,15 @@
     var actionField = window.vue.$refs.actionField
 
     var isConditionFieldValid = conditionField.validate()
-    var isActionFieldValid = conditionField.validate()
+    var isActionFieldValid = actionField.validate()
 
     if (!isConditionFieldValid || !isActionFieldValid) {
+      var firstError = $('#vue-container .has-error:first')
+
+      if (firstError.length) {
+        $('html, body').stop().animate({ scrollTop: firstError.offset().top - 20 }, 500)
+      }
+
       return false
     }
 

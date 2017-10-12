@@ -3,7 +3,7 @@
     <div v-if="!item" class="empty">
       <p>{{ noConditionMessage }}</p>
 
-      <a href="" v-on:click="addCondition($event)" v-if="!readOnly" class="btn btn-sm btn-default">
+      <a href="" v-on:click.prevent="addCondition()" v-if="!readOnly" class="btn btn-sm btn-default">
         <span class="glyphicon glyphicon-plus-sign"></span>
         Adicionar condição
       </a>
@@ -17,6 +17,7 @@
         :agents="agents"
         :variables="variables"
         :read-only="readOnly"
+        :last-validation="lastValidation"
         @destroy="reset"></condition-logical-operator>
 
       <p class="help-block" v-if="helpMessage">
@@ -28,6 +29,7 @@
 
 <script>
 import ConditionLogicalOperator from './condition-logical-operator.vue'
+import InputValidator from '../../simulation/input-validator'
 
 import uuid from 'uuid/v4'
 import _ from 'lodash'
@@ -35,7 +37,8 @@ import _ from 'lodash'
 export default {
   name: 'condition-field',
   replace: false,
-  props: ['value', 'functionTypes', 'agents', 'variables', 'noConditionMessage', 'helpMessage', 'readOnly'],
+  props: ['value', 'functionTypes', 'agents', 'variables',
+    'noConditionMessage', 'helpMessage', 'readOnly'],
 
   data () {
     let value = this.value
@@ -45,7 +48,8 @@ export default {
     }
 
     return {
-      item: value ? this.applyId(value) : null
+      item: value ? this.applyId(value) : null,
+      lastValidation: null
     }
   },
 
@@ -54,9 +58,7 @@ export default {
   },
 
   methods: {
-    addCondition ($event) {
-      if ($event) $event.preventDefault()
-
+    addCondition () {
       this.item = this.applyId({
         type: 'logical_operator',
         operator: 'and',
@@ -71,8 +73,27 @@ export default {
     },
 
     validate () {
-      // TO-DO: implement
-      return true
+      // triggers validation on child components
+      this.lastValidation = new Date()
+
+      let validateObject = (obj) => {
+        if (obj.type === 'function_call') {
+          let func = obj['function'] ? window.simulationFunctions[obj.function] : null
+
+          if (func) {
+            let invalidInputs = InputValidator.getInvalidInputs(obj.input, func)
+            return invalidInputs.length === 0
+          } else {
+            return false
+          }
+        }
+
+        if (obj.type === 'logical_operator') {
+          return _.every(obj.children, c => validateObject(c))
+        }
+      }
+
+      return this.item ? validateObject(this.item) : true
     },
 
     getData () {

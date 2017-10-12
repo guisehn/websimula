@@ -1,6 +1,6 @@
 <template>
   <div class="function-call">
-    <div class="function-selector">
+    <div class="function-selector" :class="{ 'has-error': !item['function'] && validated }">
       <select class="form-control" v-model="item.function" v-on:change="changeFunction" :disabled="readOnly">
         <option v-if="!item.function" :value="null">{{ emptyLabel }}</option>
         <option v-for="func in availableFunctions" :value="func.key">{{ func.data.label }}</option>
@@ -8,7 +8,10 @@
     </div>
 
     <div class="function-inputs" v-if="item['function'] && selectedFunctionInputs.length > 0">
-      <div class="function-input" v-for="input in selectedFunctionInputs">
+      <div
+        class="function-input"
+        v-for="input in selectedFunctionInputs"
+        :class="{ 'has-error': hasError(input.name) }">
         <div class="input-label">
           <label :class="{ 'sr-only': input.hideLabel }" v-if="input.type !== 'boolean'">
             {{ input.label }}
@@ -17,37 +20,37 @@
 
         <div class="input-value">
           <span v-if="input.type === 'variable'">
-            <select v-model="item.input[input.name]" class="form-control" :disabled="readOnly">
+            <select v-model="item.input[input.name]" class="form-control" :disabled="readOnly" v-on:change="revalidate(input.name)">
               <option :disabled="input.required" :value="null">{{ input.nullLabel || 'Escolha a variável' }}</option>
               <option v-for="variable in variables" :value="variable.id">{{ variable.name }}</option>
             </select>
           </span>
 
           <span v-if="input.type === 'agent'">
-            <select v-model="item.input[input.name]" class="form-control" :disabled="readOnly">
+            <select v-model="item.input[input.name]" class="form-control" :disabled="readOnly" v-on:change="revalidate(input.name)">
               <option :disabled="input.required" :value="null">{{ input.nullLabel || 'Escolha o agente' }}</option>
               <option v-for="agent in agents" :value="agent.id">{{ agent.name }}</option>
             </select>
           </span>
 
           <span v-if="input.type === 'string' && input.options">
-            <select v-model="item.input[input.name]" class="form-control" :disabled="readOnly">
+            <select v-model="item.input[input.name]" class="form-control" :disabled="readOnly" v-on:change="revalidate(input.name)">
               <option :disabled="input.required" :value="null" v-if="!input.defaultValue">{{ input.nullLabel }}</option>
               <option v-for="option in input.options" :value="option.value">{{ option.label }}</option>
             </select>
           </span>
 
           <span v-if="input.type === 'number'">
-            <input type="text" v-model="item.input[input.name]" class="form-control" :disabled="readOnly">
+            <input type="text" v-model="item.input[input.name]" class="form-control" :disabled="readOnly" v-on:change="revalidate(input.name)">
           </span>
 
           <span v-if="input.type === 'string' && !input.options">
-            <input type="text" v-model="item.input[input.name]" class="form-control" :disabled="readOnly">
+            <input type="text" v-model="item.input[input.name]" class="form-control" :disabled="readOnly" v-on:change="revalidate(input.name)">
           </span>
 
           <span v-if="input.type === 'boolean'">
             <label class="checkbox-label">
-              <input type="checkbox" v-model="item.input[input.name]" :disabled="readOnly">
+              <input type="checkbox" v-model="item.input[input.name]" :disabled="readOnly" v-on:change="revalidate(input.name)">
               {{ input.label }}
             </label>
           </span>
@@ -59,14 +62,17 @@
 
 <script>
 import _ from 'lodash'
+import InputValidator from '../../simulation/input-validator'
 
 export default {
   name: 'function-call',
-  props: ['value', 'functionTypes', 'emptyLabel', 'readOnly', 'agents', 'variables'],
+  props: ['value', 'functionTypes', 'emptyLabel', 'readOnly', 'agents', 'variables', 'lastValidation'],
 
   data () {
     return {
-      item: this.value
+      item: this.value,
+      errors: [],
+      mountTime: new Date()
     }
   },
 
@@ -83,9 +89,17 @@ export default {
         .value()
     },
 
-    selectedFunctionInputs () {
+    selectedFunction () {
       let func = this.item['function']
-      return func ? (this.simulationFunctions[func].input || []) : []
+      return func ? this.simulationFunctions[func] : null
+    },
+
+    selectedFunctionInputs () {
+      return _.get(this.selectedFunction, 'input') || []
+    },
+
+    validated () {
+      return this.lastValidation && this.lastValidation > this.mountTime
     }
   },
 
@@ -107,6 +121,33 @@ export default {
       inputs.forEach(input => {
         this.item.input[input.name] = previousInput[input.name] ? previousInput[input.name] : (input.defaultValue || null)
       })
+
+      this.errors = []
+    },
+
+    revalidate (inputName) {
+      let input = _.find(this.selectedFunctionInputs, { name: inputName })
+
+      if (this.hasError(inputName) && InputValidator.isInputValid(this.item.input[inputName], input)) {
+        // _.remove doesn't trigger vue.js change detector :|
+        this.errors.splice(_.findIndex(this.errors, i => i === inputName), 1)
+      }
+    },
+
+    hasError (inputName) {
+      return _.includes(this.errors, inputName)
+    }
+  },
+
+  watch: {
+    lastValidation (value) {
+      if (!value) return
+
+      if (this.selectedFunction) {
+        this.errors = InputValidator.getInvalidInputs(this.item.input, this.selectedFunction)
+      } else {
+        this.errors = []
+      }
     }
   }
 }
@@ -137,6 +178,10 @@ export default {
   label {
     font-weight: normal;
   }
+}
+
+.has-error .input-label {
+  color: #c00;
 }
 
 .checkbox-label {

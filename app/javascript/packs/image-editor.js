@@ -84,6 +84,7 @@ function toggleEyedropperTool(imageEditor, selected) {
   }
 
   imageEditor.data('isEyedropperToolSelected', selected)
+  imageEditor.toggleClass('.eyedropper-selected', selected)
   imageEditor.find('.btn-eyedropper').toggleClass('active', selected)
 }
 
