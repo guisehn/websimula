@@ -437,7 +437,7 @@ class Simulator {
     })
 
     // add random agents
-    let freePositions = this._getFreePositions()
+    let freeCoordinates = this.getFreeCoordinates()
     let randomPositions = _.get(this.definition.initial_positions, 'random_positions', [])
 
     _.forEach(randomPositions, (quantity, agentId) => {
@@ -446,8 +446,8 @@ class Simulator {
       let agentDefinition = _.find(this.definition.agents, { id: agentId })
 
       _.times(quantity, () => {
-        let index = _.random(0, freePositions.length - 1)
-        let pos = freePositions.splice(index, 1)[0]
+        let index = _.random(0, freeCoordinates.length - 1)
+        let pos = freeCoordinates.splice(index, 1)[0]
 
         if (pos) this.buildAgent(agentDefinition, pos.x, pos.y)
       })
@@ -456,18 +456,18 @@ class Simulator {
     this._refreshAgentsTable()
   }
 
-  _getFreePositions() {
-    let freePositions = []
+  getFreeCoordinates() {
+    let freeCoordinates = []
 
     for (let y = 0; y < this.stageSize; y++) {
       for (let x = 0; x < this.stageSize; x++) {
         if (!this.positions[y][x]) {
-          freePositions.push({ x: x, y: y })
+          freeCoordinates.push({ x: x, y: y })
         }
       }
     }
 
-    return freePositions
+    return freeCoordinates
   }
 
   _sortAgentRules() {

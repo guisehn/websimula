@@ -1,4 +1,6 @@
 import _ from 'lodash'
+
+import Constants from '../constants'
 import Util from './util'
 
 const SimulationFunctions = {
@@ -395,8 +397,57 @@ const SimulationFunctions = {
     }
   },
 
-  follow_agent: {
+  move_to_random_coordinate: {
     order: 4,
+    type: 'action',
+    label: 'Mover para coordenada aleatória',
+    input: [
+      {
+        name: 'min_x',
+        type: 'number',
+        label: 'X mínimo (horizontal)',
+        defaultValue: 1,
+        required: true
+      },
+      {
+        name: 'max_x',
+        type: 'number',
+        label: 'X máximo (horizontal)',
+        defaultValue: Constants.STAGE_SIZE,
+        required: true
+      },
+      {
+        name: 'min_y',
+        type: 'number',
+        label: 'Y mínimo (vertical)',
+        defaultValue: 1,
+        required: true
+      },
+      {
+        name: 'max_y',
+        type: 'number',
+        label: 'Y máximo (vertical)',
+        defaultValue: Constants.STAGE_SIZE,
+        required: true
+      }
+    ],
+    definition: (env, agent, input) => {
+      let freeCordinates = env.getFreeCoordinates()
+        .filter(coord => coord.x >= input.min_x - 1)
+        .filter(coord => coord.x <= input.max_x - 1)
+        .filter(coord => coord.y >= input.min_y - 1)
+        .filter(coord => coord.y <= input.max_y - 1)
+
+      let coordinate = _.sample(freeCordinates)
+
+      if (coordinate) {
+        env.moveAgent(agent, coordinate.x, coordinate.y)
+      }
+    }
+  },
+
+  follow_agent: {
+    order: 5,
     type: 'action',
     label: 'Seguir agente',
     input: [
@@ -448,7 +499,7 @@ const SimulationFunctions = {
   },
 
   escape_from_agent: {
-    order: 5,
+    order: 6,
     type: 'action',
     label: 'Escapar de agente',
     input: [
@@ -467,7 +518,7 @@ const SimulationFunctions = {
   },
 
   kill_agent: {
-    order: 6,
+    order: 7,
     type: 'action',
     label: 'Matar agente',
     input: [
@@ -501,7 +552,7 @@ const SimulationFunctions = {
   },
 
   die: {
-    order: 7,
+    order: 8,
     type: 'action',
     label: 'Morrer',
     input: [],
@@ -511,7 +562,7 @@ const SimulationFunctions = {
   },
 
   transform: {
-    order: 8,
+    order: 9,
     type: 'action',
     label: 'Transformar',
     input: [
@@ -541,7 +592,7 @@ const SimulationFunctions = {
   },
 
   set_age: {
-    order: 9,
+    order: 10,
     type: 'action',
     label: 'Definir idade do agente',
     input: [
@@ -559,7 +610,7 @@ const SimulationFunctions = {
   },
 
   breed: {
-    order: 10,
+    order: 11,
     type: 'action',
     label: 'Reproduzir agente',
     input: [
@@ -596,7 +647,7 @@ const SimulationFunctions = {
   },
 
   increment_variable: {
-    order: 11,
+    order: 12,
     type: 'action',
     label: 'Incrementar variável',
     input: [
@@ -615,7 +666,7 @@ const SimulationFunctions = {
   },
 
   decrement_variable: {
-    order: 12,
+    order: 13,
     type: 'action',
     label: 'Decrementar variável',
     input: [
@@ -634,7 +685,7 @@ const SimulationFunctions = {
   },
 
   set_variable: {
-    order: 13,
+    order: 14,
     type: 'action',
     label: 'Definir valor de variável',
     input: [
@@ -660,7 +711,7 @@ const SimulationFunctions = {
   },
 
   set_random_value: {
-    order: 14,
+    order: 15,
     type: 'action',
     label: 'Definir valor aleatório para variável',
     input: [
@@ -694,7 +745,7 @@ const SimulationFunctions = {
   },
 
   execute_next_rule: {
-    order: 15,
+    order: 16,
     type: 'action',
     label: 'Executar próxima regra do agente',
     definition: (env, agent, input) => {
