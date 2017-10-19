@@ -30,6 +30,7 @@
 <script>
 import ConditionLogicalOperator from './condition-logical-operator.vue'
 import InputValidator from '../../simulation/input-validator'
+import SimulationFunctions from '../../simulation/functions'
 
 import uuid from 'uuid/v4'
 import _ from 'lodash'
@@ -78,7 +79,7 @@ export default {
 
       let validateObject = (obj) => {
         if (obj.type === 'function_call') {
-          let func = obj['function'] ? window.simulationFunctions[obj.function] : null
+          let func = obj['function'] ? SimulationFunctions[obj.function] : null
 
           if (func) {
             let invalidInputs = InputValidator.getInvalidInputs(obj.input, func)

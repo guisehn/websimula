@@ -49,6 +49,7 @@
 <script>
 import FunctionCall from '../function-call/function-call.vue'
 import InputValidator from '../../simulation/input-validator'
+import SimulationFunctions from '../../simulation/functions'
 
 import draggable from 'vuedraggable'
 import uuid from 'uuid/v4'
@@ -98,12 +99,10 @@ export default {
       this.lastValidation = new Date()
 
       // checks if there is any invalid field
-      let simulationFunctions = window.simulationFunctions
-
       let hasInvalidAction = _.some(this.actions, action => {
         if (!action.function) return true
 
-        let invalidInputs = InputValidator.getInvalidInputs(action.input, simulationFunctions[action.function])
+        let invalidInputs = InputValidator.getInvalidInputs(action.input, SimulationFunctions[action.function])
 
         return invalidInputs.length > 0
       })
