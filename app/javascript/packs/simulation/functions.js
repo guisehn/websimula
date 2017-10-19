@@ -109,8 +109,8 @@ function ensureCoordinateIsInsideStage(env, x, y) {
   return { x: x, y: y }
 }
 
-// TODO: use A* for improvement, this one gets stuck very easily
-function findPathTo(env, agent, x, y) {
+// Simple path finder (gets stuck easily)
+function simpleFindPathTo(env, agent, x, y) {
   let closerX = agent.position.x
   let closerY = agent.position.y
 
@@ -140,6 +140,69 @@ function findPathTo(env, agent, x, y) {
 
   if (!isVerticalOccupied) {
     return { x: agent.position.x, y: closerY }
+  }
+
+  return null
+}
+
+// A* path finder
+function astarFindPathTo(env, agent, targetX, targetY) {
+  let foundNodes = {}
+  let openNodes = [{ x: agent.position.x, y: agent.position.y, isRoot: true }]
+  let currentNode = openNodes[0]
+
+  let calculateHeuristic = (x1, y1, x2, y2) => {
+    let dx = Math.abs(x1 - x2)
+    let dy = Math.abs(y1 - y2)
+    let max = Math.max(dx, dy)
+    let min = Math.min(dx, dy)
+    return 14 * min + 10 * (max - min)
+  }
+
+  let getAdjacentNodes = (node) => {
+    let adjacentCoordinates = getAdjacentCoordinates(env, node.x, node.y, 1, true, (x, y) => {
+      if (x === targetX && y === targetY) return true
+      if (!isCoordinateOccupied(env, x, y) && !isDiagonalBlocked(env, x, y, node.x, node.y) && !_.get(foundNodes, `${y}.${x}`)) return true
+    })
+
+    let adjacentNodes = adjacentCoordinates.map(coordinate => {
+      let g = calculateHeuristic(coordinate.x, coordinate.y, agent.position.x, agent.position.y)
+      let h = calculateHeuristic(coordinate.x, coordinate.y, targetX, targetY)
+      let f = g + h
+
+      return {
+        x: coordinate.x,
+        y: coordinate.y,
+        parent: node,
+        g, h, f
+      }
+    })
+
+    return adjacentNodes
+  }
+
+  while (currentNode && currentNode.h !== 0 && openNodes.length) {
+    // move current node from open -> closed
+    _.remove(openNodes, currentNode)
+    _.set(foundNodes, `${currentNode.y}.${currentNode.x}`, true)
+
+    // generate adjacent nodes
+    let adjacentNodes = getAdjacentNodes(currentNode)
+    openNodes.push.apply(openNodes, adjacentNodes)
+    adjacentNodes.forEach(node => _.set(foundNodes, `${node.y}.${node.x}`, true))
+
+    // go to next node
+    let next = _.minBy(openNodes, 'f')
+    currentNode = next
+  }
+
+  // if we found the final node, let's get the first step taken
+  if (currentNode) {
+    while (!currentNode.parent.isRoot) {
+      currentNode = currentNode.parent
+    }
+
+    return { x: currentNode.x, y: currentNode.y }
   }
 
   return null
@@ -561,6 +624,17 @@ global.simulationFunctions = {
         label: 'Qual agente?',
         defaultValue: null,
         required: true
+      },
+      {
+        name: 'mode',
+        type: 'string',
+        label: 'Modo',
+        defaultValue: 'A*',
+        options: [
+          { value: 'A*', label: 'Inteligente (A*)' },
+          { value: 'simple', label: 'Simples' },
+        ],
+        required: true
       }
     ],
     definition: (env, agent, input) => {
@@ -576,13 +650,16 @@ global.simulationFunctions = {
           let position = env.positions[y][x]
 
           if (position && position.agent.definition.id === input.agent_id) {
+            let findPathTo = input.mode === 'simple' ? simpleFindPathTo : astarFindPathTo
             moveTo = findPathTo(env, agent, x, y)
             if (moveTo) return true
           }
         }
       )
 
-      if (coordinateWithAgent) {
+      if (coordinateWithAgent
+        && !isCoordinateOccupied(env, moveTo.x, moveTo.y)
+        && !isDiagonalBlocked(env, agent.position.x, agent.position.y, moveTo.x, moveTo.y)) {
         env.moveAgent(agent, moveTo.x, moveTo.y)
       }
     }
