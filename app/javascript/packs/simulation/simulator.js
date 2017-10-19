@@ -2,6 +2,7 @@ import _ from 'lodash'
 import ExpressionEvaluator from 'expr-eval'
 
 import Constants from '../constants'
+import SimulationFunctions from './functions'
 
 let global = window
 
@@ -630,6 +631,6 @@ $(document).on('turbolinks:load', () => {
     return
   }
 
-  let simulator = new Simulator(global.projectDefinition, global.simulationFunctions, $simulator)
+  let simulator = new Simulator(global.projectDefinition, SimulationFunctions, $simulator)
   simulator.reset()
 })

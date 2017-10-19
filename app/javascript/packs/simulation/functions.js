@@ -1,7 +1,5 @@
 import _ from 'lodash'
 
-const global = window
-
 const COMPARISON_OPTIONS = [
   { value: '=', label: 'É igual a' },
   { value: '!=', label: 'É diferente de' },
@@ -219,7 +217,7 @@ function performComparison(value1, value2, comparer) {
   }
 }
 
-global.simulationFunctions = {
+const simulationFunctions = {
   value_comparison: {
     order: 1,
     type: 'condition',
@@ -920,3 +918,5 @@ global.simulationFunctions = {
     }
   }
 }
+
+export default simulationFunctions

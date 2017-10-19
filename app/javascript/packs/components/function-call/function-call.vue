@@ -63,6 +63,7 @@
 <script>
 import _ from 'lodash'
 import InputValidator from '../../simulation/input-validator'
+import SimulationFunctions from '../../simulation/functions'
 
 export default {
   name: 'function-call',
@@ -86,7 +87,7 @@ export default {
     },
 
     simulationFunctions () {
-      return window.simulationFunctions
+      return SimulationFunctions
     },
 
     availableFunctions () {
