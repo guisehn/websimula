@@ -55,7 +55,7 @@
             class="agent-context-menu">
             <ul class="dropdown-menu">
               <li class="dropdown-header">Adicionar agente fixo</li>
-              <li v-for="agent in agents">
+              <li v-for="agent in orderedAgents">
                 <a href="" v-on:click.prevent="addAgent(agent)">
                   <img :src="agent.image">
                   {{ agent.name }}
@@ -130,6 +130,10 @@ export default {
   },
 
   computed: {
+    orderedAgents () {
+      return _.orderBy(this.agents, 'name')
+    },
+
     stageElementSize () {
       return Constants.STAGE_SIZE * Constants.AGENT_SIZE
     },
