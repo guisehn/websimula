@@ -22,14 +22,14 @@
           <span v-if="input.type === 'variable'">
             <select v-model="item.input[input.name]" class="form-control" :disabled="readOnly" v-on:change="revalidate(input.name)">
               <option :disabled="input.required" :value="null">{{ input.nullLabel || 'Escolha a variável' }}</option>
-              <option v-for="variable in variables" :value="variable.id">{{ variable.name }}</option>
+              <option v-for="variable in orderedVariables" :value="variable.id">{{ variable.name }}</option>
             </select>
           </span>
 
           <span v-if="input.type === 'agent'">
             <select v-model="item.input[input.name]" class="form-control" :disabled="readOnly" v-on:change="revalidate(input.name)">
               <option :disabled="input.required" :value="null">{{ input.nullLabel || 'Escolha o agente' }}</option>
-              <option v-for="agent in agents" :value="agent.id">{{ agent.name }}</option>
+              <option v-for="agent in orderedAgents" :value="agent.id">{{ agent.name }}</option>
             </select>
           </span>
 
@@ -77,6 +77,14 @@ export default {
   },
 
   computed: {
+    orderedAgents () {
+      return _.orderBy(this.agents, 'name')
+    },
+
+    orderedVariables () {
+      return _.orderBy(this.variables, 'name')
+    },
+
     simulationFunctions () {
       return window.simulationFunctions
     },
