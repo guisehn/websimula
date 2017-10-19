@@ -80,7 +80,7 @@ function isCoordinateOccupied(env, x, y) {
 }
 
 function isDiagonalBlocked(env, x1, y1, x2, y2) {
-  return (x1 !== x2 || y1 !== y2) && isCoordinateOccupied(env, x1, y2) && isCoordinateOccupied(env, x2, y1)
+  return x1 !== x2 && y1 !== y2 && isCoordinateOccupied(env, x1, y2) && isCoordinateOccupied(env, x2, y1)
 }
 
 function generateCoordinateFromMovement(env, x, y, direction, steps = 1) {
@@ -380,7 +380,10 @@ global.simulationFunctions = {
         false,
         (x, y) => {
           let position = env.positions[y][x]
-          return position && (!input.agent_id || position.agent.definition.id === input.agent_id)
+
+          if (position && (!input.agent_id || position.agent.definition.id === input.agent_id)) {
+            return true
+          }
         }
       )
 
@@ -409,7 +412,10 @@ global.simulationFunctions = {
         }
 
         let position = env.positions[y][x]
-        return position && (!input.agent_id || position.agent.definition.id === input.agent_id)
+
+        if (position && (!input.agent_id || position.agent.definition.id === input.agent_id)) {
+          return true
+        }
       })
 
       return Boolean(coordinateWithAgent)
@@ -485,11 +491,33 @@ global.simulationFunctions = {
         label: 'Quantidade de posições',
         required: true,
         defaultValue: 1
+      },
+      {
+        name: 'try_smaller_step',
+        type: 'boolean',
+        label: 'Tentar movimento menor se espaço estiver ocupado',
+        required: false,
+        defaultValue: false
       }
     ],
     definition: (env, agent, input) => {
-      let coordinate = generateCoordinateFromMovement(env, agent.position.x, agent.position.y, input.direction, input.steps)
-      env.moveAgent(agent, coordinate.x, coordinate.y)
+      let steps = input.steps
+
+      while (steps > 0) {
+        let coordinate = generateCoordinateFromMovement(env, agent.position.x, agent.position.y, input.direction, steps)
+        let moved = false
+
+        if (!isCoordinateOccupied(env, coordinate.x, coordinate.y)) {
+          env.moveAgent(agent, coordinate.x, coordinate.y)
+          break
+        }
+
+        if (input.try_smaller_step) {
+          steps--
+        } else {
+          break
+        }
+      }
     }
   },
 
@@ -600,7 +628,10 @@ global.simulationFunctions = {
         }
 
         let position = env.positions[y][x]
-        return position && (!input.agent_id || position.agent.definition.id === input.agent_id)
+
+        if (position && (!input.agent_id || position.agent.definition.id === input.agent_id)) {
+          return true
+        }
       })
 
       if (coordinateWithAgent) {
