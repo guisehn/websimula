@@ -91,7 +91,7 @@
 
         <table class="table">
           <tbody>
-            <tr v-for="agent in agents">
+            <tr v-for="agent in orderedAgents">
               <td nowrap><img :src="agent.image" ></td>
               <td width="100%">{{ agent.name }}</td>
               <td class="times" nowrap>×</td>
