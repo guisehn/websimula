@@ -158,6 +158,7 @@ const Util = {
   // A* path finder
   astarFindPathTo(env, agent, targetX, targetY) {
     let foundNodes = {}
+    let closedNodes = []
     let openNodes = [{ x: agent.position.x, y: agent.position.y, isRoot: true }]
     let currentNode = openNodes[0]
 
@@ -195,6 +196,7 @@ const Util = {
       // move current node from open -> closed
       _.remove(openNodes, currentNode)
       _.set(foundNodes, `${currentNode.y}.${currentNode.x}`, true)
+      if (!currentNode.isRoot) closedNodes.push(currentNode)
 
       // generate adjacent nodes
       let adjacentNodes = getAdjacentNodes(currentNode)
@@ -206,16 +208,16 @@ const Util = {
       currentNode = next
     }
 
-    // if we found the final node, let's get the first step taken
-    if (currentNode) {
-      while (!currentNode.parent.isRoot) {
-        currentNode = currentNode.parent
-      }
+    // if `currentNode` is defined, it means we found a path to the target coordinate
+    // otherwise we get the most approximate solution
+    let finalNode = currentNode ? currentNode : _.minBy(closedNodes, 'f')
 
-      return { x: currentNode.x, y: currentNode.y }
+    // from the node, retrieve the first step taken
+    while (!finalNode.parent.isRoot) {
+      finalNode = finalNode.parent
     }
 
-    return null
+    return { x: finalNode.x, y: finalNode.y }
   }
 }
 
