@@ -212,12 +212,16 @@ const Util = {
     // otherwise we get the most approximate solution
     let finalNode = currentNode ? currentNode : _.minBy(closedNodes, 'f')
 
-    // from the node, retrieve the first step taken
-    while (!finalNode.parent.isRoot) {
-      finalNode = finalNode.parent
+    if (finalNode) {
+      // retrieve the first step taken to arrive at this node
+      while (!finalNode.parent.isRoot) {
+        finalNode = finalNode.parent
+      }
+
+      return { x: finalNode.x, y: finalNode.y }
     }
 
-    return { x: finalNode.x, y: finalNode.y }
+    return null
   }
 }
 
