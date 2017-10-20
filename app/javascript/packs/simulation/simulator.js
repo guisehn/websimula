@@ -251,6 +251,8 @@ class Simulator {
     this.simulatorElement.find('[data-value=speed]').on('input', function (e) {
       simulator.simulatorElement.find('[data-bind=speed]').text(this.value)
 
+      simulator.stage.toggleClass('no-transition', this.value <= Constants.DISABLE_TRANSITION_THRESHOLD)
+
       simulator.speed = this.value
       if (simulator.loopInterval) simulator.startLoop()
     })

@@ -29,6 +29,10 @@
       margin-top 0.15s linear;
   }
 
+  &.no-transition .agent {
+    transition: none;
+  }
+
   .empty {
     cursor: default;
     position: absolute;
