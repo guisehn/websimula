@@ -269,7 +269,10 @@ class Simulator {
       let agent = $(this).closest('.agent-context-menu').data('agent')
 
       if (confirm(`Tem certeza que deseja remover o agente ${agent.definition.name}?`)) {
-        setTimeout(() => simulator.killAgent(agent), 500)
+        setTimeout(() => {
+          simulator.killAgent(agent)
+          simulator._refreshAgentsTable()
+        }, 500)
       }
 
       e.preventDefault()
