@@ -14,7 +14,7 @@
         Preencha os dados abaixo para se cadastrar e obter acesso ao projeto <b><%= @invite.project.name %></b>.
       </div>
     <% else %>
-      <p>Preencha os dados abaixo para se cadastrar e ter acesso ao Simula.</p>
+      <p>Preencha os dados abaixo para se cadastrar e ter acesso ao <b>web simula</b>.</p>
     <% end %>
 
     <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
