@@ -41,7 +41,7 @@ class RulesController < ApplicationController
     end
 
     def set_rule
-      @rule = Rule.where(agent_id: @project.agents.map(&:id)).find(params[:id])
+      @rule = @agent.rules.find(params[:id])
     end
 
     def rule_params
