@@ -109,6 +109,8 @@ class Simulator {
     this.stopLoop()
     this.loopInterval = setInterval(() => this.step(), this.speed)
     this._setButtonsStates()
+
+    this.stage.addClass('loop-running')
   }
 
   stopLoop() {
@@ -117,6 +119,8 @@ class Simulator {
       this.loopInterval = null
       this._setButtonsStates()
     }
+
+    this.stage.removeClass('loop-running')
   }
 
   buildAgent(definition, x, y, age, render) {

@@ -29,7 +29,7 @@
       margin-top 0.15s linear;
   }
 
-  &.no-transition .agent {
+  &.loop-running.no-transition .agent {
     transition: none;
   }
 
