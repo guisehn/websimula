@@ -162,14 +162,6 @@ const Util = {
     let openNodes = [{ x: agent.position.x, y: agent.position.y, isRoot: true }]
     let currentNode = openNodes[0]
 
-    let calculateHeuristic = (x1, y1, x2, y2) => {
-      let dx = Math.abs(x1 - x2)
-      let dy = Math.abs(y1 - y2)
-      let max = Math.max(dx, dy)
-      let min = Math.min(dx, dy)
-      return 14 * min + 10 * (max - min)
-    }
-
     let getAdjacentNodes = (node) => {
       let adjacentCoordinates = Util.getAdjacentCoordinates(env, node.x, node.y, 1, true, (x, y) => {
         if (x === targetX && y === targetY) return true
@@ -177,8 +169,8 @@ const Util = {
       })
 
       let adjacentNodes = adjacentCoordinates.map(coordinate => {
-        let g = calculateHeuristic(coordinate.x, coordinate.y, agent.position.x, agent.position.y)
-        let h = calculateHeuristic(coordinate.x, coordinate.y, targetX, targetY)
+        let g = Util.calculateDistance(coordinate.x, coordinate.y, agent.position.x, agent.position.y)
+        let h = Util.calculateDistance(coordinate.x, coordinate.y, targetX, targetY)
         let f = g + h
 
         return {
@@ -210,6 +202,7 @@ const Util = {
 
     // if `currentNode` is defined, it means we found a path to the target coordinate
     // otherwise we get the most approximate solution
+    let willArrive = Boolean(currentNode)
     let finalNode = currentNode ? currentNode : _.minBy(closedNodes, 'f')
 
     if (finalNode) {
@@ -218,10 +211,18 @@ const Util = {
         finalNode = finalNode.parent
       }
 
-      return { x: finalNode.x, y: finalNode.y }
+      return { x: finalNode.x, y: finalNode.y, willArrive: willArrive }
     }
 
     return null
+  },
+
+  calculateDistance(x1, y1, x2, y2) {
+    let dx = Math.abs(x1 - x2)
+    let dy = Math.abs(y1 - y2)
+    let max = Math.max(dx, dy)
+    let min = Math.min(dx, dy)
+    return 14 * min + 10 * (max - min)
   }
 }
 
