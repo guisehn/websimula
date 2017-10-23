@@ -15,6 +15,11 @@
       </div>
 
       <div class="actions">
+        <a class="help" v-on:click.prevent="help()" href="" v-if="showHelp">
+          <span class="glyphicon glyphicon-question-sign" title="Ajuda"></span>
+          <span class="sr-only">Ajuda</span>
+        </a>
+
         <a class="negate" v-on:click.prevent="negate()" href="" v-if="showNegateFunction">
           <span class="glyphicon glyphicon-exclamation-sign" title="Negar condição"></span>
           <span class="sr-only">Negar condição</span>
@@ -35,6 +40,7 @@
 
 <script>
 import FunctionCall from '../function-call/function-call.vue'
+import SimulationFunctions from '../../simulation/functions'
 
 export default {
   name: 'condition-function-call',
@@ -53,10 +59,20 @@ export default {
   computed: {
     showNegateFunction () {
       return this.itemData.function && !this.readOnly
+    },
+
+    showHelp () {
+      let func = this.itemData.function
+      return func && SimulationFunctions[func].help
     }
   },
 
   methods: {
+    help () {
+      let func = SimulationFunctions[this.itemData.function]
+      alert(func.help(this.itemData.input, this.agents, this.variables))
+    },
+
     negate () {
       this.itemData.negate = !this.itemData.negate
     },

@@ -139,10 +139,10 @@ export default {
     }
 
     .remove,
-    .negate {
+    .negate,
+    .help {
       display: inline-block;
       height: 26px;
-      color: #c00;
       text-decoration: none;
       font-size: 18px;
       opacity: 0.3;
@@ -153,6 +153,15 @@ export default {
       &:hover {
         opacity: 1;
       }
+    }
+
+    .remove,
+    .negate {
+      color: #c00;
+    }
+
+    .help {
+      color: #069;
     }
 
     .actions {

@@ -28,10 +28,17 @@
                   empty-label="Escolha uma ação"></function-call>
               </div>
 
-              <a class="remove" v-on:click.prevent="destroyAction(index)" href="" v-if="!readOnly">
-                <span class="glyphicon glyphicon-remove-circle" title="Remover ação"></span>
-                <span class="sr-only">Remover ação</span>
-              </a>
+              <div class="actions">
+                <a class="help" v-on:click.prevent="help(index)" href="" v-if="shouldShowHelp(index)">
+                  <span class="glyphicon glyphicon-question-sign" title="Ajuda"></span>
+                  <span class="sr-only">Ajuda</span>
+                </a>
+
+                <a class="remove" v-on:click.prevent="destroyAction(index)" href="" v-if="!readOnly">
+                  <span class="glyphicon glyphicon-remove-circle" title="Remover ação"></span>
+                  <span class="sr-only">Remover ação</span>
+                </a>
+              </div>
             </div>
 
             <div class="clearfix"></div>
@@ -86,6 +93,17 @@ export default {
         input: {},
         negate: false
       })
+    },
+
+    shouldShowHelp (index) {
+      let func = this.actions[index]['function']
+      return func && SimulationFunctions[func].help
+    },
+
+    help (index) {
+      let action = this.actions[index]
+      let func = SimulationFunctions[action.function]
+      alert(func.help(action.input, this.agents, this.variables))
     },
 
     destroyAction (index) {
@@ -145,22 +163,34 @@ export default {
     margin-bottom: 6px;
     padding: 7px;
 
-    .remove {
-      display: block;
+    .actions {
       float: right;
-      height: 26px;
-      color: #c00;
-      text-decoration: none;
-      font-size: 18px;
-      opacity: 0.3;
-      vertical-align: top;
       border-left: 1px solid rgba(0, 0, 0, .2);
-      margin: 0 3px 0 8px;
-      padding: 2px 0 0 8px;
-      transition: opacity .1s linear;
+      margin-right: 4px;
+      margin-left: 8px;
 
-      &:hover {
-        opacity: 1;
+      .remove,
+      .help {
+        display: inline-block;
+        height: 26px;
+        text-decoration: none;
+        font-size: 18px;
+        opacity: 0.3;
+        vertical-align: top;
+        padding: 2px 0 0 8px;
+        transition: opacity .1s linear;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+
+      .remove {
+        color: #c00;
+      }
+
+      .help {
+        color: #069;
       }
     }
 

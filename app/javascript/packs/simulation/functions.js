@@ -36,7 +36,11 @@ const SimulationFunctions = {
     definition: (env, agent, input) => {
       let variable = env.variables[input.variable_id]
       return Util.performComparison(variable.value, input.value, input.comparison)
-    }
+    },
+    help: () =>
+      `Use esta condição para comparar o valor de uma variável. Exemplos:\n\n` +
+      `"Bandeiras capturadas" é maior que 5\n` +
+      `"Nome" é igual a "foo"`
   },
 
   variable_comparison: {
@@ -72,7 +76,10 @@ const SimulationFunctions = {
       let variable1 = env.variables[input.variable1_id]
       let variable2 = env.variables[input.variable2_id]
       return Util.performComparison(variable1.value, variable2.value, input.comparison)
-    }
+    },
+    help: () =>
+      `Use esta condição para comparar o valor de uma variável com outra variável. Exemplo:\n\n` +
+      `Variável "Pessoas saudáveis" é maior ou igual à variável "Pessoas doentes"`
   },
 
   agent_quantity_comparison: {
@@ -107,7 +114,11 @@ const SimulationFunctions = {
     definition: (env, agent, input) => {
       let count = env.agents.filter(a => a.definition.id === input.agent_id).length
       return Util.performComparison(count, input.value, input.comparison)
-    }
+    },
+    help: () =>
+      `Use esta condição para verificar a quantidade de um tipo de agente no ambiente. Exemplos:\n\n` +
+      `"Rato" é igual a 0 (quando não houver nenhum agente "Rato" no ambiente)\n` +
+      `"Queijo" é maior que 5 (quando houver mais que cinco agentes "Queijo" no ambiente)`
   },
 
   check_coordinate_occupation: {
@@ -147,7 +158,16 @@ const SimulationFunctions = {
       }
 
       return input.agent_id ? (env.positions[y][x].agent.definition.id == input.agent_id) : true
-    }
+    },
+    help: () =>
+      `Use esta condição para verificar se uma coordenada específica do ambiente está ocupada.\n\n` +
+      `Você pode, opcionalmente, definir um agente específico a ser verificado. Caso não seja ` +
+      `especificado um agente, será verificado se qualquer agente está ocupando aquela posição.\n\n` +
+      `Além disso, caso a coordenada a ser verificada estiver em uma variável, você pode usar o ` +
+      `nome da variável entre colchetes. Por exemplo, supondo que existam variáveis "Valor A" = 2 e "Valor B" = 3:\n` +
+      `X (horizontal) = [Valor A]\n` +
+      `Y (vertical) = [Valor B]\n` +
+      `Nesse caso, será verificado se a coordenada na coluna 2, linha 3 está ocupada.`
   },
 
   agent_x_coordinate_comparison: {
@@ -174,7 +194,12 @@ const SimulationFunctions = {
     ],
     definition: (env, agent, input) => {
       return Util.performComparison(agent.position.x + 1, input.value, input.comparison)
-    }
+    },
+    help: () =>
+      `Use esta condição para verificar a coordenada X (horizontal) do agente atual no ambiente. Exemplo:\n\n` +
+      `É igual a 5 -- verifica se o agente está na coluna 5 do ambiente\n` +
+      `É maior que 5 -- verifica se o agente está à direita da coluna 5 do ambiente\n` +
+      `É igual a [X] (entre colchetes) -- verifica se a coluna do agente é igual ao valor da variável "X"`
   },
 
   agent_y_coordinate_comparison: {
@@ -201,7 +226,12 @@ const SimulationFunctions = {
     ],
     definition: (env, agent, input) => {
       return Util.performComparison(agent.position.y + 1, input.value, input.comparison)
-    }
+    },
+    help: () =>
+      `Use esta condição para verificar a coordenada Y (vertical) do agente atual no ambiente. Exemplo:\n\n` +
+      `É igual a 5 -- verifica se o agente está na linha 5 do ambiente\n` +
+      `É maior que 5 -- verifica se o agente está abaixo da linha 5 do ambiente\n` +
+      `É igual a [X] (entre colchetes) -- verifica se a linha do agente é igual ao valor da variável "X"`
   },
 
   perceive_agent: {
@@ -235,7 +265,13 @@ const SimulationFunctions = {
       )
 
       return Boolean(coordinateWithAgent)
-    }
+    },
+    help: () =>
+      `Use esta condição para verificar se o agente atual está percebendo algum outro agente ` +
+      `no ambiente, de tipo específico ou não. Esta verificação está sujeita à área de percepção ` +
+      `definida para o agente atual (do qual a regra de comportamento pertence). Por exemplo, se ` +
+      `a área de percepção do agente for "3", ele conseguirá perceber agentes a três quadrados de ` +
+      `distância, em qualquer direção. Caso seja "0", ele não conseguirá perceber nenhum agente.`
   },
 
   touch_agent: {
@@ -266,7 +302,11 @@ const SimulationFunctions = {
       })
 
       return Boolean(coordinateWithAgent)
-    }
+    },
+    help: () =>
+      `Use esta condição para verificar se o agente atual está atingindo algum outro agente, ` +
+      `específico ou não. Por atingir, entende-se que ele esteja a um quadrado de distância do ` +
+      `outro agente em qualquer direção, incluindo diagonais.`
   },
 
   reach_age: {
@@ -284,7 +324,14 @@ const SimulationFunctions = {
     ],
     definition: (env, agent, input) => {
       return agent.age >= input.age
-    }
+    },
+    help: () =>
+      `Use esta condição para verificar se o agente atual possui idade (em ciclos de simulação) ` +
+      `igual ou maior a algum valor. Exemplo: se definido "5", será verificado se o agente está ` +
+      `há cinco ou mais ciclos de simulação presente no ambiente.\n\n` +
+      `Caso o valor a ser verificado esteja em uma variável, especifique seu nome entre colchetes ` +
+      `(exemplo: [X]). Nesse exemplo, caso o valor da variável [X] seja 3, será verificado se o agente ` +
+      `está há três ou mais ciclos de simulação presente no ambiente.`
   },
 
   move_random: {
@@ -295,8 +342,8 @@ const SimulationFunctions = {
       {
         name: 'allow_diagonal',
         type: 'boolean',
-        label: 'Permitir diagonal?',
-        defaultValue: false,
+        label: 'Permitir movimento diagonal?',
+        defaultValue: true,
         required: true
       }
     ],
@@ -312,10 +359,13 @@ const SimulationFunctions = {
 
       let randomCoordinate = _.sample(freeAdjacentCoordinates)
 
-      if (randomCoordinate) {
+      if (randomCoordinate && !Util.isDiagonalBlocked(env, agent.x, agent.y, randomCoordinate.x, randomCoordinate.y)) {
         env.moveAgent(agent, randomCoordinate.x, randomCoordinate.y)
       }
-    }
+    },
+    help: () =>
+      `Move o agente para uma posição livre aleatória, caso disponível. Caso o movimento diagonal ` +
+      `não seja marcado, o agente irá mover apenas para as posições norte, sul, leste ou oeste.`
   },
 
   move: {
@@ -394,7 +444,10 @@ const SimulationFunctions = {
       if (!Util.isCoordinateOccupied(env, coordinate.x, coordinate.y)) {
         env.moveAgent(agent, coordinate.x, coordinate.y)
       }
-    }
+    },
+    help: () =>
+      `Move o agente para uma coordenada específica no ambiente, onde X representa a coluna e` +
+      `Y representa a linha. Caso a coordenada já esteja ocupada, o agente não será movido.`
   },
 
   move_to_random_coordinate: {
@@ -443,7 +496,10 @@ const SimulationFunctions = {
       if (coordinate) {
         env.moveAgent(agent, coordinate.x, coordinate.y)
       }
-    }
+    },
+    help: () =>
+      `Move o agente para uma coordenada aleatória livre no ambiente, dentro dos limites (X e Y) ` +
+      `especificados. Caso nenhuma coordenada esteja livre dentro destes limites, o agente não é movido.`
   },
 
   follow_agent: {
@@ -495,7 +551,19 @@ const SimulationFunctions = {
         && !Util.isDiagonalBlocked(env, agent.position.x, agent.position.y, moveTo.x, moveTo.y)) {
         env.moveAgent(agent, moveTo.x, moveTo.y)
       }
-    }
+    },
+    help: () =>
+      `Faz com que o agente siga outro agente (mova em sua direção), caso esteja dentro de sua área ` +
+       `de percepção. Caso o agente escolhido não esteja em sua área de percepção, ele não irá se mover. ` +
+       `Geralmente, utiliza-se esta ação associada à condição "Perceber agente".\n\n` +
+       `Para o campo "Modo", podem ser escolhidas as opções "Inteligente (A*)" ou "Simples".\n\n` +
+       `No modo inteligente, o agente sempre conseguirá encontrar um caminho para chegar o mais ` +
+       `próximo possível do agente seguido, desviando de outros agentes se necessário. Este modo ` +
+       `utiliza o algoritmo de busca de caminho A*.\n\n` +
+       `No modo simples, o agente tentará se deslocar em direção ao agente destino, mas pode ficar ` +
+       `preso no caminho caso exista um obstáculo. A única vantagem deste modo é utilizar menor poder ` +
+       `computacional, deixando a execução da simulação mais rápida caso existam muitos agentes no ` +
+       `ambiente.`
   },
 
   escape_from_agent: {
@@ -571,7 +639,11 @@ const SimulationFunctions = {
       } else {
         SimulationFunctions.move_random.definition(env, agent, {})
       }
-    }
+    },
+    help: () =>
+      `Faz com que o agente fuja de outro agente (mova em movimento contrário a ele), caso esteja ` +
+      `dentro de sua área de percepção. Caso o agente escolhido não esteja em sua área de percepção, ` +
+      `ele não irá se mover. Geralmente, utiliza-se esta ação associada à condição "Perceber agente".`
   },
 
   kill_agent: {
@@ -605,7 +677,11 @@ const SimulationFunctions = {
         let agentFound = env.positions[coordinateWithAgent.y][coordinateWithAgent.x].agent
         env.killAgent(agentFound)
       }
-    }
+    },
+    help: () =>
+      `Faz com que o agente mate outro agente, específico ou não, removendo-o do ambiente. ` +
+      `Ele só irá matar o agente caso esteja a um quadrado de distância, em qualquer direção, incluindo ` +
+      `diagonais, do agente a ser morto. Geralmente, utiliza-se esta ação associada à condição "Atingir agente".`
   },
 
   die: {
@@ -615,7 +691,9 @@ const SimulationFunctions = {
     input: [],
     definition: (env, agent, input) => {
       env.killAgent(agent)
-    }
+    },
+    help: () =>
+      `Faz com que o agente atual seja removido do ambiente.`
   },
 
   transform: {
@@ -645,7 +723,10 @@ const SimulationFunctions = {
       agent.age = input.keep_age ? agent.age : 0
 
       env.renderAgent(agent, true)
-    }
+    },
+    help: () =>
+      `Faz com que o agente atual seja transformado em outro tipo de agente. Caso a opção "Manter idade" ` +
+      ` não seja marcada, o agente terá a sua idade (em ciclos) redefinida para 0.`
   },
 
   set_age: {
@@ -663,7 +744,11 @@ const SimulationFunctions = {
     ],
     definition: (env, agent, input) => {
       agent.age = _.isNaN(input.age) ? 0 : input.age
-    }
+    },
+    help: () =>
+      `Define a idade do agente (em ciclos) para um valor específico. Caso o valor que você queira ` +
+      `definir esteja em uma variável, utilize o seu nome entre colchetes (por exemplo, [Idade] para ` +
+      `uma variável chamada "Idade")`
   },
 
   breed: {
@@ -700,7 +785,10 @@ const SimulationFunctions = {
           quantityCreated++
         }
       })
-    }
+    },
+    help: () =>
+      `Cria um ou mais novos agentes de determinado tipo no ambiente, de acordo com a quantidade e tipo ` +
+      `especificados.Os novos agentes serão criados em volta do agente atual.`
   },
 
   increment_variable: {
@@ -719,7 +807,9 @@ const SimulationFunctions = {
     definition: (env, agent, input) => {
       let variable = env.variables[input.variable_id]
       ++variable.value
-    }
+    },
+    help: () =>
+      `Aumenta em 1 o valor de uma variável numérica.`
   },
 
   decrement_variable: {
@@ -738,7 +828,9 @@ const SimulationFunctions = {
     definition: (env, agent, input) => {
       let variable = env.variables[input.variable_id]
       --variable.value
-    }
+    },
+    help: () =>
+      `Diminui em 1 o valor de uma variável numérica.`
   },
 
   set_variable: {
@@ -764,7 +856,22 @@ const SimulationFunctions = {
     definition: (env, agent, input) => {
       let variable = env.variables[input.variable_id]
       variable.value = variable.definition.data_type === 'number' ? Number(input.value) : input.value
-    }
+    },
+    help: () =>
+      `Redefine o valor de uma variável para um determinado valor. Exemplos:\n\n` +
+      `Variável: "Valor A" - Valor: 5\n` +
+      `Variável: "Palavra" - Valor: foo\n\n` +
+      `Também é possível definir valores dinâmicos, baseados em uma ou mais variáveis. Para isso, utilize os ` +
+      `símbolos {{ e }} para definir a área de computação, e os nomes de variáveis entre colchetes para ` +
+      `acessar seus valores. Exemplos:\n\n` +
+      `Variável: "Valor" - Valor: {{ [Valor] + 3 }} -- irá incrementar em 3 o valor da variável "Valor"\n\n` +
+      `Variável: "C" - Valor: {{ [A] + [B] }} -- faz com que o valor da variável C seja igual a A + B\n\n` +
+      `Variável: "C" - Valor: {{ [B] - [A] }} -- faz com que o valor da variável C seja igual a B - A\n\n` +
+      `Variável: "Nome" - Valor: {{ [Nome 1] || "-" || [Nome 2] }} -- faz com que o valor da variável "Nome" seja ` +
+      `uma concatenação dos valores das variáveis "Nome 1" e "Nome 2", com um "-" no meio). Nesse caso, ` +
+      `se "Nome 1" for João e "Nome 2" for Maria, o valor de "Nome" seria definido para João-Maria.\n\n` +
+      `Os operadores matemáticos permitidos são + (soma), - (subtração), * (multiplicação), / (divisão), ` +
+      `% (resto) e || (concatenação para textos).`
   },
 
   set_random_value: {
@@ -798,7 +905,9 @@ const SimulationFunctions = {
       let variable = env.variables[input.variable_id]
       let rand = Math.floor(Math.random() * (input.max - input.min + 1)) + input.min
       variable.value = variable.type === 'string' ? String(rand) : rand
-    }
+    },
+    help: () =>
+      `Redefine o valor de uma variável para um valor aleatório.`
   },
 
   execute_next_rule: {
@@ -807,7 +916,10 @@ const SimulationFunctions = {
     label: 'Executar próxima regra do agente',
     definition: (env, agent, input) => {
       env.executeNextRule()
-    }
+    },
+    help: () =>
+      `Tenta executar as próximas regras deste agente (caso as condições passem), em vez de parar ` +
+      `de executar as regras.`
   }
 }
 
