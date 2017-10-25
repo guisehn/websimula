@@ -38,9 +38,11 @@ const SimulationFunctions = {
       return Util.performComparison(variable.value, input.value, input.comparison)
     },
     help: () =>
-      `Use esta condição para comparar o valor de uma variável. Exemplos:\n\n` +
-      `"Bandeiras capturadas" é maior que 5\n` +
-      `"Nome" é igual a "foo"`
+      `<p>Use esta condição para comparar o valor de uma variável. Exemplos:</p>
+       <ul>
+         <li><code>Bandeiras capturadas</code> é maior que <code>5</code></li>
+         <li><code>Nome</code> é igual a <code>foo</code></li>
+       </ul>`
   },
 
   variable_comparison: {
@@ -78,8 +80,10 @@ const SimulationFunctions = {
       return Util.performComparison(variable1.value, variable2.value, input.comparison)
     },
     help: () =>
-      `Use esta condição para comparar o valor de uma variável com outra variável. Exemplo:\n\n` +
-      `Variável "Pessoas saudáveis" é maior ou igual à variável "Pessoas doentes"`
+      `<p>Use esta condição para comparar o valor de uma variável com outra variável. Exemplo:</p>
+       <ul>
+         <li>Variável <code>Pessoas saudáveis</code> é maior ou igual à variável <code>Pessoas doentes</code>
+       </ul>`
   },
 
   agent_quantity_comparison: {
@@ -116,9 +120,11 @@ const SimulationFunctions = {
       return Util.performComparison(count, input.value, input.comparison)
     },
     help: () =>
-      `Use esta condição para verificar a quantidade de um tipo de agente no ambiente. Exemplos:\n\n` +
-      `"Rato" é igual a 0 (quando não houver nenhum agente "Rato" no ambiente)\n` +
-      `"Queijo" é maior que 5 (quando houver mais que cinco agentes "Queijo" no ambiente)`
+      `<p>Use esta condição para verificar a quantidade de um tipo de agente no ambiente. Exemplos:</p>
+       <ul>
+         <li><code>Rato</code> é igual a <code>0</code> (quando não houver nenhum agente <code>Rato</code> no ambiente)</li>
+         <li><code>Queijo</code> é maior que <code>5</code> (quando houver mais que cinco agentes <code>Queijo</code> no ambiente)</li>
+       </ul>`
   },
 
   check_coordinate_occupation: {
@@ -160,14 +166,18 @@ const SimulationFunctions = {
       return input.agent_id ? (env.positions[y][x].agent.definition.id == input.agent_id) : true
     },
     help: () =>
-      `Use esta condição para verificar se uma coordenada específica do ambiente está ocupada.\n\n` +
-      `Você pode, opcionalmente, definir um agente específico a ser verificado. Caso não seja ` +
-      `especificado um agente, será verificado se qualquer agente está ocupando aquela posição.\n\n` +
-      `Além disso, caso a coordenada a ser verificada estiver em uma variável, você pode usar o ` +
-      `nome da variável entre colchetes. Por exemplo, supondo que existam variáveis "Valor A" = 2 e "Valor B" = 3:\n` +
-      `X (horizontal) = [Valor A]\n` +
-      `Y (vertical) = [Valor B]\n` +
-      `Nesse caso, será verificado se a coordenada na coluna 2, linha 3 está ocupada.`
+      `<p>Use esta condição para verificar se uma coordenada específica do ambiente está ocupada.</p>
+       <p>Você pode, opcionalmente, definir um agente específico a ser verificado. Caso não seja
+       especificado um agente, será verificado se qualquer agente está ocupando aquela posição.</p>
+       <p>Além disso, caso a coordenada a ser verificada estiver em uma variável, você pode usar o
+       nome da variável entre colchetes. Por exemplo, supondo que existam variáveis
+       <code>Valor A</code> com valor <code>2</code> e <code>Valor B</code> com valor <code>3</code>,
+       e seja definido para esta regra os valores:</p>
+       <ul>
+         <li><b>X (horizontal):</b> <code>[Valor A]</code></li>
+         <li><b>Y (vertical):</b> <code>[Valor B]</code></li>
+       </ul>
+       <p>Nesse caso, será verificado se a coordenada na coluna 2, linha 3 está ocupada.</p>`
   },
 
   agent_x_coordinate_comparison: {
@@ -196,10 +206,12 @@ const SimulationFunctions = {
       return Util.performComparison(agent.position.x + 1, input.value, input.comparison)
     },
     help: () =>
-      `Use esta condição para verificar a coordenada X (horizontal) do agente atual no ambiente. Exemplo:\n\n` +
-      `É igual a 5 -- verifica se o agente está na coluna 5 do ambiente\n` +
-      `É maior que 5 -- verifica se o agente está à direita da coluna 5 do ambiente\n` +
-      `É igual a [X] (entre colchetes) -- verifica se a coluna do agente é igual ao valor da variável "X"`
+      `<p>Use esta condição para verificar a coordenada X (horizontal) do agente atual no ambiente. Exemplos:<p>
+       <ul>
+         <li>É igual a <code>5</code> -- verifica se o agente está na coluna 5 do ambiente</li>
+         <li>É maior que <code>5</code> -- verifica se o agente está à direita da coluna 5 do ambiente</li>
+         <li>É igual a <code>[X]</code> (entre colchetes) -- verifica se a coluna do agente é igual ao valor da variável <code>X</code></li>
+       </ul>`
   },
 
   agent_y_coordinate_comparison: {
@@ -228,10 +240,12 @@ const SimulationFunctions = {
       return Util.performComparison(agent.position.y + 1, input.value, input.comparison)
     },
     help: () =>
-      `Use esta condição para verificar a coordenada Y (vertical) do agente atual no ambiente. Exemplo:\n\n` +
-      `É igual a 5 -- verifica se o agente está na linha 5 do ambiente\n` +
-      `É maior que 5 -- verifica se o agente está abaixo da linha 5 do ambiente\n` +
-      `É igual a [X] (entre colchetes) -- verifica se a linha do agente é igual ao valor da variável "X"`
+      `<p>Use esta condição para verificar a coordenada Y (vertical) do agente atual no ambiente. Exemplos:<p>
+       <ul>
+         <li>É igual a <code>5</code> -- verifica se o agente está na linha 5 do ambiente</li>
+         <li>É maior que <code>5</code> -- verifica se o agente está abaixo da linha 5 do ambiente</li>
+         <li>É igual a <code>[X]</code> (entre colchetes) -- verifica se a linha do agente é igual ao valor da variável <code>X</code></li>
+       </ul>`
   },
 
   perceive_agent: {
@@ -267,11 +281,12 @@ const SimulationFunctions = {
       return Boolean(coordinateWithAgent)
     },
     help: () =>
-      `Use esta condição para verificar se o agente atual está percebendo algum outro agente ` +
-      `no ambiente, de tipo específico ou não. Esta verificação está sujeita à área de percepção ` +
-      `definida para o agente atual (do qual a regra de comportamento pertence). Por exemplo, se ` +
-      `a área de percepção do agente for "3", ele conseguirá perceber agentes a três quadrados de ` +
-      `distância, em qualquer direção. Caso seja "0", ele não conseguirá perceber nenhum agente.`
+      `<p>Use esta condição para verificar se o agente atual está percebendo algum outro agente
+       no ambiente, de tipo específico ou não. Esta verificação está sujeita à área de percepção
+       definida para o agente atual (do qual a regra de comportamento pertence). Por exemplo, se
+       a área de percepção do agente for <code>3</code>, ele conseguirá perceber agentes a três
+       quadrados de distância, em qualquer direção. Caso seja <code>0</code>, ele não conseguirá
+       perceber nenhum agente.</p>`
   },
 
   touch_agent: {
@@ -304,9 +319,9 @@ const SimulationFunctions = {
       return Boolean(coordinateWithAgent)
     },
     help: () =>
-      `Use esta condição para verificar se o agente atual está atingindo algum outro agente, ` +
-      `específico ou não. Por atingir, entende-se que ele esteja a um quadrado de distância do ` +
-      `outro agente em qualquer direção, incluindo diagonais.`
+      `<p>Use esta condição para verificar se o agente atual está atingindo algum outro agente,
+       específico ou não. Por atingir, entende-se que ele esteja a um quadrado de distância do
+       outro agente em qualquer direção, incluindo diagonais.</p>`
   },
 
   reach_age: {
@@ -326,12 +341,12 @@ const SimulationFunctions = {
       return agent.age >= input.age
     },
     help: () =>
-      `Use esta condição para verificar se o agente atual possui idade (em ciclos de simulação) ` +
-      `igual ou maior a algum valor. Exemplo: se definido "5", será verificado se o agente está ` +
-      `há cinco ou mais ciclos de simulação presente no ambiente.\n\n` +
-      `Caso o valor a ser verificado esteja em uma variável, especifique seu nome entre colchetes ` +
-      `(exemplo: [X]). Nesse exemplo, caso o valor da variável [X] seja 3, será verificado se o agente ` +
-      `está há três ou mais ciclos de simulação presente no ambiente.`
+      `<p>Use esta condição para verificar se o agente atual possui idade (em ciclos de simulação)
+       igual ou maior a algum valor. Exemplo: se definido como <code>5</code>, será verificado se o
+       agente está há cinco ou mais ciclos de simulação presente no ambiente.</p>
+       <p>Caso o valor a ser verificado esteja em uma variável, especifique seu nome entre colchetes
+       (exemplo: <code>[X]</code>). Nesse exemplo, caso o valor da variável <code>[X]</code> seja 3,
+       será verificado se o agente está há três ou mais ciclos de simulação presente no ambiente.</p>`
   },
 
   move_random: {
@@ -364,8 +379,8 @@ const SimulationFunctions = {
       }
     },
     help: () =>
-      `Move o agente para uma posição livre aleatória, caso disponível. Caso o movimento diagonal ` +
-      `não seja marcado, o agente irá mover apenas para as posições norte, sul, leste ou oeste.`
+      `<p>Move o agente para uma posição livre aleatória, caso disponível. Caso o movimento diagonal
+      não seja marcado, o agente irá mover apenas para as posições norte, sul, leste ou oeste.</p>`
   },
 
   move: {
@@ -446,8 +461,8 @@ const SimulationFunctions = {
       }
     },
     help: () =>
-      `Move o agente para uma coordenada específica no ambiente, onde X representa a coluna e` +
-      `Y representa a linha. Caso a coordenada já esteja ocupada, o agente não será movido.`
+      `<p>Move o agente para uma coordenada específica no ambiente, onde X representa a coluna e
+       Y representa a linha. Caso a coordenada já esteja ocupada, o agente não será movido.</p>`
   },
 
   move_to_random_coordinate: {
@@ -498,8 +513,8 @@ const SimulationFunctions = {
       }
     },
     help: () =>
-      `Move o agente para uma coordenada aleatória livre no ambiente, dentro dos limites (X e Y) ` +
-      `especificados. Caso nenhuma coordenada esteja livre dentro destes limites, o agente não é movido.`
+      `<p>Move o agente para uma coordenada aleatória livre no ambiente, dentro dos limites (X e Y)
+       especificados. Caso nenhuma coordenada esteja livre dentro destes limites, o agente não é movido.</p>`
   },
 
   follow_agent: {
@@ -553,17 +568,17 @@ const SimulationFunctions = {
       }
     },
     help: () =>
-      `Faz com que o agente siga outro agente (mova em sua direção), caso esteja dentro de sua área ` +
-       `de percepção. Caso o agente escolhido não esteja em sua área de percepção, ele não irá se mover. ` +
-       `Geralmente, utiliza-se esta ação associada à condição "Perceber agente".\n\n` +
-       `Para o campo "Modo", podem ser escolhidas as opções "Inteligente (A*)" ou "Simples".\n\n` +
-       `No modo inteligente, o agente sempre conseguirá encontrar um caminho para chegar o mais ` +
-       `próximo possível do agente seguido, desviando de outros agentes se necessário. Este modo ` +
-       `utiliza o algoritmo de busca de caminho A*.\n\n` +
-       `No modo simples, o agente tentará se deslocar em direção ao agente destino, mas pode ficar ` +
-       `preso no caminho caso exista um obstáculo. A única vantagem deste modo é utilizar menor poder ` +
-       `computacional, deixando a execução da simulação mais rápida caso existam muitos agentes no ` +
-       `ambiente.`
+      `<p>Faz com que o agente siga outro agente (mova em sua direção), caso esteja dentro de sua área
+       de percepção. Caso o agente escolhido não esteja em sua área de percepção, ele não irá se mover
+       Geralmente, utiliza-se esta ação associada à condição "Perceber agente".</p>
+       <p>Para o campo "Modo", podem ser escolhidas as opções "Inteligente (A*)" ou "Simples".
+       No modo inteligente, o agente sempre conseguirá encontrar um caminho para chegar o mais
+       próximo possível do agente seguido, desviando de outros agentes se necessário. Este modo
+       utiliza o algoritmo de busca de caminho A*.</p>
+       <p>No modo simples, o agente tentará se deslocar em direção ao agente destino, mas pode ficar
+       preso no caminho caso exista um obstáculo. A única vantagem deste modo é utilizar menor poder
+       computacional, deixando a execução da simulação mais rápida caso existam muitos agentes no
+       ambiente.</p>`
   },
 
   escape_from_agent: {
@@ -641,9 +656,9 @@ const SimulationFunctions = {
       }
     },
     help: () =>
-      `Faz com que o agente fuja de outro agente (mova em movimento contrário a ele), caso esteja ` +
-      `dentro de sua área de percepção. Caso o agente escolhido não esteja em sua área de percepção, ` +
-      `ele não irá se mover. Geralmente, utiliza-se esta ação associada à condição "Perceber agente".`
+      `<p>Faz com que o agente fuja de outro agente (mova em movimento contrário a ele), caso esteja
+       dentro de sua área de percepção. Caso o agente escolhido não esteja em sua área de percepção,
+       ele não irá se mover. Geralmente, utiliza-se esta ação associada à condição "Perceber agente".</p>`
   },
 
   kill_agent: {
@@ -679,9 +694,9 @@ const SimulationFunctions = {
       }
     },
     help: () =>
-      `Faz com que o agente mate outro agente, específico ou não, removendo-o do ambiente. ` +
-      `Ele só irá matar o agente caso esteja a um quadrado de distância, em qualquer direção, incluindo ` +
-      `diagonais, do agente a ser morto. Geralmente, utiliza-se esta ação associada à condição "Atingir agente".`
+      `<p>Faz com que o agente mate outro agente, específico ou não, removendo-o do ambiente.
+       Ele só irá matar o agente caso esteja a um quadrado de distância, em qualquer direção, incluindo
+       diagonais, do agente a ser morto. Geralmente, utiliza-se esta ação associada à condição "Atingir agente".</p>`
   },
 
   die: {
@@ -693,7 +708,7 @@ const SimulationFunctions = {
       env.killAgent(agent)
     },
     help: () =>
-      `Faz com que o agente atual seja removido do ambiente.`
+      `<p>Faz com que o agente atual seja removido do ambiente.</p>`
   },
 
   transform: {
@@ -725,8 +740,8 @@ const SimulationFunctions = {
       env.renderAgent(agent, true)
     },
     help: () =>
-      `Faz com que o agente atual seja transformado em outro tipo de agente. Caso a opção "Manter idade" ` +
-      ` não seja marcada, o agente terá a sua idade (em ciclos) redefinida para 0.`
+      `<p>Faz com que o agente atual seja transformado em outro tipo de agente. Caso a opção "Manter idade"
+       não seja marcada, o agente terá a sua idade (em ciclos) redefinida para <code>0</code>.</p>`
   },
 
   set_age: {
@@ -746,9 +761,9 @@ const SimulationFunctions = {
       agent.age = _.isNaN(input.age) ? 0 : input.age
     },
     help: () =>
-      `Define a idade do agente (em ciclos) para um valor específico. Caso o valor que você queira ` +
-      `definir esteja em uma variável, utilize o seu nome entre colchetes (por exemplo, [Idade] para ` +
-      `uma variável chamada "Idade")`
+      `<p>Define a idade do agente (em ciclos) para um valor específico. Caso o valor que você queira
+       definir esteja em uma variável, utilize o seu nome entre colchetes (por exemplo, <code>[Idade]</code>
+       para uma variável chamada <code>Idade</code>)</p>`
   },
 
   breed: {
@@ -787,8 +802,8 @@ const SimulationFunctions = {
       })
     },
     help: () =>
-      `Cria um ou mais novos agentes de determinado tipo no ambiente, de acordo com a quantidade e tipo ` +
-      `especificados.Os novos agentes serão criados em volta do agente atual.`
+      `<p>Cria um ou mais novos agentes de determinado tipo no ambiente, de acordo com a quantidade e tipo
+       especificados. Os novos agentes serão criados nas coordenadas que cercam o agente atual.</p>`
   },
 
   increment_variable: {
@@ -809,7 +824,7 @@ const SimulationFunctions = {
       ++variable.value
     },
     help: () =>
-      `Aumenta em 1 o valor de uma variável numérica.`
+      `<p>Aumenta em 1 o valor de uma variável numérica.</p>`
   },
 
   decrement_variable: {
@@ -830,7 +845,7 @@ const SimulationFunctions = {
       --variable.value
     },
     help: () =>
-      `Diminui em 1 o valor de uma variável numérica.`
+      `<p>Diminui em 1 o valor de uma variável numérica.</p>`
   },
 
   set_variable: {
@@ -858,20 +873,25 @@ const SimulationFunctions = {
       variable.value = variable.definition.data_type === 'number' ? Number(input.value) : input.value
     },
     help: () =>
-      `Redefine o valor de uma variável para um determinado valor. Exemplos:\n\n` +
-      `Variável: "Valor A" - Valor: 5\n` +
-      `Variável: "Palavra" - Valor: foo\n\n` +
-      `Também é possível definir valores dinâmicos, baseados em uma ou mais variáveis. Para isso, utilize os ` +
-      `símbolos {{ e }} para definir a área de computação, e os nomes de variáveis entre colchetes para ` +
-      `acessar seus valores. Exemplos:\n\n` +
-      `Variável: "Valor" - Valor: {{ [Valor] + 3 }} -- irá incrementar em 3 o valor da variável "Valor"\n\n` +
-      `Variável: "C" - Valor: {{ [A] + [B] }} -- faz com que o valor da variável C seja igual a A + B\n\n` +
-      `Variável: "C" - Valor: {{ [B] - [A] }} -- faz com que o valor da variável C seja igual a B - A\n\n` +
-      `Variável: "Nome" - Valor: {{ [Nome 1] || "-" || [Nome 2] }} -- faz com que o valor da variável "Nome" seja ` +
-      `uma concatenação dos valores das variáveis "Nome 1" e "Nome 2", com um "-" no meio). Nesse caso, ` +
-      `se "Nome 1" for João e "Nome 2" for Maria, o valor de "Nome" seria definido para João-Maria.\n\n` +
-      `Os operadores matemáticos permitidos são + (soma), - (subtração), * (multiplicação), / (divisão), ` +
-      `% (resto) e || (concatenação para textos).`
+      `<p>Redefine o valor de uma variável para um determinado valor. Exemplos:</p>
+       <ul>
+         <li>Variável: <code>Valor A</code> - Valor: <code>5</code></li>
+         <li>Variável: <code>Palavra</code> - Valor: <code>foo</code></li>
+       </ul>
+       <p>Também é possível definir valores dinâmicos, baseados em uma ou mais variáveis. Para isso, utilize os
+       símbolos <code>{{</code> e <code>}}</code> para definir a área de computação, e os nomes de variáveis entre
+       colchetes para acessar seus valores. Exemplos:</p>
+       <ul>
+         <li>Variável: <code>ABC</code> - Valor: <code>{{ [ABC] + 3 }}</code> -- irá incrementar em 3 o valor da variável <code>ABC</code></li>
+         <li>Variável: <code>C</code> - Valor: <code>{{ [A] + [B] }}</code> -- faz com que o valor da variável <code>C</code> seja igual a <code>A + B</code></li>
+         <li>Variável: <code>C</code> - Valor: <code>{{ [B] - [A] }}</code> -- faz com que o valor da variável <code>C</code> seja igual a <code>B - A</code></li>
+         <li>Variável: <code>Nome</code> - Valor: <code>{{ [Nome 1] || "-" || [Nome 2] }}</code> -- faz com que o valor da variável <code>Nome</code> seja
+         uma concatenação dos valores das variáveis <code>Nome 1</code> e <code>Nome 2</code>, com um hífen (<code>-</code>) no meio). Nesse caso,
+         se <code>Nome 1</code> for <code>João</code> e <code>Nome 2</code> for <code>Maria</code>, o valor de <code>Nome</code> seria definido para
+         <code>João-Maria</code></li>
+       </ul>
+       <p>Os operadores matemáticos permitidos são <code>+</code> (soma), <code>-</code> (subtração), <code>*</code> (multiplicação), <code>/</code> (divisão),
+       <code>%</code> (resto) e <code>||</code> (concatenação para textos).</p>`
   },
 
   set_random_value: {
@@ -907,7 +927,7 @@ const SimulationFunctions = {
       variable.value = variable.type === 'string' ? String(rand) : rand
     },
     help: () =>
-      `Redefine o valor de uma variável para um valor aleatório.`
+      `<p>Redefine o valor de uma variável para um valor aleatório.</p>`
   },
 
   execute_next_rule: {
@@ -918,8 +938,8 @@ const SimulationFunctions = {
       env.executeNextRule()
     },
     help: () =>
-      `Tenta executar as próximas regras deste agente (caso as condições passem), em vez de parar ` +
-      `de executar as regras.`
+      `<p>Tenta executar as próximas regras deste agente (caso as condições passem), em vez de parar
+       de executar as regras.</p>`
   }
 }
 

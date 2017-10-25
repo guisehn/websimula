@@ -57,6 +57,7 @@
 import FunctionCall from '../function-call/function-call.vue'
 import InputValidator from '../../simulation/input-validator'
 import SimulationFunctions from '../../simulation/functions'
+import FunctionHelp from '../../simulation/function-help'
 
 import draggable from 'vuedraggable'
 import uuid from 'uuid/v4'
@@ -102,8 +103,7 @@ export default {
 
     help (index) {
       let action = this.actions[index]
-      let func = SimulationFunctions[action.function]
-      alert(func.help(action.input, this.agents, this.variables))
+      FunctionHelp.open(action.function, this.agents, this.variables)
     },
 
     destroyAction (index) {

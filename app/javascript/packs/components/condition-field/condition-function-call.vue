@@ -40,7 +40,9 @@
 
 <script>
 import FunctionCall from '../function-call/function-call.vue'
+
 import SimulationFunctions from '../../simulation/functions'
+import FunctionHelp from '../../simulation/function-help'
 
 export default {
   name: 'condition-function-call',
@@ -69,8 +71,7 @@ export default {
 
   methods: {
     help () {
-      let func = SimulationFunctions[this.itemData.function]
-      alert(func.help(this.itemData.input, this.agents, this.variables))
+      FunctionHelp.open(this.itemData.function, this.agents, this.variables)
     },
 
     negate () {
