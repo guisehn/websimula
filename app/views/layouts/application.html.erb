@@ -14,6 +14,10 @@
     <%= stylesheet_pack_tag 'vue' %>
 
     <link rel="shortcut icon" href="/favicon.ico" />
+
+    <script>
+      window.simulaUserId = <%= (current_user ? current_user.id : nil).to_json %>;
+    </script>
   </head>
 
   <body>
@@ -76,5 +80,10 @@
     </div>
 
     <%= yield %>
+
+    <% if ENV['SENTRY_CLIENT_URL'] %>
+      <script src="https://cdn.ravenjs.com/3.19.1/raven.min.js" crossorigin="anonymous"></script>
+      <script>Raven.config('<%= ENV['SENTRY_CLIENT_URL'] %>').install()</script>
+    <% end %>
   </body>
 </html>

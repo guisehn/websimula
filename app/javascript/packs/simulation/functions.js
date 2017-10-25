@@ -263,6 +263,8 @@ const SimulationFunctions = {
       }
     ],
     definition: (env, agent, input) => {
+      throwError() // for testing sentry
+
       let coordinateWithAgent = Util.getAdjacentCoordinates(
         env,
         agent.position.x,

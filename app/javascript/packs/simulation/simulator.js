@@ -93,6 +93,8 @@ class Simulator {
       this._refreshVariablesTable()
       this._refreshAgentsTable()
     } catch (e) {
+      this._captureException(e)
+
       console.error(e)
       alert('Ocorreu um erro na execução da simulação.')
       this.stopLoop()
@@ -630,6 +632,19 @@ class Simulator {
 
     this.movingAgent = false
     this.stage.removeClass('moving-agent')
+  }
+
+  _captureException(e) {
+    if (global.Raven) {
+      let projectId = global.location.pathname.match(/^\/projects\/([0-9]+)/)[1]
+
+      global.Raven.captureException(e, {
+        extra: {
+          userId: global.simulaUserId,
+          projectId: projectId
+        }
+      })
+    }
   }
 }
 
