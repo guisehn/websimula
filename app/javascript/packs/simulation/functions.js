@@ -626,6 +626,10 @@ const SimulationFunctions = {
         let nextStep = Util.astarFindPathTo(env, agent, c.x, c.y)
         let score = _.sumBy(coordinatesWithEnemies, ce => Util.calculateDistance(c.x, c.y, ce.x, ce.y))
 
+        if (!nextStep) {
+          return
+        }
+
         // make sure next step doesn't touch enemy
         // if it does, we decrease the score
         let nextStepTouchesEnemy = Util.getAdjacentCoordinates(env, nextStep.x, nextStep.y, 1, false, (x, y) => {
