@@ -789,6 +789,12 @@ const SimulationFunctions = {
         defaultValue: 1,
         required: true
       },
+      {
+        name: 'execute_rules_immediately',
+        type: 'boolean',
+        label: 'Executar regras imediatamente',
+        defaultValue: false
+      }
     ],
     definition: (env, agent, input) => {
       let agentDefinition = _.find(env.definition.agents, { id: input.agent_id })
@@ -800,14 +806,24 @@ const SimulationFunctions = {
         }
 
         if (!Util.isCoordinateOccupied(env, x, y)) {
-          env.buildAgent(agentDefinition, x, y, 0, true)
+          let agent = env.buildAgent(agentDefinition, x, y, 0, true)
+
+          if (input.execute_rules_immediately) {
+            env.executeAgentRules(agent)
+          }
+
           quantityCreated++
         }
       })
     },
     help: () =>
       `<p>Cria um ou mais novos agentes de determinado tipo no ambiente, de acordo com a quantidade e tipo
-       especificados. Os novos agentes serão criados nas coordenadas que cercam o agente atual.</p>`
+       especificados. Os novos agentes serão criados nas coordenadas que cercam o agente atual, se disponíveis.
+       Caso estejam ocupadas, os agentes filhos serão criados em coordenadas mais distantes, se possível.
+       </p>
+       <p>Caso a opção "Executar regras imediatamente" esteja marcada, o ambiente irá executar as regras de
+       comportamento desse agente imediatamente após ele ser adicionado no ambiente. Caso não esteja
+       marcada, as regras serão executadas apenas no próximo ciclo de simulação.</p>`
   },
 
   increment_variable: {

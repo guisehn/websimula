@@ -60,26 +60,8 @@ class Simulator {
         .map(p => p.agent)
 
       agents.forEach(agent => {
-        if (agent.dead) return
-
         ++agent.age
-
-        let fromIndex = 0
-
-        do {
-          this.shouldExecuteNextRule = false
-
-          let [ruleIndex, rule] = this._selectRule(agent, fromIndex)
-
-          if (rule) {
-            if (global.debug) console.log('Agent', agent, 'selected rule', rule)
-            this._performRuleAction(agent, rule)
-          } else {
-            if (global.debug) console.log('Agent', agent, 'has no selected rule')
-          }
-
-          fromIndex = ruleIndex + 1
-        } while (this.shouldExecuteNextRule)
+        this.executeAgentRules(agent)
       })
 
       if (this.definition.stop_condition) {
@@ -170,6 +152,31 @@ class Simulator {
     _.remove(this.agents, a => a === agent)
 
     this.renderAgent(agent)
+  }
+
+  executeAgentRules(agent) {
+    let fromIndex = 0
+
+    do {
+      if (agent.dead) {
+        break
+      }
+
+      // reset shouldExecuteNextRule to false
+      // one of the rules may end up changing this to true
+      this.shouldExecuteNextRule = false
+
+      let [ruleIndex, rule] = this._selectRule(agent, fromIndex)
+
+      if (rule) {
+        if (global.debug) console.log('Agent', agent, 'selected rule', rule)
+        this._performRuleAction(agent, rule)
+      } else {
+        if (global.debug) console.log('Agent', agent, 'has no selected rule')
+      }
+
+      fromIndex = ruleIndex + 1
+    } while (this.shouldExecuteNextRule)
   }
 
   _buildExpressionParser() {
@@ -567,7 +574,7 @@ class Simulator {
     }
 
     if (!agent.element || reRender) {
-      if (agent.element) agent.element.remove();
+      if (agent.element) agent.element.remove()
 
       agent.element = $('<img class="agent pixelated" />')
         .attr('src', agent.definition.image)
