@@ -29,7 +29,11 @@ Things you may want to cover:
 
 1. Remember to set up Redis
 
-2. Set buildpack order (as in https://github.com/rails/webpacker/issues/739). Run the following commands:
+2. Set up Postmark env var to enable email sending
+
+3. Set up Sentry env var (optional)
+
+4. Set buildpack order (as in https://github.com/rails/webpacker/issues/739). Run the following commands:
 
 ```
 heroku buildpacks:clear
