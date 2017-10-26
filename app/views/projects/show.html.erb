@@ -1,7 +1,19 @@
 <%= render 'header', project: @project %>
 
-<div class="project-dashboard" id="vue-container">
+<div class="project-dashboard">
   <div class="container">
+    <% if show_description %>
+      <div class="row">
+        <div class="col-md-12">
+          <section class="description-section" id="description-section">
+            <%= render 'description' %>
+          </section>
+        </div>
+      </div>
+
+      <hr>
+    <% end %>
+
     <div class="row">
       <div class="col-md-12">
         <section class="agents-section" id="agents-section">
@@ -22,21 +34,23 @@
 
     <hr>
 
-    <div class="row">
-      <div class="col-md-12">
-        <section class="stop-condition-section" id="stop-condition-section">
-          <%= render 'stop_condition' %>
-        </section>
+    <div id="vue-container">
+      <div class="row">
+        <div class="col-md-12">
+          <section class="stop-condition-section" id="stop-condition-section">
+            <%= render 'stop_condition' %>
+          </section>
+        </div>
       </div>
-    </div>
 
-    <hr>
+      <hr>
 
-    <div class="row">
-      <div class="col-md-12">
-        <section class="initial-positions-section" id="initial-positions-section">
-          <%= render 'initial_positions' %>
-        </section>
+      <div class="row">
+        <div class="col-md-12">
+          <section class="initial-positions-section" id="initial-positions-section">
+            <%= render 'initial_positions' %>
+          </section>
+        </div>
       </div>
     </div>
   </div>

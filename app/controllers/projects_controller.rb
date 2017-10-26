@@ -1,5 +1,5 @@
 class ProjectsController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: [:show, :open]
   before_action :set_project_and_check_access!, except: [:index, :open, :new, :create]
   before_action :check_project_management_permission!, only: [:destroy]
   before_action :check_project_edit_permission!, only: [:edit, :edit_stop_condition, :edit_initial_positions, :update]
@@ -8,6 +8,7 @@ class ProjectsController < ApplicationController
   before_action :load_variables, only: [:show, :variables]
 
   helper_method :project_visibility_options
+  helper_method :show_description
 
   def index
     @projects = current_user.projects.order('LOWER(name) asc')
@@ -83,7 +84,7 @@ class ProjectsController < ApplicationController
 
   private
     def project_params
-      allowed_params = [:initial_positions, :stop_condition]
+      allowed_params = [:initial_positions, :stop_condition, :description]
       allowed_params << :name << :visibility if !@project || @project.can_be_managed_by?(current_user)
 
       p = params.require(:project).permit(allowed_params)
@@ -107,5 +108,9 @@ class ProjectsController < ApplicationController
 
     def load_variables
       @variables = @project.variables.order('LOWER(name) ASC')
+    end
+
+    def show_description
+      @agents.length > 0 && (@project.description? || @project.can_be_edited_by?(current_user))
     end
 end

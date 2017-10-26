@@ -11,6 +11,12 @@ module ProjectsHelper
     end
   end
 
+  def project_description(project)
+    sanitize(project.description.to_s.strip, tags: %w(b i u), attributes: [])
+      .gsub(/\n/, '<br>')
+      .html_safe
+  end
+
   def project_visibility(project)
     I18n.t("activerecord.attributes.project.visibilities.#{project.visibility}")
   end

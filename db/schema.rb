@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171004203657) do
+ActiveRecord::Schema.define(version: 20171026163025) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,6 +50,7 @@ ActiveRecord::Schema.define(version: 20171004203657) do
     t.jsonb    "stop_condition"
     t.jsonb    "initial_positions"
     t.integer  "visibility",        default: 0, null: false
+    t.text     "description"
   end
 
   create_table "rules", force: :cascade do |t|

@@ -12,14 +12,14 @@ class Project < ApplicationRecord
   validates :visibility, presence: true
 
   def can_be_viewed_by?(user)
-    open? || project_users.find_by(user: user)
+    open? || (user && project_users.find_by(user: user))
   end
 
   def can_be_edited_by?(user)
-    project_users.find_by(user: user, role: [:admin, :editor])
+    user && project_users.find_by(user: user, role: [:admin, :editor])
   end
 
   def can_be_managed_by?(user)
-    project_users.find_by(user: user, role: :admin)
+    user && project_users.find_by(user: user, role: :admin)
   end
 end

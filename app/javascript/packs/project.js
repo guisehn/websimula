@@ -2,38 +2,64 @@ import _ from 'lodash'
 
 let currentProjectId = null
 
+function updateBindings(modelName, model) {
+  _.forEach(model, (value, key) => {
+    // skip keys starting with _
+    if (key[0] === '_') return;
+
+    let selector = `[data-bind=${modelName}-${key.replace(/_/g, '-')}][data-model-id=${model.id}]`
+
+    $(selector).each(function () {
+      let label = model[`_${key}_label`] ? model[`_${key}_label`] : value
+      let bindAttribute = $(this).data('bind-attribute')
+      let currentValue = bindAttribute ? $(this).attr(bindAttribute) : $(this).text();
+      let valueUsed = $(this).data('use-original-value') ? value : label
+      var htmlSafe = $(this).data('html-safe')
+
+      if (currentValue !== String(valueUsed)) {
+        if (bindAttribute) {
+          $(this).attr(bindAttribute, valueUsed)
+        } else if (this.tagName.toLowerCase() === 'textarea') {
+          $(this).val(valueUsed)
+        } else if (htmlSafe) {
+          $(this).html(valueUsed)
+        } else {
+          $(this).text(valueUsed)
+        }
+
+        $(this).hide().fadeIn(500)
+      }
+
+      if ($(this).data('editable')) {
+        $(this).editable('setValue', value)
+      }
+    })
+  })
+}
+
+function activateDescriptionField() {
+  let section = $('#description-section')
+
+  section.on('click', '[data-action=edit]', e => {
+    section.find('.view-mode').hide()
+    section.find('.edit-mode').show().find('textarea').focus()
+
+    e.preventDefault()
+  })
+
+  section.on('click', '[data-action=cancel]', e => {
+    section.find('.view-mode').show()
+    section.find('.edit-mode').hide()
+
+    e.preventDefault()
+  })
+}
+
 $(document).on('turbolinks:load', function () {
   let projectId = window.location.pathname.match(/^\/projects\/([0-9]+)/)
   projectId = projectId ? projectId[1] : null
 
-  function updateBindings(modelName, model) {
-    _.forEach(model, (value, key) => {
-      // skip keys starting with _
-      if (key[0] === '_') return;
-
-      let selector = `[data-bind=${modelName}-${key.replace(/_/g, '-')}][data-model-id=${model.id}]`
-
-      $(selector).each(function () {
-        let label = model[`_${key}_label`] ? model[`_${key}_label`] : value
-        let bindAttribute = $(this).data('bind-attribute')
-        let currentValue = bindAttribute ? $(this).attr(bindAttribute) : $(this).text();
-
-        if (currentValue !== String(label)) {
-          if (bindAttribute) {
-            $(this).attr(bindAttribute, label)
-          } else {
-            $(this).text(label)
-          }
-
-          $(this).hide().fadeIn(500)
-        }
-
-        if ($(this).data('editable')) {
-          $(this).editable('setValue', value)
-        }
-      })
-    })
-  }
+  activateDescriptionField()
 
   if (!projectId || projectId !== currentProjectId) {
     App.cable.subscriptions.subscriptions.forEach(subscription => {
