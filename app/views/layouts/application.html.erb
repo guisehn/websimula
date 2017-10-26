@@ -47,6 +47,8 @@
                   <li><%= link_to t('logout'), destroy_user_session_path, method: :delete %></li>
                 </ul>
               </li>
+            <% elsif controller_name != 'sessions' %>
+              <li><%= link_to 'Login', new_user_session_path %></li>
             <% end %>
           </ul>
         </div><!-- /.navbar-collapse -->
