@@ -6,7 +6,7 @@ class AgentsController < ApplicationController
 
   def show
     respond_to do |format|
-      format.html { redirect_to @agent }
+      format.html { redirect_to edit_project_agent_path(@project, @agent) }
       format.json { render :show, status: :ok }
     end
   end
