@@ -6,11 +6,12 @@
       <%= project_description(@project) %>
     </p>
   <% else %>
-    <p>Descreva aqui o que o seu projeto faz.</p>
+    <p>Descreva aqui o funcionamento do seu projeto de simulação.</p>
   <% end %>
 
   <% if @project.can_be_edited_by?(current_user) %>
-    <%= link_to 'Editar descrição', project_path(@project),
+    <%= link_to @project.description? ? 'Editar descrição' : 'Adicionar descrição',
+      project_path(@project),
       class: 'btn btn-sm btn-success', data: { action: 'edit' } %>
   <% end %>
 </div>
