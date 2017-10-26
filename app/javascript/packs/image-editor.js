@@ -39,6 +39,8 @@ function activateGrid(imageEditor, grid, colorPickerInput, dataUrlInput) {
     }
   }
 
+  grid.on('dragstart', e => e.preventDefault())
+
   grid.on('mousedown', () => { painting = true })
 
   grid.on('mouseup mouseleave', () => {
