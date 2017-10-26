@@ -4,8 +4,10 @@
   <div class="simulator-container" id="simulator-container">
     <h2>Simular</h2>
 
-    <p><%= project_description(@project) %></p>
-    <hr>
+    <% if @project.description? %>
+      <p><%= project_description(@project) %></p>
+      <hr>
+    <% end %>
 
     <div id="simulator" class="simulator">
       <div class="simulator-stage-container">
