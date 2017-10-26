@@ -19,19 +19,35 @@ class ProjectsController < ApplicationController
   end
 
   def agents
-    render partial: 'projects/agents'
+    if request.xhr?
+      render partial: 'projects/agents'
+    else
+      redirect_to new_project_agent_path(@project)
+    end
   end
 
   def variables
-    render partial: 'projects/variables'
+    if request.xhr?
+      render partial: 'projects/variables'
+    else
+      redirect_to new_project_variable_path(@project)
+    end
   end
 
   def stop_condition
-    render partial: 'projects/stop_condition'
+    if request.xhr?
+      render partial: 'projects/stop_condition'
+    else
+      redirect_to edit_stop_condition_project_path(@project)
+    end
   end
 
   def initial_positions
-    render partial: 'projects/initial_positions'
+    if request.xhr?
+      render partial: 'projects/initial_positions'
+    else
+      redirect_to edit_initial_positions_project_path(@project)
+    end
   end
 
   def show
