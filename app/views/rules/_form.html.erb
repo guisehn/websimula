@@ -4,21 +4,16 @@
   <div class="form-inputs">
     <div class="row">
       <div class="col-md-6">
-        <%= f.input :name, readonly: !@project.can_be_edited_by?(current_user) %>
-        <!-- <p class="help-block">Digite nesse campo um nome que descreva qual o papel desta regra para o agente.</p> -->
+        <%= f.input :name, readonly: !@project.can_be_edited_by?(current_user),
+          hint: 'Digite nesse campo um nome que descreva qual o papel desta regra para o agente.',
+          autofocus: @rule.new_record? %>
       </div>
     </div>
 
     <div class="row">
       <div class="col-md-3">
-        <%= f.input :priority, readonly: !@project.can_be_edited_by?(current_user) %>
-        <!--
-        <p class="help-block">
-          Quanto menor o número, maior a prioridade desta regra em relação às demais deste agente.<br>
-          A regra com menor prioridade que atenda às condições especificadas será a executada<br>
-          pelo agente durante o ciclo na simulação.
-        </p>
-      -->
+        <%= f.input :priority, readonly: !@project.can_be_edited_by?(current_user),
+          hint: 'Quanto menor o número, antes a regra será executada para este agente.' %>
       </div>
     </div>
 

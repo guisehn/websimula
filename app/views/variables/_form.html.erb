@@ -4,7 +4,8 @@
   <div class="form-inputs">
     <div class="row">
       <div class="col-md-4">
-        <%= f.input :name, readonly: !@project.can_be_edited_by?(current_user) %>
+        <%= f.input :name, readonly: !@project.can_be_edited_by?(current_user),
+          autofocus: variable.new_record? %>
         <%= f.input :data_type, collection: variable_data_type_options,
           value_method: 'first', label_method: 'last', include_blank: false,
           readonly: !@project.can_be_edited_by?(current_user) %>
@@ -26,3 +27,13 @@
     <%= link_to 'Cancelar', project_path(@project) %>
   <% end %>
 <% end %>
+
+<script>
+$('#variable_data_type').change(function () {
+  var initialValue = $('#variable_initial_value')
+
+  if (initialValue.val() === '') {
+    initialValue.focus()
+  }
+})
+</script>
