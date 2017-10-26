@@ -84,23 +84,39 @@ const Util = {
   },
 
   isCoordinateOccupied(env, x, y) {
-    return _.get(env.positions[y][x], 'type') === 'agent'
+    if (_.isObject(x)) [x, y] = [x.x, x.y]
+
+    let line = env.positions[y]
+    let coordinate = _.get(line, x)
+    return _.get(coordinate, 'type') === 'agent'
+  },
+
+  coordinateExists(env, x, y) {
+    if (_.isObject(x)) [x, y] = [x.x, x.y]
+
+    let line = env.positions[y]
+    return _.has(line, x)
   },
 
   isDiagonalBlocked(env, x1, y1, x2, y2) {
+    if (_.isObject(x1)) [x1, y1] = [x1.x, x1.y]
+    if (_.isObject(y1)) [x2, y2] = [y1.x, y1.y]
+
     return x1 !== x2 && y1 !== y2
       && Util.isCoordinateOccupied(env, x1, y2)
       && Util.isCoordinateOccupied(env, x2, y1)
   },
 
-  generateCoordinateFromMovement(env, x, y, direction, steps = 1) {
+  generateCoordinateFromMovement(env, x, y, direction, steps = 1, ensureCoordinateIsInsideStage) {
     if (direction.indexOf('W') !== -1) x -= steps
     if (direction.indexOf('E') !== -1) x += steps
 
     if (direction.indexOf('N') !== -1) y -= steps
     if (direction.indexOf('S') !== -1) y += steps
 
-    return Util.ensureCoordinateIsInsideStage(env, x, y)
+    return ensureCoordinateIsInsideStage
+      ? Util.ensureCoordinateIsInsideStage(env, x, y)
+      : { x, y }
   },
 
   ensureCoordinateIsInsideStage(env, x, y) {

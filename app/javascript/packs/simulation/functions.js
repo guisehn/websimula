@@ -405,29 +405,94 @@ const SimulationFunctions = {
         defaultValue: 1
       },
       {
-        name: 'try_smaller_step',
+        name: 'deviate',
         type: 'boolean',
-        label: 'Tentar movimento menor se espaço estiver ocupado',
-        required: false,
-        defaultValue: false
+        label: 'Tentar desvio',
+        defaultValue: true
       }
     ],
     definition: (env, agent, input) => {
-      let steps = input.steps
+      let stepsLeft = input.steps
 
-      while (steps > 0) {
-        let coordinate = Util.generateCoordinateFromMovement(env, agent.position.x, agent.position.y, input.direction, steps)
-        let moved = false
+      let deviate = (target, targetCoordinate, fixedCoordinate) => {
+        let deviations = [
+          {
+            start: agent.position[targetCoordinate] - 1,
+            endCondition: c => c >= 0,
+            newValue: c => c - 1
+          },
+          {
+            start: agent.position[targetCoordinate] + 1,
+            endCondition: c => c < Constants.STAGE_SIZE,
+            newValue: c => c + 1
+          }
+        ]
 
-        if (!Util.isCoordinateOccupied(env, coordinate.x, coordinate.y)) {
-          env.moveAgent(agent, coordinate.x, coordinate.y)
+        let results = deviations.map(deviation => {
+          let limitCoordinate = null
+
+          for (let c = deviation.start, steps = 1; deviation.endCondition(c); c = deviation.newValue(c), steps++) {
+            let coordinate = {}
+            coordinate[fixedCoordinate] = agent.position[fixedCoordinate]
+            coordinate[targetCoordinate] = c
+
+            // break on barrier
+            if (Util.isCoordinateOccupied(env, coordinate)) {
+              break
+            }
+
+            let found = false
+
+            if (steps >= stepsLeft && !limitCoordinate) {
+              limitCoordinate = _.clone(coordinate)
+            }
+
+            coordinate[fixedCoordinate] += _.includes(['S', 'E'], input.direction) ? 1 : -1
+
+            if (!Util.isCoordinateOccupied(env, coordinate)) {
+              return {
+                coordinate: limitCoordinate || coordinate,
+                stepsTaken: limitCoordinate ? stepsLeft : steps,
+                stepsToPath: steps
+              }
+            }
+          }
+
+          return null
+        })
+
+        return _.minBy(results.filter(r => r), 'stepsToPath')
+      }
+
+      while (stepsLeft > 0) {
+        let coordinate = Util.generateCoordinateFromMovement(env, agent.position.x, agent.position.y, input.direction, 1)
+
+        if (!Util.coordinateExists(env, coordinate)) {
           break
         }
 
-        if (input.try_smaller_step) {
-          steps--
+        let occupied = Util.isCoordinateOccupied(env, coordinate.x, coordinate.y)
+        let diagonalBlocked = Util.isDiagonalBlocked(env, agent.position.x, agent.position.y, coordinate.x, coordinate.y)
+        let blocked = occupied || diagonalBlocked
+
+        if (blocked) {
+          if (input.deviate) {
+            let targetCoordinate = _.includes(['N', 'S'], input.direction) ? 'x' : 'y'
+            let fixedCoordinate = targetCoordinate === 'x' ? 'y' : 'x'
+            let result = deviate(coordinate[targetCoordinate], targetCoordinate, fixedCoordinate)
+
+            if (result) {
+              stepsLeft -= result.stepsTaken
+              env.moveAgent(agent, result.coordinate.x, result.coordinate.y)
+            } else {
+              break
+            }
+          } else {
+            break
+          }
         } else {
-          break
+          env.moveAgent(agent, coordinate.x, coordinate.y)
+          stepsLeft--
         }
       }
     }
