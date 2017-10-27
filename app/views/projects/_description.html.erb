@@ -20,7 +20,7 @@
   <div class="edit-mode" style="display:none">
     <%= simple_form_for(@project) do |f| %>
       <div class="form-inputs">
-        <%= f.input :description, label: false,
+        <%= f.input :description, label: false, as: :text,
           placeholder: 'Descreva aqui o que o seu projeto faz.',
           input_html: { rows: 4, data: { use_original_value: true, bind: 'project-description', model_id: @project.id } } %>
       </div>
