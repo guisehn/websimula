@@ -62,10 +62,10 @@ export default {
       }
 
       let endCondition = d => {
-        if (d === 'N') {
-          return c => c === 0
-        } else {
+        if (_.includes(['S', 'E'], d)) {
           return c => c + 1 === Constants.STAGE_SIZE
+        } else {
+          return c => c === 0
         }
       }
 
@@ -95,8 +95,6 @@ export default {
 
     let deviate = () => {
       let deviations = calculateDeviations()
-
-      window.d = deviations
 
       let results = deviations.map(d => {
         let limitCoordinate = null
