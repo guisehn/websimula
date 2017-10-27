@@ -9,6 +9,4 @@
 
 import './image-editor'
 import './project'
-
-import './simulation/functions'
 import './simulation/simulator'
