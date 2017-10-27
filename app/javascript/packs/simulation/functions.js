@@ -414,40 +414,92 @@ const SimulationFunctions = {
     definition: (env, agent, input) => {
       let stepsLeft = input.steps
 
-      let deviate = (target, targetCoordinate, fixedCoordinate) => {
-        let deviations = [
+      let calculateSingleAxisDeviation = () => {
+        let targetAxis = _.includes(['N', 'S'], input.direction) ? 'x' : 'y'
+
+        return [
           {
-            start: agent.position[targetCoordinate] - 1,
-            endCondition: c => c >= 0,
+            direction: input.direction,
+            targetAxis: targetAxis,
+            start: agent.position[targetAxis] - 1,
+            endCondition: c => c === 0,
             newValue: c => c - 1
           },
           {
-            start: agent.position[targetCoordinate] + 1,
-            endCondition: c => c < Constants.STAGE_SIZE,
+            direction: input.direction,
+            targetAxis: targetAxis,
+            start: agent.position[targetAxis] + 1,
+            endCondition: c => c + 1 === Constants.STAGE_SIZE,
             newValue: c => c + 1
           }
         ]
+      }
 
-        let results = deviations.map(deviation => {
+      let calculateDoubleAxisDeviation = () => {
+        let newValue = d => {
+          if (_.includes(['S', 'E'], d)) {
+            return c => c + 1
+          } else {
+            return c => c - 1
+          }
+        }
+
+        let endCondition = d => {
+          if (d === 'N') {
+            return c => c === 0
+          } else {
+            return c => c + 1 === Constants.STAGE_SIZE
+          }
+        }
+
+        return [
+          {
+            direction: input.direction[0],
+            targetAxis: 'x',
+            start: agent.position.x + (input.direction[1] === 'E' ? 1 : -1),
+            endCondition: endCondition(input.direction[1]),
+            newValue: newValue(input.direction[1])
+          },
+          {
+            direction: input.direction[1],
+            targetAxis: 'y',
+            start: agent.position.y + (input.direction[0] === 'S' ? 1 : -1),
+            endCondition: endCondition(input.direction[0]),
+            newValue: newValue(input.direction[0])
+          }
+        ]
+      }
+
+      let calculateDeviations = () => {
+        return input.direction.length === 2
+          ? calculateDoubleAxisDeviation()
+          : calculateSingleAxisDeviation()
+      }
+
+      let deviate = () => {
+        let deviations = calculateDeviations()
+
+        window.d = deviations
+
+        let results = deviations.map(d => {
           let limitCoordinate = null
+          let fixedAxis = d.targetAxis === 'x' ? 'y' : 'x'
 
-          for (let c = deviation.start, steps = 1; deviation.endCondition(c); c = deviation.newValue(c), steps++) {
+          for (let c = d.start, steps = 1; !d.endCondition(c); c = d.newValue(c), steps++) {
             let coordinate = {}
-            coordinate[fixedCoordinate] = agent.position[fixedCoordinate]
-            coordinate[targetCoordinate] = c
+            coordinate[fixedAxis] = agent.position[fixedAxis]
+            coordinate[d.targetAxis] = c
 
             // break on barrier
             if (Util.isCoordinateOccupied(env, coordinate)) {
               break
             }
 
-            let found = false
-
             if (steps >= stepsLeft && !limitCoordinate) {
               limitCoordinate = _.clone(coordinate)
             }
 
-            coordinate[fixedCoordinate] += _.includes(['S', 'E'], input.direction) ? 1 : -1
+            coordinate[fixedAxis] += _.includes(['S', 'E'], d.direction) ? 1 : -1
 
             if (!Util.isCoordinateOccupied(env, coordinate)) {
               return {
@@ -477,9 +529,7 @@ const SimulationFunctions = {
 
         if (blocked) {
           if (input.deviate) {
-            let targetCoordinate = _.includes(['N', 'S'], input.direction) ? 'x' : 'y'
-            let fixedCoordinate = targetCoordinate === 'x' ? 'y' : 'x'
-            let result = deviate(coordinate[targetCoordinate], targetCoordinate, fixedCoordinate)
+            let result = deviate()
 
             if (result) {
               stepsLeft -= result.stepsTaken
