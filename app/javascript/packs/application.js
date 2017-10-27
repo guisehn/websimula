@@ -10,3 +10,4 @@
 import './image-editor'
 import './project'
 import './simulation/simulator'
+import './vue'
