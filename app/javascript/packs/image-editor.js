@@ -41,9 +41,14 @@ function activateGrid(imageEditor, grid, colorPickerInput, dataUrlInput) {
 
   grid.on('dragstart', e => e.preventDefault())
 
-  grid.on('mousedown', () => { painting = true })
+  grid.on('mousedown', () => {
+    $('body').on('selectstart.image-editor-disable-selection', e => e.preventDefault())
+    painting = true
+  })
 
-  grid.on('mouseup mouseleave', () => {
+  grid.on('mouseup', e => {
+    $('body').off('.image-editor-disable-selection')
+
     if (painting && imageEditor.data('isEyedropperToolSelected')) {
       toggleEyedropperTool(imageEditor, false)
     }
@@ -52,6 +57,16 @@ function activateGrid(imageEditor, grid, colorPickerInput, dataUrlInput) {
   })
 
   grid.on('mousedown mouseover', 'td', function (e) {
+    // `mouseup` will normally be called when the user releases
+    // the button and take care of this automatically, but there's
+    // an edge case where the user may release the button while the
+    // cursor is out of the image editor. in this case, when the cursor
+    // goes back to the editor, we need to make sure we stop the painting
+    if (e.which === 0) {
+      grid.trigger('mouseup')
+      return
+    }
+
     if (e.type === 'mousedown' || painting) {
       if (imageEditor.data('isEyedropperToolSelected')) {
         colorPickerInput.spectrum('set', $(this).data('color'))
