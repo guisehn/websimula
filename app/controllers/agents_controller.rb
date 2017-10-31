@@ -53,5 +53,6 @@ class AgentsController < ApplicationController
 
     def set_agent
       @agent = @project.agents.find(params[:id])
+      @agent.edited_by = current_user
     end
 end

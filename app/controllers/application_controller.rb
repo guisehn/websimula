@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
     def set_project_and_check_access!
       id = params[:project_id] || params[:id]
       @project = Project.find(id)
+      @project.edited_by = current_user
       head :unauthorized unless @project.can_be_viewed_by?(current_user)
     end
 

@@ -42,6 +42,7 @@ class RulesController < ApplicationController
 
     def set_rule
       @rule = @agent.rules.find(params[:id])
+      @rule.edited_by = current_user
     end
 
     def rule_params
