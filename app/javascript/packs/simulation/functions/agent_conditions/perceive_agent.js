@@ -2,6 +2,9 @@ import _ from 'lodash'
 import Constants from '../../../constants'
 import Util from '../util'
 
+import perceiveImage from '../../../../images/perceive-agent.png'
+import notPerceiveImage from '../../../../images/not-perceive-agent.png'
+
 export default {
   label: 'Perceber agente',
   input: [
@@ -38,5 +41,19 @@ export default {
      definida para o agente atual (do qual a regra de comportamento pertence). Por exemplo, se
      a área de percepção do agente for <code>3</code>, ele conseguirá perceber agentes a três
      quadrados de distância, em qualquer direção. Caso seja <code>0</code>, ele não conseguirá
-     perceber nenhum agente.</p>`
+     perceber nenhum agente.</p>
+
+     <p>A <b>ilustração a</b> exibe um agente (amarelo) com área de percepção igual a 3 percebendo um
+     outro agente (vermelho), e a <b>ilustração b</b> exibe este mesmo agente sem conseguir perceber o
+     outro agente por este estar fora de sua área de percepção.</p>
+
+     <div class="help-illustration">
+       <img src="${perceiveImage}" class="pixelated" width="112" height="128" alt="Agente percebido">
+       <span class="illustration-label">a) Agente percebido</span>
+     </div>
+
+     <div class="help-illustration">
+       <img src="${notPerceiveImage}" class="pixelated" width="112" height="128" alt="Agente fora da área de percepção">
+       <span class="illustration-label">b) Agente fora da área de percepção</span>
+     </div>`
 }

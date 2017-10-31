@@ -3,9 +3,10 @@ import Constants from '../../../constants'
 import Util from '../util'
 
 import moveRandom from './move_random'
+import escapeImage from '../../../../images/escape-from-agent.png'
 
 export default {
-  label: 'Escapar de agente',
+  label: 'Fugir de agente',
   input: [
     {
       name: 'agent_id',
@@ -83,5 +84,9 @@ export default {
   help: () =>
     `<p>Faz com que o agente fuja de outro agente (mova em movimento contrário a ele), caso esteja
      dentro de sua área de percepção. Caso o agente escolhido não esteja em sua área de percepção,
-     ele não irá se mover. Geralmente, utiliza-se esta ação associada à condição "Perceber agente".</p>`
+     ele não irá se mover. Geralmente, utiliza-se esta ação associada à condição "Perceber agente".</p>
+
+     <div class="help-illustration">
+      <img src="${escapeImage}" class="pixelated">
+     </div>`
 }

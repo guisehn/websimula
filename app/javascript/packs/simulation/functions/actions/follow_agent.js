@@ -2,6 +2,8 @@ import _ from 'lodash'
 import Constants from '../../../constants'
 import Util from '../util'
 
+import followImage from '../../../../images/follow-agent.png'
+
 export default {
   label: 'Seguir agente',
   input: [
@@ -51,13 +53,19 @@ export default {
     }
   },
   help: () =>
-    `<p>Faz com que o agente siga outro agente (mova em sua direção), caso esteja dentro de sua área
-     de percepção. Caso o agente escolhido não esteja em sua área de percepção, ele não irá se mover
+    `<div class="help-illustration right">
+      <img src="${followImage}" class="pixelated">
+     </div>
+
+     <p>Faz com que o agente siga outro agente (mova em sua direção), caso esteja dentro de sua área
+     de percepção. Caso o agente escolhido não esteja em sua área de percepção, ele não irá se mover.
      Geralmente, utiliza-se esta ação associada à condição "Perceber agente".</p>
+
      <p>Para o campo "Modo", podem ser escolhidas as opções "Inteligente (A*)" ou "Simples".
      No modo inteligente, o agente sempre conseguirá encontrar um caminho para chegar o mais
      próximo possível do agente seguido, desviando de outros agentes se necessário. Este modo
      utiliza o algoritmo de busca de caminho A*.</p>
+
      <p>No modo simples, o agente tentará se deslocar em direção ao agente destino, mas pode ficar
      preso no caminho caso exista um obstáculo. A única vantagem deste modo é utilizar menor poder
      computacional, deixando a execução da simulação mais rápida caso existam muitos agentes no
