@@ -121,8 +121,13 @@ export default {
   props: ['value', 'agents', 'read-only'],
 
   data () {
+    let agents = _.cloneDeep(this.agents)
+    let now = new Date()
+    agents.forEach(agent => { agent.lastUsedAt = now })
+
     return {
       initialPositions: this.adjustValue(this.value),
+      agentsWithLastUsage: agents,
       addingAgent: null,
       selectedAgent: null,
       movingAgent: null
@@ -131,7 +136,7 @@ export default {
 
   computed: {
     orderedAgents () {
-      return _.orderBy(this.agents, 'name')
+      return _.orderBy(this.agentsWithLastUsage, ['lastUsedAt', 'name'], ['desc', 'asc'])
     },
 
     stageElementSize () {
@@ -209,6 +214,8 @@ export default {
     },
 
     addAgent (agent) {
+      agent.lastUsedAt = new Date()
+
       this.initialPositions.fixed_positions[agent.id].push({
         id: uuid(),
         x: this.addingAgent.x,
