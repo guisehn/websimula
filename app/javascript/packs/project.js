@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import ConflictChecker from './conflict-checker'
 
 let currentProjectId = null
 
@@ -55,64 +56,18 @@ function activateDescriptionField() {
   })
 }
 
-// TODO: refactor
-function rulePageCheck(data) {
-  let ruleId = data.id
-  let editedBy = data.edited_by
-  let match = window.location.pathname.match(/^\/projects\/[0-9]+\/agents\/[0-9]+\/rules\/([0-9]+)\//)
-
-  if (match && match[1] == ruleId && editedBy.id !== window.simulaUserId) {
-    let message = `Esta regra foi modificada por ${editedBy.name} enquanto você está com esta página ` +
-      `aberta. Clique em OK para recarregar a regra ou cancelar para continuar editando. Se você continuar ` +
-      `editando, poderá sobrescrever as mudanças feitas por ${editedBy.name}.`
-
-    if (confirm(message)) {
-      location.reload()
-    }
-  }
-}
-
-// TODO: refactor
-function initialPositionsCheck(data) {
-  let ruleId = data.id
-  let editedBy = data.edited_by
-  let match = window.location.pathname.match(/^\/projects\/[0-9]+\/initial_positions\/edit/)
-
-  if (match && editedBy.id !== window.simulaUserId && _.includes(data.changes, 'initial_positions')) {
-    let message = `A condição de parada foi modificada por ${editedBy.name} enquanto você ` +
-      `está com esta página aberta. Clique em OK para recarregar a condição de parada ` +
-      `ou cancelar para continuar editando. Se você continuar editando, poderá sobrescrever as ` +
-      `mudanças feitas por ${editedBy.name}.`
-
-    if (confirm(message)) {
-      location.reload()
-    }
-  }
-}
-
-// TODO: refactor
-function stopConditionCheck(data) {
-  let ruleId = data.id
-  let editedBy = data.edited_by
-  let match = window.location.pathname.match(/^\/projects\/[0-9]+\/stop_condition\/edit/)
-
-  if (match && editedBy.id !== window.simulaUserId && _.includes(data.changes, 'stop_condition')) {
-    let message = `A posição inicial dos agentes foi modificada por ${editedBy.name} enquanto você ` +
-      `está com esta página aberta. Clique em OK para recarregar a posição inicial dos agentes ` +
-      `ou cancelar para continuar editando. Se você continuar editando, poderá sobrescrever as ` +
-      `mudanças feitas por ${editedBy.name}.`
-
-    if (confirm(message)) {
-      location.reload()
-    }
-  }
-}
+let conflictChecker = new ConflictChecker()
 
 $(document).on('turbolinks:load', function () {
+  conflictChecker.setUrl(window.location.pathname)
+  conflictChecker.setCurrentUserId(window.simulaUserId)
+
+  activateDescriptionField()
+
   let projectId = window.location.pathname.match(/^\/projects\/([0-9]+)/)
   projectId = projectId ? projectId[1] : null
 
-  activateDescriptionField()
+  let changedProject = false
 
   if (!projectId || projectId !== currentProjectId) {
     App.cable.subscriptions.subscriptions.forEach(subscription => {
@@ -120,11 +75,14 @@ $(document).on('turbolinks:load', function () {
     })
 
     currentProjectId = null
+    changedProject = true
   }
 
   if (projectId) {
     currentProjectId = projectId
+  }
 
+  if (changedProject && projectId) {
     App.cable.subscriptions.create({
       channel: 'ProjectChannel',
       project_id: projectId
@@ -145,13 +103,10 @@ $(document).on('turbolinks:load', function () {
             // TODO: refactor, make it parallel, only reload if initial position/stop condition actually changes
             $('#initial-positions-section').load(`/projects/${projectId}/initial_positions`, () => {
               $('#stop-condition-section').load(`/projects/${projectId}/stop_condition`, () => {
-                document.dispatchEvent(new Event('simula:reload-project'))
+                document.dispatchEvent(new Event('simula:reload-vue'))
               })
             })
           })
-
-          initialPositionsCheck(data)
-          stopConditionCheck(data)
         }
 
         if (data.model === 'Agent') {
@@ -166,9 +121,7 @@ $(document).on('turbolinks:load', function () {
           $('#variables-section').load(`/projects/${projectId}/variables`)
         }
 
-        if (data.model === 'Rule') {
-          rulePageCheck(data)
-        }
+        conflictChecker.check(data)
 
         console.log(`Project ${projectId}: received`, data)
       }

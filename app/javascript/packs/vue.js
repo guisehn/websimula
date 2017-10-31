@@ -28,4 +28,4 @@ function loadComponents() {
 }
 
 document.addEventListener('turbolinks:load', loadComponents)
-document.addEventListener('simula:reload-project', loadComponents)
+document.addEventListener('simula:reload-vue', loadComponents)
