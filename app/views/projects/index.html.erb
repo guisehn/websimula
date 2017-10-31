@@ -15,13 +15,15 @@
         </table>
       </div>
     </div>
+
+    <%= link_to 'Novo projeto', new_project_path, class: 'btn btn-success' %>
+
+    <br><br>
+    <%= link_to 'Ver projetos públicos', open_projects_path %>
   <% else %>
-    <p>Você não tem nenhum projeto.</p>
+    <p>Você não tem nenhum projeto criado ainda.</p>
+    <p>Comece criando o seu primeiro projeto de simulação, ou conheça outros projetos de simulação no <%= link_to 'repositório público', open_projects_path %>.</p>
     <br>
+    <%= link_to 'Criar primeiro projeto', new_project_path, class: 'btn btn-lg btn-success' %>
   <% end %>
-
-  <%= link_to 'Novo projeto', new_project_path, class: 'btn btn-success' %>
-
-  <br><br>
-  <%= link_to 'Ver projetos públicos', open_projects_path %>
 </div>

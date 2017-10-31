@@ -7,11 +7,11 @@
         <%= f.error_notification %>
 
         <div class="form-inputs">
-          <%= f.input :name %>
+          <%= f.input :name, hint: 'Você pode mudar este nome depois.' %>
         </div>
 
         <div class="form-actions">
-          <%= f.button :submit, class: 'btn-success' %>
+          <%= f.button :submit, class: 'btn-success', value: 'Começar' %>
         </div>
       <% end %>
 
