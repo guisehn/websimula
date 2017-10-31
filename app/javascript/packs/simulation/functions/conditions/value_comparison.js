@@ -19,7 +19,7 @@ export default {
       hideLabel: true,
       defaultValue: '=',
       required: true,
-      options: Util.COMPARISON_OPTIONS
+      options: Constants.COMPARISON_OPTIONS
     },
     {
       name: 'value',

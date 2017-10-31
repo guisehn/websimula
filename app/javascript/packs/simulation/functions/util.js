@@ -1,24 +1,4 @@
 const Util = {
-  COMPARISON_OPTIONS: [
-    { value: '=', label: 'É igual a' },
-    { value: '!=', label: 'É diferente de' },
-    { value: '>', label: 'É maior que' },
-    { value: '>=', label: 'É maior ou igual que' },
-    { value: '<', label: 'É menor que' },
-    { value: '<=', label: 'É menor ou igual a' }
-  ],
-
-  DIRECTION_OPTIONS: [
-    { value: 'N', label: 'Norte' },
-    { value: 'S', label: 'Sul' },
-    { value: 'E', label: 'Leste' },
-    { value: 'W', label: 'Oeste' },
-    { value: 'NE', label: 'Nordeste' },
-    { value: 'NW', label: 'Noroeste' },
-    { value: 'SE', label: 'Sudeste' },
-    { value: 'SW', label: 'Sudoeste' }
-  ],
-
   performComparison(value1, value2, comparer) {
     switch (comparer) {
       case '=':  return value1 == value2
