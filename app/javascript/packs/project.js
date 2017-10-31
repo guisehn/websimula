@@ -142,8 +142,11 @@ $(document).on('turbolinks:load', function () {
           $.get(`/projects/${projectId}.json`, project => {
             updateBindings('project', project)
 
-            $('#stop-condition-section').load(`/projects/${projectId}/stop_condition`, () => {
-              document.dispatchEvent(new Event('simula:reload-project'))
+            // TODO: refactor, make it parallel, only reload if initial position/stop condition actually changes
+            $('#initial-positions-section').load(`/projects/${projectId}/initial_positions`, () => {
+              $('#stop-condition-section').load(`/projects/${projectId}/stop_condition`, () => {
+                document.dispatchEvent(new Event('simula:reload-project'))
+              })
             })
           })
 
