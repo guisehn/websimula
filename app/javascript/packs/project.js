@@ -55,16 +55,52 @@ function activateDescriptionField() {
   })
 }
 
-// TODO: refactor and make it also work for agent initial positions and stop condition
+// TODO: refactor
 function rulePageCheck(data) {
   let ruleId = data.id
   let editedBy = data.edited_by
   let match = window.location.pathname.match(/^\/projects\/[0-9]+\/agents\/[0-9]+\/rules\/([0-9]+)\//)
 
   if (match && match[1] == ruleId && editedBy.id !== window.simulaUserId) {
-    let message = `Esta regra foi modificada por ${editedBy.name} enquanto você estava com esta página ` +
+    let message = `Esta regra foi modificada por ${editedBy.name} enquanto você está com esta página ` +
       `aberta. Clique em OK para recarregar a regra ou cancelar para continuar editando. Se você continuar ` +
       `editando, poderá sobrescrever as mudanças feitas por ${editedBy.name}.`
+
+    if (confirm(message)) {
+      location.reload()
+    }
+  }
+}
+
+// TODO: refactor
+function initialPositionsCheck(data) {
+  let ruleId = data.id
+  let editedBy = data.edited_by
+  let match = window.location.pathname.match(/^\/projects\/[0-9]+\/initial_positions\/edit/)
+
+  if (match && editedBy.id !== window.simulaUserId && _.includes(data.changes, 'initial_positions')) {
+    let message = `A condição de parada foi modificada por ${editedBy.name} enquanto você ` +
+      `está com esta página aberta. Clique em OK para recarregar a condição de parada ` +
+      `ou cancelar para continuar editando. Se você continuar editando, poderá sobrescrever as ` +
+      `mudanças feitas por ${editedBy.name}.`
+
+    if (confirm(message)) {
+      location.reload()
+    }
+  }
+}
+
+// TODO: refactor
+function stopConditionCheck(data) {
+  let ruleId = data.id
+  let editedBy = data.edited_by
+  let match = window.location.pathname.match(/^\/projects\/[0-9]+\/stop_condition\/edit/)
+
+  if (match && editedBy.id !== window.simulaUserId && _.includes(data.changes, 'stop_condition')) {
+    let message = `A posição inicial dos agentes foi modificada por ${editedBy.name} enquanto você ` +
+      `está com esta página aberta. Clique em OK para recarregar a posição inicial dos agentes ` +
+      `ou cancelar para continuar editando. Se você continuar editando, poderá sobrescrever as ` +
+      `mudanças feitas por ${editedBy.name}.`
 
     if (confirm(message)) {
       location.reload()
@@ -110,6 +146,9 @@ $(document).on('turbolinks:load', function () {
               document.dispatchEvent(new Event('simula:reload-project'))
             })
           })
+
+          initialPositionsCheck(data)
+          stopConditionCheck(data)
         }
 
         if (data.model === 'Agent') {
