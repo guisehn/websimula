@@ -55,6 +55,23 @@ function activateDescriptionField() {
   })
 }
 
+// TODO: refactor and make it also work for agent initial positions and stop condition
+function rulePageCheck(data) {
+  let ruleId = data.id
+  let editedBy = data.edited_by
+  let match = window.location.pathname.match(/^\/projects\/[0-9]+\/agents\/[0-9]+\/rules\/([0-9]+)\//)
+
+  if (match && match[1] == ruleId && editedBy.id !== window.simulaUserId) {
+    let message = `Esta regra foi modificada por ${editedBy.name} enquanto você estava com esta página ` +
+      `aberta. Clique em OK para recarregar a regra ou cancelar para continuar editando. Se você continuar ` +
+      `editando, poderá sobrescrever as mudanças feitas por ${editedBy.name}.`
+
+    if (confirm(message)) {
+      location.reload()
+    }
+  }
+}
+
 $(document).on('turbolinks:load', function () {
   let projectId = window.location.pathname.match(/^\/projects\/([0-9]+)/)
   projectId = projectId ? projectId[1] : null
@@ -105,6 +122,10 @@ $(document).on('turbolinks:load', function () {
 
         if (data.model === 'Variable') {
           $('#variables-section').load(`/projects/${projectId}/variables`)
+        }
+
+        if (data.model === 'Rule') {
+          rulePageCheck(data)
         }
 
         console.log(`Project ${projectId}: received`, data)
