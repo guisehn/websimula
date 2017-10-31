@@ -38,5 +38,7 @@ export default {
      <ul>
        <li><code>Rato</code> é igual a <code>0</code> (quando não houver nenhum agente <code>Rato</code> no ambiente)</li>
        <li><code>Queijo</code> é maior que <code>5</code> (quando houver mais que cinco agentes <code>Queijo</code> no ambiente)</li>
-     </ul>`
+     </ul>
+     <p><b>Importante:</b> esta regra não leva em consideração a área de percepção do agente caso esteja sendo usada para uma regra
+     de comportamento. Para levar em conta a área de percepção, use a condição "Comparar quantidade de agentes percebidos"</p>`
 }

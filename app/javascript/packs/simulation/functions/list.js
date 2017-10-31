@@ -9,6 +9,7 @@ export default {
   agent_condition: [
     'agent_x_coordinate_comparison',
     'agent_y_coordinate_comparison',
+    'perceived_agent_quantity_comparison',
     'perceive_agent',
     'touch_agent',
     'reach_age'
