@@ -194,7 +194,7 @@ class Simulator {
       }
 
       func.input.forEach(arg => {
-        if (arg.type === 'string' || arg.type === 'number') {
+        if (!_.isNil(input[arg.name]) && (arg.type === 'string' || arg.type === 'number')) {
           buildParsedInput()
 
           parsedInput[arg.name] = String(parsedInput[arg.name])
