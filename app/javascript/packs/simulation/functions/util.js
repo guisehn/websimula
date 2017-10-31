@@ -63,12 +63,20 @@ const Util = {
     return x >= 0 && y >= 0 && x < env.stageSize && y < env.stageSize
   },
 
-  isCoordinateOccupied(env, x, y) {
-    if (_.isObject(x)) [x, y] = [x.x, x.y]
+  isCoordinateOccupied(env, x, y, agentId) {
+    if (_.isObject(x)) {
+      agentId = y
+      ;[x, y] = [x.x, x.y]
+    }
 
     let line = env.positions[y]
     let coordinate = _.get(line, x)
-    return _.get(coordinate, 'type') === 'agent'
+
+    if (agentId) {
+      return _.get(coordinate, 'agent.definition.id') === agentId
+    } else {
+      return _.get(coordinate, 'type') === 'agent'
+    }
   },
 
   coordinateExists(env, x, y) {
