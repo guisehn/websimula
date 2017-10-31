@@ -71,7 +71,7 @@ export default {
 
   data () {
     return {
-      item: this.value,
+      item: this.addMissingInputs(this.value),
       errors: [],
       mountTime: new Date()
     }
@@ -145,6 +145,27 @@ export default {
 
     hasError (inputName) {
       return _.includes(this.errors, inputName)
+    },
+
+    // adds missing inputs setting them to null
+    // this is useful when we add new input fields for simulation functions
+    // that are already being used in existing projects
+    addMissingInputs (value) {
+      let func = value['function']
+
+      if (func && SimulationFunctions[func]) {
+        if (!value.input) {
+          value.input = {}
+        }
+
+        SimulationFunctions[func].input.forEach(input => {
+          if (value.input[input.name] === undefined) {
+            value.input[input.name] = null
+          }
+        })
+      }
+
+      return value
     }
   },
 
