@@ -116,7 +116,7 @@ function activateEyedropperTool(imageEditor) {
 
 function activateImageFileInput(fileInput, dataUrlInput, grid) {
   fileInput.change(function (e) {
-    let file = e.originalEvent.srcElement.files[0]
+    let file = e.originalEvent.target.files[0]
 
     if (file) {
       let reader = new FileReader()
@@ -185,7 +185,7 @@ $.fn.imageEditor = function (options) {
         </div>
         <div class="file-selector-container">
           Enviar imagem:<br>
-          <input type="file">
+          <input type="file" accept="image/*">
         </div>
       </div>
     `)
