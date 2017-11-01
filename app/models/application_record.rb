@@ -27,8 +27,12 @@ class ApplicationRecord < ActiveRecord::Base
         action: action,
         model: instance.class.name,
         id: instance.id,
-        changes: previous_changes.keys,
+        changes: previous_changes.keys
       }
+
+      if has_attribute?(:agent_id)
+        data[:agent_id] = agent_id
+      end
 
       if edited_by.present?
         data[:edited_by] = { id: edited_by.id, name: edited_by.name }

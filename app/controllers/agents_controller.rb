@@ -26,7 +26,7 @@ class AgentsController < ApplicationController
   end
 
   def edit
-    @rules = @agent.rules.order('priority ASC, LOWER(name) ASC')
+    @rules = @agent.rules
   end
 
   def update

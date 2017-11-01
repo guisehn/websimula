@@ -5,6 +5,16 @@ class RulesController < ApplicationController
   before_action :set_agent
   before_action :set_rule, only: [:edit, :update, :destroy]
 
+  def index
+    @rules = @agent.rules
+
+    if request.xhr?
+      render partial: 'agents/rules'
+    else
+      redirect_to new_project_agent_rule_path(@project, @agent)
+    end
+  end
+
   def new
     @rule = @agent.rules.new
   end

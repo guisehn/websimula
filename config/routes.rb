@@ -13,7 +13,7 @@ Rails.application.routes.draw do
     resources :variables, except: [:index, :show]
 
     resources :agents, except: [:index] do
-      resources :rules, except: [:index, :show]
+      resources :rules, except: [:show]
     end
 
     member do

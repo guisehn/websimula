@@ -56,6 +56,14 @@ function activateDescriptionField() {
   })
 }
 
+function updateAgentRulesTable(data) {
+  let m = window.location.pathname.match(/^\/projects\/([0-9]+)\/agents\/([0-9]+)/)
+
+  if (m && m[2] == data.agent_id) {
+    $('#agent-rules').load(`/projects/${m[1]}/agents/${data.agent_id}/rules`)
+  }
+}
+
 let conflictChecker = new ConflictChecker()
 
 $(document).on('turbolinks:load', function () {
@@ -119,6 +127,10 @@ $(document).on('turbolinks:load', function () {
 
         if (data.model === 'Variable') {
           $('#variables-section').load(`/projects/${projectId}/variables`)
+        }
+
+        if (data.model === 'Rule') {
+          updateAgentRulesTable(data)
         }
 
         conflictChecker.check(data)
