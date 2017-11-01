@@ -158,7 +158,8 @@ export default {
           value.input = {}
         }
 
-        SimulationFunctions[func].input.forEach(input => {
+        let functionInput = SimulationFunctions[func].input || []
+        functionInput.forEach(input => {
           if (value.input[input.name] === undefined) {
             value.input[input.name] = null
           }
