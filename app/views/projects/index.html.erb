@@ -26,4 +26,9 @@
     <br>
     <%= link_to 'Criar primeiro projeto', new_project_path, class: 'btn btn-lg btn-success' %>
   <% end %>
+
+  <% if current_user.admin? %>
+    <br>
+    <%= link_to 'Ver todos os projetos (visão administrativa)', all_projects_path %>
+  <% end %>
 </div>

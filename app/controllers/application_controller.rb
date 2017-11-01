@@ -2,6 +2,10 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   protected
+    def check_system_admin_access!
+      head :unauthorized unless current_user.admin?
+    end
+
     def set_project_and_check_access!
       id = params[:project_id] || params[:id]
       @project = Project.find(id)

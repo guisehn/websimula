@@ -20,6 +20,17 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 pt-BR:
+  will_paginate:
+    previous_label: "&#8592; Anterior"
+    next_label: "Pr&oacute;ximo &#8594;"
+    page_gap: "&hellip;"
+    page_entries_info:
+      single_page_html:
+        zero:  "Nenhum registro encontrado"
+        one:   "Apenas 1 registro encontrado"
+        other: "Mostrando todos os %{count} registros encontrados"
+      multi_page: "Mostrando registros %{from} até %{to} de %{count} no total"
+      multi_page_html: "Mostrando registros %{from} até %{to} de %{count} no total"
   activerecord:
     errors:
       models:

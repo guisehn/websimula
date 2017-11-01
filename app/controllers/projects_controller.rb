@@ -1,6 +1,7 @@
 class ProjectsController < ApplicationController
   before_action :authenticate_user!, except: [:show, :open]
-  before_action :set_project_and_check_access!, except: [:index, :open, :new, :create]
+  before_action :check_system_admin_access!, only: [:all]
+  before_action :set_project_and_check_access!, except: [:index, :open, :all, :new, :create]
   before_action :check_project_management_permission!, only: [:destroy]
   before_action :check_project_edit_permission!, only: [:edit, :edit_stop_condition, :edit_initial_positions, :update]
 
@@ -16,6 +17,10 @@ class ProjectsController < ApplicationController
 
   def open
     @projects = Project.where(visibility: :open).order('LOWER(name) asc')
+  end
+
+  def all
+    @projects = Project.order('id desc').includes(:users).paginate(:page => params[:page])
   end
 
   def agents

@@ -4,6 +4,8 @@ class User < ApplicationRecord
 
   validates :name, presence: true
 
+  enum system_role: [ :user, :admin ]
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,

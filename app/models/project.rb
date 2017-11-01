@@ -1,4 +1,6 @@
 class Project < ApplicationRecord
+  self.per_page = 18
+
   has_many :agents
   has_many :variables
   has_many :project_invites
@@ -12,14 +14,14 @@ class Project < ApplicationRecord
   validates :visibility, presence: true
 
   def can_be_viewed_by?(user)
-    open? || (user && project_users.find_by(user: user))
+    open? || user.admin? || (user && project_users.find_by(user: user))
   end
 
   def can_be_edited_by?(user)
-    user && project_users.find_by(user: user, role: [:admin, :editor])
+    user && (user.admin? || project_users.find_by(user: user, role: [:admin, :editor]))
   end
 
   def can_be_managed_by?(user)
-    user && project_users.find_by(user: user, role: :admin)
+    user && (user.admin? || project_users.find_by(user: user, role: :admin))
   end
 end

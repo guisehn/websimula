@@ -36,6 +36,8 @@ gem 'figaro'
 gem 'simple_form'
 gem 'webpacker', '~> 3.0'
 gem 'postmark-rails', '~> 0.15.0'
+gem 'will_paginate', '~> 3.1.0'
+gem 'will_paginate-bootstrap'
 
 gem 'rails_12factor', group: :production
 

@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   root to: 'home#index'
 
   get 'projects/open' => 'projects#open', as: 'open_projects'
+  get 'projects/all' => 'projects#all', as: 'all_projects'
 
   resources :projects do
     resources :users

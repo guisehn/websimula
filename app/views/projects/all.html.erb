@@ -1,0 +1,24 @@
+<div class="container">
+  <h2>Todos os projetos (visão administrativa)</h2>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Projeto</th>
+        <th>Criado em</th>
+        <th>Usuário(s)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @projects.each do |project| %>
+        <tr>
+          <td><%= link_to project.name, project %></td>
+          <td><%= project.created_at.strftime('%d/%m/%Y') %></td>
+          <td><%= project.users.pluck(:name).join(', ') %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= will_paginate @projects, renderer: BootstrapPagination::Rails %>
+</div>
