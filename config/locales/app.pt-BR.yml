@@ -40,7 +40,7 @@ pt-BR:
           editor: Editor
           viewer: Visualizador
       variable:
-        name: Nome da variávei
+        name: Nome da variável
         data_type: Tipo de dado
         data_types:
           number: Número
