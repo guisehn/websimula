@@ -55,7 +55,7 @@
             class="agent-context-menu">
             <ul class="dropdown-menu">
               <li class="dropdown-header">Adicionar agente fixo</li>
-              <li v-for="agent in orderedAgents">
+              <li v-for="agent in agentsOrderedByLastUsage">
                 <a href="" v-on:click.prevent="addAgent(agent)">
                   <img :src="agent.image">
                   {{ agent.name }}
@@ -91,7 +91,7 @@
 
         <table class="table">
           <tbody>
-            <tr v-for="agent in orderedAgents">
+            <tr v-for="agent in agentsOrderedByName">
               <td nowrap><img :src="agent.image" ></td>
               <td width="100%">{{ agent.name }}</td>
               <td class="times" nowrap>×</td>
@@ -135,7 +135,11 @@ export default {
   },
 
   computed: {
-    orderedAgents () {
+    agentsOrderedByName () {
+      return _.orderBy(this.agentsWithLastUsage, 'name')
+    },
+
+    agentsOrderedByLastUsage () {
       return _.orderBy(this.agentsWithLastUsage, ['lastUsedAt', 'name'], ['desc', 'asc'])
     },
 
