@@ -32,8 +32,12 @@ class VariablesController < ApplicationController
   end
 
   def destroy
-    @variable.destroy!
-    redirect_to @project
+    @usage = ResourceUsageFinder.new(@project, @variable).find
+
+    unless @usage.found
+      @variable.destroy!
+      redirect_to @project
+    end
   end
 
   private

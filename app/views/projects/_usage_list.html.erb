@@ -1,0 +1,15 @@
+<ul>
+  <% if usage.stop_condition %>
+    <li>
+      <%= link_to 'Condição de parada do projeto',
+        edit_stop_condition_project_path(project) %>
+    </li>
+  <% end %>
+
+  <% usage.rules.each do |rule| %>
+    <li>
+      <%= link_to "Regra \"#{rule.name}\" do agente #{rule.agent.name}",
+        edit_project_agent_rule_path(project, rule.agent, rule) %>
+    </li>
+  <% end %>
+</ul>
