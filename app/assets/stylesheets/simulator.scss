@@ -1,12 +1,46 @@
+$stop-condition-color: #af9;
+
 .simulator-container {
   h2 {
     margin-bottom: 20px;
+  }
+
+  hr {
+    margin-bottom: 0;
+  }
+}
+
+.simulator {
+  .finished-indicator {
+    width: 300px;
+    height: 20px;
+    background: $stop-condition-color;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, .4);
+    font-size: 11px;
+    z-index: 1;
+    border-radius: 4px 4px 0 0;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity .2s linear;
+    margin-bottom: -3px;
+    padding: 3px 6px;
+  }
+
+  &.finished .finished-indicator {
+    visibility: visible;
+    opacity: 1;
   }
 }
 
 .simulator-stage-container {
   margin-right: 20px;
   border: 4px solid #eee;
+  transition: border-color .2s linear;
+  z-index: 2;
+}
+
+.simulator.finished .simulator-stage-container {
+  border-color: $stop-condition-color;
 }
 
 .simulator-stage {
@@ -21,7 +55,7 @@
 
   .agent {
     position: absolute;
-    z-index: 2;
+    z-index: 3;
     transition: top 0.05s linear,
       left 0.05s linear,
       transform 0.15s linear,
@@ -40,7 +74,7 @@
     width: 100%;
     text-align: center;
     margin-top: -20px;
-    z-index: 2;
+    z-index: 3;
 
     .text {
       color: #999;

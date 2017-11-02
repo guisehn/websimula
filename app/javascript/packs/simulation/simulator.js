@@ -242,6 +242,8 @@ class Simulator {
   }
 
   _setButtonsStates() {
+    this.simulatorElement.toggleClass('finished', this.finished)
+
     if (this.finished) {
       this.simulatorElement.find('[data-action=step], [data-action=start], [data-action=stop]').attr('disabled', 'disabled')
     } else if (this.loopInterval) {
