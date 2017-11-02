@@ -34,7 +34,7 @@ class ResourceUsageFinder
     if obj.nil?
       false
     elsif obj.is_a?(Array)
-      obj.select { |item| in_object?(item) }.length > 0
+      obj.any? { |item| in_object?(item) }
     elsif obj['type'] == 'logical_operator'
       in_object?(obj['children'])
     elsif obj['type'] == 'function_call' || obj.has_key?('function')
@@ -47,17 +47,13 @@ class ResourceUsageFinder
     inputs_of_type = input_types.select { |key, value| value == resource_type }.keys
 
     inputs = obj['input'] || {}
-    inputs_used = inputs
-      .select { |key, value| inputs_of_type.include?(key) && value.to_i == @resource.id }
-      .keys
+    inputs_used = inputs.any? { |key, value| inputs_of_type.include?(key) && value.to_i == @resource.id }
 
     # checks for [Variable name] inclusion
-    if resource_type == 'variable' && inputs_used.length == 0
-      inputs_used = inputs
-        .select { |key, value| value.is_a?(String) && value.include?("[#{@resource.name}]") }
-        .keys
+    if resource_type == 'variable' && !inputs_used
+      inputs_used = inputs.any? { |key, value| value.is_a?(String) && value.include?("[#{@resource.name}]") }
     end
 
-    inputs_used.length > 0
+    inputs_used
   end
 end
