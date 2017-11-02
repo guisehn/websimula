@@ -64,7 +64,7 @@ export default {
         type: 'logical_operator',
         operator: 'and',
         children: [
-          { type: 'function_call', function: null, input: {}, negate: false }
+          { type: 'function_call', function: null, input: {}, input_types: {}, negate: false }
         ]
       })
     },

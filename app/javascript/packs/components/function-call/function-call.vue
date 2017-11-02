@@ -131,6 +131,8 @@ export default {
         this.item.input[input.name] = previousInput[input.name] ? previousInput[input.name] : (input.defaultValue || null)
       })
 
+      this.item.input_types = _(inputs).map(i => [i.name, i.type]).fromPairs().value()
+
       this.errors = []
     },
 

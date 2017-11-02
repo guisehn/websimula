@@ -92,6 +92,7 @@ export default {
         id: uuid(),
         function: null,
         input: {},
+        input_types: {},
         negate: false
       })
     },
