@@ -16,7 +16,12 @@ class RulesController < ApplicationController
   end
 
   def new
-    @rule = @agent.rules.new
+    if params[:duplicate]
+      @rule = Rule.for_project(@project).find(params[:duplicate]).dup
+      @rule.name = @rule.priority = nil
+    else
+      @rule = @agent.rules.new
+    end
   end
 
   def create

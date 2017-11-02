@@ -15,6 +15,13 @@
 
   <% if @project.can_be_edited_by?(current_user) %>
     <hr>
-    <%= link_to 'Excluir regra', project_agent_rule_path(@project, @agent, @rule), method: :delete, class: 'btn btn-sm btn-danger', data: { confirm: 'Tem certeza que deseja excluir esta regra? Esta ação é irreversível.' } %>
+
+    <div class="other-actions">
+      <h5>Outras ações</h5>
+
+      <%= link_to 'Duplicar regra', new_project_agent_rule_path(@project, @agent, duplicate: @rule.id), class: 'btn btn-sm btn-default' %>
+
+      <%= link_to 'Excluir regra', project_agent_rule_path(@project, @agent, @rule), method: :delete, class: 'btn btn-sm btn-danger', data: { confirm: 'Tem certeza que deseja excluir esta regra? Esta ação é irreversível.' } %>
+    </div>
   <% end %>
 </div>
