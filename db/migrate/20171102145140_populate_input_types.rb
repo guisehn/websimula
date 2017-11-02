@@ -32,7 +32,7 @@ def populate_input_types(value)
       value.each_index { |i| value[i] = populate_input_types(value[i]) }
     elsif value['type'] == 'logical_operator'
       value['children'] = populate_input_types(value['children'])
-    elsif value['type'] == 'function_call'
+    elsif value['type'] == 'function_call' || value.has_key?('function')
       value['input_types'] = $input_types[value['function']]
     end
   end
@@ -41,7 +41,7 @@ def populate_input_types(value)
 end
 
 class PopulateInputTypes < ActiveRecord::Migration[5.0]
-  def change
+  def up
     ActiveRecord::Base.transaction do
       Rule.order('id asc').each do |rule|
         puts "Updating rule #{rule.id}"
@@ -56,5 +56,8 @@ class PopulateInputTypes < ActiveRecord::Migration[5.0]
         project.save!
       end
     end
+  end
+
+  def down
   end
 end
