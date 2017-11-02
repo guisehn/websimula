@@ -1,0 +1,12 @@
+<%= render 'projects/header', project: @project, internal: true %>
+
+<div class="container">
+  <h2>Aviso</h2>
+  <p>Este agente não pode ser excluída pois está sendo usado nos seguintes locais:</p>
+
+  <%= render 'projects/usage_list', project: @project, usage: @usage %>
+
+  <p>Remova o agente destes locais e tente novamente.</p>
+
+  <%= link_to 'Voltar ao projeto', @project, class: 'btn btn-primary' %>
+</div>

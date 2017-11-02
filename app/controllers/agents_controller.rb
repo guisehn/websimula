@@ -42,8 +42,16 @@ class AgentsController < ApplicationController
   end
 
   def destroy
-    @agent.destroy!
-    redirect_to @project, notice: 'Agente excluído.'
+    @usage = ResourceUsageFinder.new(@project, @agent).find
+
+    unless @usage.found
+      ActiveRecord::Base.transaction do
+        @agent.remove_from_initial_positions!
+        @agent.destroy!
+      end
+
+      redirect_to @project, notice: 'Agente excluído.'
+    end
   end
 
   private
