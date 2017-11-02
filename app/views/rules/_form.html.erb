@@ -13,7 +13,7 @@
     <div class="row">
       <div class="col-md-3">
         <%= f.input :priority, readonly: !@project.can_be_edited_by?(current_user),
-          hint: 'Quanto menor o número, antes a regra será executada para este agente.' %>
+          hint: 'Quanto menor o número, antes a regra será executada para este agente. O valor mínimo é 1.' %>
       </div>
     </div>
 
