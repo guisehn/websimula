@@ -184,8 +184,13 @@ $.fn.imageEditor = function (options) {
           </a>
         </div>
         <div class="file-selector-container">
-          Enviar imagem:<br>
-          <input type="file" accept="image/*">
+          <label for="image-editor-file-upload">Enviar imagem:</label>
+          <input type="file" accept="image/*" id="image-editor-file-upload">
+          <span class="hint">
+            Tamanho de imagem ideal: ${Constants.AGENT_SIZE}x${Constants.AGENT_SIZE} pixels.<br>
+            Imagens maiores serão redimensionadas<br>
+            para este tamanho.
+          </span>
         </div>
       </div>
     `)

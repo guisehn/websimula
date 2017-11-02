@@ -5,19 +5,17 @@
 
     .color-picker-container {
       margin-bottom: 20px;
-    }
-  }
 
-  .color-picker-container {
+      .or {
+        display: inline-block;
+        margin: 0 5px;
+      }
+    }
+
     label {
       font-weight: normal;
       display: block;
       margin-bottom: 5px;
-    }
-
-    .or {
-      display: inline-block;
-      margin: 0 5px;
     }
   }
 
@@ -28,6 +26,20 @@
     img {
       width: 15px;
       height: 15px;
+    }
+  }
+
+  .file-selector-container {
+    .hint {
+      display: block;
+      font-size: 12px;
+      transition: .1s linear;
+      opacity: 0;
+      margin-top: 6px;
+    }
+
+    &:hover .hint {
+      opacity: 1;
     }
   }
 }
