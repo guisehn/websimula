@@ -24,7 +24,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   private
     def set_invite
       invite_code = params[:invite] || (params[:user] ? params[:user][:invite] : nil)
-      @has_invite_parameter = invite_code != nil
+      @has_invite_parameter = invite_code.present?
       @invite = invite_code ? ProjectInvite.find_by_code(invite_code) : nil
     end
 
