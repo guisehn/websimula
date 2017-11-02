@@ -10,5 +10,5 @@ class Variable < ApplicationRecord
 
   validates :name, presence: true,
     uniqueness: { scope: :project_id },
-    format: { with: /\A[^\[\]\{\}]+\z/, message: 'os caracteres []{} não são permitidos' }
+    format: { with: /\A[^\[\]\{\}"]+\z/, message: 'os caracteres []{}" não são permitidos' }
 end

@@ -24,10 +24,22 @@ class VariablesController < ApplicationController
   end
 
   def update
-    if @variable.update(variable_params)
-      redirect_to @project
-    else
-      render :edit
+    @variable.assign_attributes(variable_params)
+
+    name_changed = @variable.name_changed?
+    previous_name = @variable.name_was
+
+    ActiveRecord::Base.transaction do
+      if @variable.save
+        if name_changed
+          usage_updater = VariableUsageUpdater.new(@project, previous_name, @variable.name, current_user)
+          usage_updater.update
+        end
+
+        redirect_to @project
+      else
+        render :edit
+      end
     end
   end
 
