@@ -453,7 +453,9 @@ class Simulator {
       agentId = parseInt(agentId, 10)
 
       let agentDefinition = _.find(this.definition.agents, { id: agentId })
-      positions.forEach(pos => this.buildAgent(agentDefinition, pos.x, pos.y))
+      if (agentDefinition) {
+        positions.forEach(pos => this.buildAgent(agentDefinition, pos.x, pos.y))
+      }
     })
 
     // add random agents
@@ -464,13 +466,14 @@ class Simulator {
       agentId = parseInt(agentId, 10)
 
       let agentDefinition = _.find(this.definition.agents, { id: agentId })
+      if (agentDefinition) {
+        _.times(quantity, () => {
+          let index = _.random(0, freeCoordinates.length - 1)
+          let pos = freeCoordinates.splice(index, 1)[0]
 
-      _.times(quantity, () => {
-        let index = _.random(0, freeCoordinates.length - 1)
-        let pos = freeCoordinates.splice(index, 1)[0]
-
-        if (pos) this.buildAgent(agentDefinition, pos.x, pos.y)
-      })
+          if (pos) this.buildAgent(agentDefinition, pos.x, pos.y)
+        })
+      }
     })
 
     this._refreshAgentsTable()
