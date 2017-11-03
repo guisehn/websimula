@@ -39,6 +39,7 @@ gem 'postmark-rails', '~> 0.15.0'
 gem 'paranoia', "~> 2.2"
 gem 'will_paginate', '~> 3.1.0'
 gem 'will_paginate-bootstrap'
+gem 'sentry-raven'
 
 gem 'rails_12factor', group: :production
 

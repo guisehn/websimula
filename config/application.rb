@@ -20,5 +20,14 @@ module Simula
     config.action_mailer.delivery_method = :postmark
     config.action_mailer.postmark_settings = { api_token: ENV['POSTMARK_KEY'] }
     config.action_mailer.default_url_options = { host: ENV['APP_HOST_URL'] }
+
+    config.filter_parameters << :password
+
+    if ENV['SENTRY_SERVER_URL'].present?
+      Raven.configure do |config|
+        config.dsn = ENV['SENTRY_SERVER_URL']
+        config.sanitize_fields = Rails.application.config.filter_parameters.map(&:to_s)
+      end
+    end
   end
 end

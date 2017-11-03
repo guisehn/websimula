@@ -2,3 +2,4 @@ POSTMARK_KEY: 2debd2f4-34f3-4daa-a35a-df1e48891053
 EMAIL_FROM_ADDRESS: from@email.com
 APP_HOST_URL: localhost:3000
 SENTRY_CLIENT_URL: https://xxx@sentry.io/xxx
+SENTRY_SERVER_URL: https://xxx:xxx@sentry.io/xxx
