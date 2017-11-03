@@ -1,6 +1,8 @@
 class Project < ApplicationRecord
   self.per_page = 18
 
+  acts_as_paranoid
+
   has_many :agents
   has_many :variables
   has_many :project_invites
