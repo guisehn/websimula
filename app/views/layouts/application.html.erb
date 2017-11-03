@@ -82,7 +82,7 @@
 
     <%= yield %>
 
-    <% if ENV['SENTRY_CLIENT_URL'] %>
+    <% if ENV['SENTRY_CLIENT_URL'].present? %>
       <script src="https://cdn.ravenjs.com/3.19.1/raven.min.js" crossorigin="anonymous"></script>
       <script>Raven.config('<%= ENV['SENTRY_CLIENT_URL'] %>').install()</script>
     <% end %>
