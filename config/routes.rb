@@ -24,6 +24,8 @@ Rails.application.routes.draw do
       get 'initial_positions'
       get 'initial_positions/edit', to: 'projects#edit_initial_positions', as: 'edit_initial_positions'
       get 'variables'
+
+      post 'fork'
     end
   end
 end

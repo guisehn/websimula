@@ -103,6 +103,11 @@ class ProjectsController < ApplicationController
     redirect_to projects_url, notice: 'Projeto excluído.'
   end
 
+  def fork
+    copy = ProjectForkGenerator.new(@project, current_user).fork
+    redirect_to copy
+  end
+
   private
     def project_params
       allowed_params = [:initial_positions, :stop_condition, :description]

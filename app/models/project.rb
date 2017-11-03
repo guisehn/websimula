@@ -8,6 +8,8 @@ class Project < ApplicationRecord
   has_many :project_users
   has_many :users, through: :project_users
 
+  belongs_to :parent_project, class_name: 'Project', required: false
+
   enum visibility: [ :secret, :open ]
 
   validates :name, presence: true

@@ -2,6 +2,11 @@
 
 <div class="project-dashboard">
   <div class="container">
+    <% if current_user.admin? && @project.parent_project %>
+      <%= link_to "Projeto duplicado de #{@project.parent_project.name}", @project.parent_project %>
+      <hr>
+    <% end %>
+
     <% if show_description %>
       <div class="row">
         <div class="col-md-12">

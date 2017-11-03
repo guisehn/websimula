@@ -14,6 +14,11 @@
 
     <% unless local_assigns[:internal] %>
       <div class="project-actions">
+        <%= link_to fork_project_path(@project), class: 'action', id: 'project-fork-link', method: :post, data: { confirm: 'Tem certeza de que deseja fazer uma cópia desse projeto? Ele será criado como privado, e os membros da equipe deste projeto não serão copiados para o novo projeto.' } do %>
+          <span class="glyphicon glyphicon glyphicon-duplicate"></span>
+          <label>Copiar projeto</label>
+        <% end %>
+
         <% if @project.can_be_edited_by?(current_user) %>
           <%= link_to edit_project_path(@project), class: 'action', id: 'project-settings-link' do %>
             <span class="glyphicon glyphicon glyphicon-wrench"></span>
