@@ -12,7 +12,7 @@ export default {
       defaultValue: null,
       nullLabel: 'Escolha a direção',
       required: true,
-      options: Util.DIRECTION_OPTIONS
+      options: Constants.DIRECTION_OPTIONS
     },
     {
       name: 'steps',
