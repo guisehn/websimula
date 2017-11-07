@@ -19,7 +19,7 @@ class AgentsController < ApplicationController
     @agent = @project.agents.new(agent_params)
 
     if @agent.save
-      redirect_to @project
+      redirect_to project_agent_path(@project, @agent), notice: 'Agente criado! Agora, adicione a sua primeira regra de comportamento ou volte à tela inicial do projeto.'
     else
       render :new
     end
