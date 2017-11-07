@@ -53,6 +53,13 @@ $stop-condition-color: #af9;
     border-width: 0 1px 1px 0;
   }
 
+  .clue {
+    position: absolute;
+    background: red;
+    z-index: 2;
+    transition: transform 0.15s linear;
+  }
+
   .agent {
     position: absolute;
     z-index: 3;
@@ -116,14 +123,14 @@ $stop-condition-color: #af9;
   }
 }
 
-.agent-context-menu {
+.simulator-context-menu {
   position: absolute;
-  z-index: 10;
   width: 150px;
   transition: opacity .15s linear;
 
   .dropdown-menu {
     display: block;
+    z-index: 10;
   }
 
   .dropdown-menu:before {

@@ -52,7 +52,7 @@
           <div v-if="addingAgent"
             v-on:click.stop
             :style="calculatePosition({ x: addingAgent.x, y: addingAgent.y, addX: -8, addY: 18 })"
-            class="agent-context-menu">
+            class="simulator-context-menu">
             <ul class="dropdown-menu">
               <li class="dropdown-header">Adicionar agente fixo</li>
               <li v-for="agent in agentsOrderedByLastUsage">

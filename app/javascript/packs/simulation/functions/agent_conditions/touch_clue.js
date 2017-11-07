@@ -4,7 +4,7 @@ import Util from '../util'
 
 function findInDirection(env, agent, input) {
   let coordinate = Util.generateCoordinateFromMovement(env, agent.position.x, agent.position.y, input.direction)
-  return Util.isCoordinateOccupied(env, coordinate, input.agent_id, true)
+  return Util.coordinateHasClue(env, coordinate)
 }
 
 function findInAllDirections(env, agent, input) {
@@ -13,9 +13,7 @@ function findInAllDirections(env, agent, input) {
       return
     }
 
-    let position = env.positions[y][x]
-
-    if (position && position.agent && (!input.agent_id || position.agent.definition.id === input.agent_id)) {
+    if (Util.coordinateHasClue(env, x, y)) {
       return true
     }
   })
@@ -24,17 +22,9 @@ function findInAllDirections(env, agent, input) {
 }
 
 export default {
-  label: 'Atingir agente',
+  label: 'Atingir pista',
 
   input: [
-    {
-      name: 'agent_id',
-      type: 'agent',
-      label: 'Qual agente?',
-      defaultValue: null,
-      nullLabel: 'Qualquer agente',
-      required: false
-    },
     {
       name: 'direction',
       type: 'string',
@@ -55,7 +45,7 @@ export default {
   },
 
   help: () =>
-    `<p>Use esta condição para verificar se o agente atual está atingindo algum outro agente,
-     específico ou não. Por atingir, entende-se que ele esteja a um quadrado de distância do
+    `<p>Use esta condição para verificar se o agente atual está atingindo alguma pista.
+     Por atingir, entende-se que ele esteja a um quadrado de distância do
      outro agente em qualquer direção, incluindo diagonais.</p>`
 }

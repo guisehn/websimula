@@ -6,6 +6,54 @@ import SimulationFunctions from './functions'
 
 let global = window
 
+const CONTEXT_MENU_TEMPLATE = `
+  <div class="simulator-context-menu">
+    <ul class="dropdown-menu options-dropdown">
+      <% if (agent) { %>
+        <li class="dropdown-header">
+          Agente:
+          <%- agent.definition.name %>
+          (<%- agent.age %> ciclo<% if (agent.age !== 1) { %>s<% } %>)
+        </li>
+        <li><a href="" data-action="move-agent">Mover agente</a></li>
+        <li><a href="" data-action="kill-agent">Remover agente</a></li>
+
+        <% if (!clue) { %>
+          <li><a href="" data-action="add-clue">Deixar pista</a></li>
+        <% } %>
+      <% } %>
+
+      <% if (agent && clue) { %>
+        <li role="separator" class="divider"></li>
+      <% } %>
+
+      <% if (clue) { %>
+        <li class="dropdown-header">
+          Pista
+          (<%- clue.age %> ciclo<% if (clue.age !== 1) { %>s<% } %>)
+        </li>
+        <li><a href="" data-action="remove-clue">Remover pista</a></li>
+      <% } %>
+
+      <% if (!agent && !clue) { %>
+        <li><a href="" data-action="add-clue">Adicionar pista</a></li>
+        <li><a href="" data-action="show-agent-dropdown">Adicionar agente</a></li>
+      <% } %>
+    </ul>
+
+    <ul class="dropdown-menu agents-dropdown" style="display:none">
+      <li class="dropdown-header">Adicionar agente em (<%- x + 1 %>, <%- y + 1 %>)</li>
+      <% agents.forEach(function(agent) { %>
+        <li>
+          <a href="" data-action="add-agent" data-agent-id="<%- agent.id %>">
+            <img src="<%- agent.image %>">
+            <%- agent.name %>
+          </a>
+        </li>
+      <% }) %>
+    </ul>
+  </div>`
+
 class Simulator {
   constructor(definition, functions, simulatorElement) {
     this.definition = definition
@@ -18,7 +66,14 @@ class Simulator {
     this.functions = functions
     this.variables = {}
     this.agents = []
+    this.clues = []
     this.positions = []
+
+    // TODO: this is used to store the clues while there's an agent
+    // occupying its position, because a position can only store one item currently.
+    // Ideally we should be able to store multiple items in a same position
+    // e.g. positions[y][x] = [{ type: 'agent', ... }, { type: 'clue', ... }]
+    this.tempCluePositions = []
 
     this._bindEvents()
     this._buildVariablesTable()
@@ -31,7 +86,7 @@ class Simulator {
   reset() {
     this.finished = false
     this.movingAgent = null
-    this.agentAutoIncrement = 0
+    this.autoIncrement = 0
 
     this.stopLoop()
 
@@ -53,6 +108,11 @@ class Simulator {
       this._incrementCycleCount()
 
       if (global.debug) console.log('Cycle', this.cycleCount)
+
+      // increase age of clues
+      this.clues.forEach(clue => {
+        ++clue.age
+      })
 
       // get agents from top to bottom, left to right
       let agents = _.flatten(this.positions)
@@ -114,9 +174,9 @@ class Simulator {
     }
 
     let agent = {
-      id: ++this.agentAutoIncrement,
+      id: ++this.autoIncrement,
       definition: definition,
-      position: { x: x, y: y },
+      position: { x, y },
       age: age || 0,
       element: null
     }
@@ -131,8 +191,59 @@ class Simulator {
     return agent
   }
 
+  buildClue(x, y) {
+    let pos = this.positions[y][x]
+    let clue = null
+
+    // get existing clue or create a new one
+    if (this.tempCluePositions[y][x] || _.get(pos, 'type') === 'clue') {
+      clue = this.tempCluePositions[y][x] || pos
+    } else {
+      clue = {
+        id: ++this.autoIncrement,
+        age: 0,
+        position: { x, y },
+        element: null
+      }
+
+      this.clues.push(clue)
+    }
+
+    // add it to tempCluePositions or move it to `positions`
+    if (_.get(pos, 'type') === 'agent') {
+      this.tempCluePositions[y][x] = clue
+    } else {
+      this.positions[y][x] = { type: 'clue', clue: clue }
+
+      if (this.tempCluePositions[y][x]) {
+        this.tempCluePositions[y][x] = null
+      }
+    }
+
+    // render it
+    if (!clue.element) {
+      clue.element = $('<div class="clue"></div>')
+        .css({
+          top: `${Constants.AGENT_SIZE * clue.position.y}px`,
+          left: `${Constants.AGENT_SIZE * clue.position.x}px`,
+          width: `${Constants.AGENT_SIZE}px`,
+          height: `${Constants.AGENT_SIZE}px`
+        })
+        .data('clue', clue)
+        .appendTo(this.stage)
+    }
+
+    return clue
+  }
+
   moveAgent(agent, x, y) {
     this.positions[agent.position.y][agent.position.x] = null
+
+    // if there's a clue in tempCluePositions, move it to the positions object
+    if (this.tempCluePositions[agent.position.y][agent.position.x]) {
+      this.buildClue(agent.position.x, agent.position.y)
+    }
+
     this.positions[y][x] = { type: 'agent', agent: agent }
 
     agent.position = { x: x, y: y }
@@ -146,12 +257,38 @@ class Simulator {
     // remove the agent from the stage
     this.positions[agent.position.y][agent.position.x] = null
 
+    // if there's a clue in tempCluePositions, move it to the positions object
+    if (this.tempCluePositions[agent.position.y][agent.position.x]) {
+      this.buildClue(agent.position.x, agent.position.y)
+    }
+
     // remove it from list of agents
     // it's important to use `a => a === agent` instead of just `agent` on the 2nd argument
     // of _.remove, otherwise lodash will remove all agents with the same properties such as age, etc.
     _.remove(this.agents, a => a === agent)
 
     this.renderAgent(agent)
+  }
+
+  removeClue(clue) {
+    if (clue.element) {
+      clue.element.css({ transform: 'scale(0)' })
+
+      setTimeout(() => {
+        clue.element.remove()
+        clue.element = null
+      }, 150)
+    }
+
+    _.remove(this.clues, c => c === clue)
+
+    let pos = this.positions[clue.position.y][clue.position.x]
+
+    if (_.get(pos, 'clue') === clue) {
+      this.positions[clue.position.y][clue.position.x] = null
+    } else if (this.tempCluePositions[clue.position.y][clue.position.x]) {
+      this.tempCluePositions[clue.position.y][clue.position.x] = null
+    }
   }
 
   executeAgentRules(agent) {
@@ -274,49 +411,25 @@ class Simulator {
 
     this.simulatorElement.find('[data-value=speed]').val(this.speed).trigger('input')
 
-    this.simulatorElement.on('click', '[data-action=move-agent]', function (e) {
-      let agent = $(this).closest('.agent-context-menu').data('agent')
-      simulator._startMovingAgent(agent)
-      e.preventDefault()
-    })
+    this.stage.on('contextmenu', e => e.preventDefault())
 
-    this.simulatorElement.on('click', '[data-action=kill-agent]', function (e) {
-      let agent = $(this).closest('.agent-context-menu').data('agent')
+    this.stage.on('click contextmenu', function (e) {
+      let offset = $(this).offset()
+      let x = Math.floor((e.pageX - offset.left) / Constants.AGENT_SIZE)
+      let y = Math.floor((e.pageY - offset.top) / Constants.AGENT_SIZE)
 
-      if (confirm(`Tem certeza que deseja remover o agente ${agent.definition.name}?`)) {
-        setTimeout(() => {
-          simulator.killAgent(agent)
-          simulator._refreshAgentsTable()
-        }, 500)
-      }
+      if (simulator.movingAgent) {
+        if (!simulator.positions[y][x]) {
+          simulator.moveAgent(simulator.movingAgent, x, y)
+        }
 
-      e.preventDefault()
-    })
-
-    this.stage.on('click contextmenu', '.agent', function (e) {
-      if (!simulator.finished) {
-        simulator._createContextMenu($(this).data('agent'))
+        simulator._stopMovingAgent()
+      } else if (!simulator.finished) {
+        simulator._createContextMenu(x, y)
       }
 
       e.stopPropagation()
       e.preventDefault()
-    })
-
-    this.stage.on('contextmenu', e => e.preventDefault())
-
-    this.stage.on('click', function (e) {
-      if (simulator.movingAgent) {
-        let offset = $(this).offset()
-        let x = Math.floor((e.pageX - offset.left) / Constants.AGENT_SIZE)
-        let y = Math.floor((e.pageY - offset.top) / Constants.AGENT_SIZE)
-
-        if (simulator.positions[y][x]) {
-          return false
-        }
-
-        simulator.moveAgent(simulator.movingAgent, x, y)
-        simulator._stopMovingAgent()
-      }
     })
 
     this.stage.on('click', '.agent-moved', function (e) {
@@ -327,7 +440,7 @@ class Simulator {
       e.stopPropagation()
     })
 
-    $(document).on('click.close-agent-context-menu', () => {
+    $(document).on('click.close-simulator-context-menu', () => {
       simulator._removeContextMenu()
     })
   }
@@ -436,9 +549,11 @@ class Simulator {
   _clearPositions() {
     for (let y = 0; y < this.stageSize; y++) {
       this.positions[y] = []
+      this.tempCluePositions[y] = []
 
       for (let x = 0; x < this.stageSize; x++) {
         this.positions[y][x] = null
+        this.tempCluePositions[y][x] = null
       }
     }
   }
@@ -598,30 +713,85 @@ class Simulator {
     this.agents.forEach(agent => this.renderAgent(agent))
   }
 
-  _createContextMenu(agent) {
+  _createContextMenu(x, y) {
     if (this.finished) return
 
     this.stopLoop()
     this._stopMovingAgent()
     this._removeContextMenu()
 
-    let template = $('#agent-context-menu-template').html().trim()
-    let menu = $(template).data('agent', agent).appendTo(this.stage)
+    let simulator = this
+    let agent = _.find(this.agents, a => a.position.x === x && a.position.y === y)
+    let clue = _.find(this.clues, c => c.position.x === x && c.position.y === y)
+    let template = _.template(CONTEXT_MENU_TEMPLATE.trim())
 
-    menu.find('[data-bind=agent-name]').text(agent.definition.name)
-    menu.find('[data-bind=agent-age]').text(agent.age)
-    menu.find('[data-bind=agent-age-plural]').text(agent.age !== 1 ? 's' : '')
+    let html = template({
+      agents: this.definition.agents,
+      agent, clue, x, y
+    })
 
-    menu.on('contextmenu', e => e.preventDefault())
+    let menu = $(html).data('agent', agent).data('clue', clue).appendTo(this.stage)
+
+    menu.on('click', '[data-action=move-agent]', e => {
+      this._removeContextMenu()
+      this._startMovingAgent(agent)
+      e.preventDefault()
+    })
+
+    menu.on('click', '[data-action=kill-agent]', e => {
+      this._removeContextMenu()
+
+      if (confirm(`Tem certeza que deseja remover o agente ${agent.definition.name}?`)) {
+        setTimeout(() => {
+          this.killAgent(agent)
+          this._refreshAgentsTable()
+        }, 500)
+      }
+
+      e.preventDefault()
+    })
+
+    menu.on('click', '[data-action=show-agent-dropdown]', e => {
+      menu.find('.options-dropdown').hide()
+      menu.find('.agents-dropdown').show()
+      e.preventDefault()
+    })
+
+    menu.on('click', '[data-action=add-agent]', function (e) {
+      let id = parseInt($(this).data('agent-id'), 10)
+      let definition = _.find(simulator.definition.agents, { id: id })
+
+      simulator._removeContextMenu()
+      simulator.buildAgent(definition, x, y, 0, true)
+
+      e.preventDefault()
+    })
+
+    menu.on('click', '[data-action=add-clue]', e => {
+      this._removeContextMenu()
+      this.buildClue(x, y)
+      e.preventDefault()
+    })
+
+    menu.on('click', '[data-action=remove-clue]', e => {
+      this._removeContextMenu()
+      this.removeClue(clue)
+      e.preventDefault()
+    })
+
+    menu.on('click contextmenu', e => {
+      e.stopPropagation()
+      e.preventDefault()
+    })
 
     menu.css({
-      top: `${Constants.AGENT_SIZE * agent.position.y + Constants.AGENT_SIZE + 2}px`,
-      left: `${Constants.AGENT_SIZE * agent.position.x - (Constants.AGENT_SIZE / 2)}px`
+      top: `${Constants.AGENT_SIZE * y + Constants.AGENT_SIZE + 2}px`,
+      left: `${Constants.AGENT_SIZE * x - (Constants.AGENT_SIZE / 2)}px`
     })
   }
 
   _removeContextMenu() {
-    let menu = this.stage.find('.agent-context-menu')
+    let menu = this.stage.find('.simulator-context-menu')
 
     if (menu.length) {
       menu.css('opacity', 0)

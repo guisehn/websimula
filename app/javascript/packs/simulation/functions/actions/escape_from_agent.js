@@ -26,7 +26,7 @@ export default {
       (x, y) => {
         let position = env.positions[y][x]
 
-        if (position && position.agent.definition.id === input.agent_id) {
+        if (position && position.agent && position.agent.definition.id === input.agent_id) {
           return true
         }
       }
@@ -61,7 +61,7 @@ export default {
 
         let position = env.positions[y][x]
 
-        if (position && position.agent.definition.id === input.agent_id) {
+        if (position && position.agent && position.agent.definition.id === input.agent_id) {
           return true
         }
       })

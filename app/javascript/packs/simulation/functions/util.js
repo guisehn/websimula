@@ -63,7 +63,7 @@ const Util = {
     return x >= 0 && y >= 0 && x < env.stageSize && y < env.stageSize
   },
 
-  isCoordinateOccupied(env, x, y, agentId) {
+  isCoordinateOccupied(env, x, y, agentId, agentOnly) {
     if (_.isObject(x)) {
       agentId = y
       ;[x, y] = [x.x, x.y]
@@ -74,9 +74,35 @@ const Util = {
 
     if (agentId) {
       return _.get(coordinate, 'agent.definition.id') === agentId
-    } else {
+    } else if (agentOnly) {
       return _.get(coordinate, 'type') === 'agent'
+    } else {
+      return Boolean(coordinate)
     }
+  },
+
+  getClueAtCoordinate(env, x, y) {
+    if (_.isObject(x)) {
+      [x, y] = [x.x, x.y]
+    }
+
+    let line = env.tempCluePositions[y]
+    let coordinate = _.get(line, x)
+    if (coordinate) {
+      return coordinate
+    }
+
+    line = env.positions[y]
+    coordinate = _.get(line, x)
+    if (coordinate && coordinate.clue) {
+      return coordinate.clue
+    }
+
+    return null
+  },
+
+  coordinateHasClue(env, x, y) {
+    return Boolean(Util.getClueAtCoordinate(env, x, y))
   },
 
   coordinateExists(env, x, y) {
