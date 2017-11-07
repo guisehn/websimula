@@ -14,7 +14,7 @@ class Project < ApplicationRecord
 
   enum visibility: [ :secret, :open ]
 
-  validates :name, presence: true
+  validates :name, presence: true, length: { maximum: 60 }
   validates :visibility, presence: true
 
   def can_be_viewed_by?(user)
