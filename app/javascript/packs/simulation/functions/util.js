@@ -65,6 +65,7 @@ const Util = {
 
   isCoordinateOccupied(env, x, y, agentId, agentOnly) {
     if (_.isObject(x)) {
+      agentOnly = agentId
       agentId = y
       ;[x, y] = [x.x, x.y]
     }
