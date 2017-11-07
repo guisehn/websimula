@@ -4,6 +4,8 @@ import ExpressionEvaluator from 'expr-eval'
 import Constants from '../constants'
 import SimulationFunctions from './functions'
 
+import clueImage from '../../images/clue.png'
+
 let global = window
 
 const CONTEXT_MENU_TEMPLATE = `
@@ -222,7 +224,7 @@ class Simulator {
 
     // render it
     if (!clue.element) {
-      clue.element = $('<div class="clue"></div>')
+      clue.element = $(`<img src="${clueImage}" class="clue">`)
         .css({
           top: `${Constants.AGENT_SIZE * clue.position.y}px`,
           left: `${Constants.AGENT_SIZE * clue.position.x}px`,
