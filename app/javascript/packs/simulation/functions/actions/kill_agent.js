@@ -12,20 +12,40 @@ export default {
       defaultValue: null,
       nullLabel: 'Qualquer agente',
       required: false,
+    },
+    {
+      name: 'direction',
+      type: 'string',
+      label: 'Direção',
+      defaultValue: null,
+      nullLabel: 'Qualquer direção',
+      required: false,
+      options: Constants.DIRECTION_OPTIONS
     }
   ],
   definition: (env, agent, input) => {
-    let coordinateWithAgent = Util.getAdjacentCoordinates(env, agent.position.x, agent.position.y, 1, false, (x, y) => {
-      if (Util.isDiagonalBlocked(env, x, y, agent.position.x, agent.position.y)) {
-        return
-      }
+    let coordinateWithAgent
 
-      let position = env.positions[y][x]
+    if (input.direction) {
+      let coordinate = Util.generateCoordinateFromMovement(env, agent.position.x, agent.position.y,
+        input.direction, 1, false)
 
-      if (position && position.agent && (!input.agent_id || position.agent.definition.id === input.agent_id)) {
-        return true
+      if (Util.isCoordinateOccupied(env, coordinate.x, coordinate.y, input.agent_id, true)) {
+        coordinateWithAgent = coordinate
       }
-    })
+    } else {
+      coordinateWithAgent = Util.getAdjacentCoordinates(env, agent.position.x, agent.position.y, 1, false, (x, y) => {
+        if (Util.isDiagonalBlocked(env, x, y, agent.position.x, agent.position.y)) {
+          return
+        }
+
+        let position = env.positions[y][x]
+
+        if (position && position.agent && (!input.agent_id || position.agent.definition.id === input.agent_id)) {
+          return true
+        }
+      })
+    }
 
     if (coordinateWithAgent) {
       let agentFound = env.positions[coordinateWithAgent.y][coordinateWithAgent.x].agent
