@@ -68,7 +68,7 @@
           <div v-if="selectedAgent"
             v-on:click.stop
             :style="calculatePosition({ x: selectedAgent.coordinate.x, y: selectedAgent.coordinate.y, addX: -8, addY: 18 })"
-            class="agent-context-menu">
+            class="simulator-context-menu">
             <ul class="dropdown-menu">
               <li><a href="" v-on:click.prevent="moveAgent()">Mover agente</a></li>
               <li><a href="" v-on:click.prevent="removeAgent()">Remover agente</a></li>
