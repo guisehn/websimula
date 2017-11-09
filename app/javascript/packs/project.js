@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import ConflictChecker from './conflict-checker'
+import ProjectHelp from './project-help'
 
 let currentProjectId = null
 
@@ -64,9 +65,14 @@ function updateAgentRulesTable(data) {
   }
 }
 
+function showProjectHelpModal(projectId, firstAccess) {
+  ProjectHelp.open(projectId, firstAccess)
+}
+
 let conflictChecker = new ConflictChecker()
 
 $(document).on('turbolinks:load', function () {
+
   conflictChecker.setUrl(window.location.pathname)
   conflictChecker.setCurrentUserId(window.simulaUserId)
 
@@ -91,6 +97,10 @@ $(document).on('turbolinks:load', function () {
   }
 
   if (changedProject && projectId) {
+    if (window.projectFirstAccess) {
+      showProjectHelpModal(projectId, true)
+    }
+
     App.cable.subscriptions.create({
       channel: 'ProjectChannel',
       project_id: projectId
@@ -139,4 +149,9 @@ $(document).on('turbolinks:load', function () {
       }
     })
   }
+
+  $('#project-help-link').click(function (e) {
+    showProjectHelpModal(projectId, false)
+    e.preventDefault()
+  })
 })

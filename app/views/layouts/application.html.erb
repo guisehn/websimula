@@ -13,10 +13,6 @@
     <%= stylesheet_pack_tag 'application' %>
 
     <link rel="shortcut icon" href="/favicon.ico" />
-
-    <script>
-      window.simulaUserId = <%= (current_user ? current_user.id : nil).to_json %>;
-    </script>
   </head>
 
   <body>
@@ -81,6 +77,13 @@
     </div>
 
     <%= yield %>
+
+    <script>
+      window.simulaUserId = <%= (current_user ? current_user.id : nil).to_json %>;
+      <% if @project && current_user %>
+      window.projectFirstAccess = <%= @project.project_users.find_by(user_id: current_user.id).try(:first_access).to_json %>;
+      <% end %>
+    </script>
 
     <% if ENV['SENTRY_CLIENT_URL'].present? %>
       <script src="https://cdn.ravenjs.com/3.19.1/raven.min.js" crossorigin="anonymous"></script>

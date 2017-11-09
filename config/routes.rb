@@ -26,6 +26,8 @@ Rails.application.routes.draw do
       get 'variables'
 
       post 'fork'
+
+      put 'first_access'
     end
   end
 end

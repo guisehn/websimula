@@ -108,6 +108,14 @@ class ProjectsController < ApplicationController
     redirect_to copy
   end
 
+  def first_access
+    @project.project_users
+      .find_by!(user_id: current_user.id)
+      .update!(first_access: params[:first_access])
+
+    head :no_content
+  end
+
   private
     def project_params
       allowed_params = [:initial_positions, :stop_condition, :description]

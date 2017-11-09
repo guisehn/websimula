@@ -165,6 +165,17 @@ h2 {
   margin-bottom: 40px;
 }
 
+.project-help-modal {
+  .modal-body {
+    text-align: justify;
+  }
+
+  .play-button-container {
+    text-align: center;
+    margin: 20px 0;
+  }
+}
+
 .function-help-modal {
   .modal-body {
     text-align: justify;
