@@ -79,7 +79,7 @@ class ProjectsController < ApplicationController
     ActiveRecord::Base.transaction do
       if @project.save
         @project.project_users.create!(user: current_user, role: :admin)
-        redirect_to @project, notice: 'Bem vindo ao seu novo projeto.'
+        redirect_to @project
       else
         render :new
       end
