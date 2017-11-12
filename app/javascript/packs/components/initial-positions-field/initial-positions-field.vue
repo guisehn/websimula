@@ -57,7 +57,7 @@
               <li class="dropdown-header">Adicionar agente fixo</li>
               <li v-for="agent in agentsOrderedByLastUsage">
                 <a href="" v-on:click.prevent="addAgent(agent)">
-                  <img :src="agent.image">
+                  <img :src="agent.image" class="pixelated">
                   {{ agent.name }}
                 </a>
               </li>
@@ -92,7 +92,7 @@
         <table class="table">
           <tbody>
             <tr v-for="agent in agentsOrderedByName">
-              <td nowrap><img :src="agent.image" ></td>
+              <td nowrap><img :src="agent.image" class="pixelated"></td>
               <td width="100%">{{ agent.name }}</td>
               <td class="times" nowrap>×</td>
               <td nowrap>

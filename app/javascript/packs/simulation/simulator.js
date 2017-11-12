@@ -48,7 +48,7 @@ const CONTEXT_MENU_TEMPLATE = `
       <% agents.forEach(function(agent) { %>
         <li>
           <a href="" data-action="add-agent" data-agent-id="<%- agent.id %>">
-            <img src="<%- agent.image %>">
+            <img src="<%- agent.image %>" class="pixelated">
             <%- agent.name %>
           </a>
         </li>
