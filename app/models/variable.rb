@@ -1,4 +1,6 @@
 class Variable < ApplicationRecord
+  audited
+
   belongs_to :project
 
   enum data_type: [ :number, :string ]

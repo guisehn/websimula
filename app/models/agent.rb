@@ -1,4 +1,6 @@
 class Agent < ApplicationRecord
+  audited
+
   belongs_to :project
   has_many :rules
 

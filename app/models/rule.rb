@@ -1,4 +1,6 @@
 class Rule < ApplicationRecord
+  audited
+
   default_scope { order('priority ASC, LOWER(name) ASC') }
   scope :for_project, ->(project) { where(agent: project.agents.pluck(:id)) }
 

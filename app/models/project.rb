@@ -1,6 +1,7 @@
 class Project < ApplicationRecord
   self.per_page = 18
 
+  audited
   acts_as_paranoid
 
   has_many :agents
