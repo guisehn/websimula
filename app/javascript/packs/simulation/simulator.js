@@ -655,6 +655,10 @@ class Simulator {
     // based on
     // https://stackoverflow.com/questions/41831983/how-to-evaluate-expression-tree-with-logical-operators-in-c-sharp
     if (node.type === 'logical_operator') {
+      if (!node.children.length) {
+        return true
+      }
+
       if (node.operator === 'and') {
         // for AND, we can shortcut the evaluation if any child returns false
         for (let i = 0, j = node.children.length; i < j; i++) {
