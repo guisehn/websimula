@@ -1,7 +1,7 @@
 class Agent < ApplicationRecord
   audited
 
-  belongs_to :project
+  belongs_to :project, required: true
   has_many :rules
 
   validates :project_id, presence: true
