@@ -1,11 +1,19 @@
 <%= render 'projects/header', project: @project, internal: true %>
 
 <div class="container">
-  <div class="back-link-container">
-    <%= link_to "← Voltar para #{@agent.name}", edit_project_agent_path(@project, @agent) %>
-  </div>
+  <% if @duplicate %>
+    <div class="back-link-container">
+      <%= link_to "← Voltar para regra #{@duplicate.name}", edit_project_agent_rule_path(@project, @agent, @duplicate) %>
+    </div>
 
-  <h2>Nova regra</h2>
+    <h2>Duplicar regra</h2>
+  <% else %>
+    <div class="back-link-container">
+      <%= link_to "← Voltar para #{@agent.name}", edit_project_agent_path(@project, @agent) %>
+    </div>
+
+    <h2>Nova regra</h2>
+  <% end %>
 
   <%= render 'form' %>
 </div>

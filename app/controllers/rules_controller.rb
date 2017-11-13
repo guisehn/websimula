@@ -4,6 +4,7 @@ class RulesController < ApplicationController
   before_action :check_project_edit_permission!, only: [:new, :create, :update, :destroy]
   before_action :set_agent
   before_action :set_rule, only: [:edit, :update, :destroy]
+  before_action :find_rule_to_duplicate, only: [:new, :create]
 
   def index
     @rules = @agent.rules
@@ -16,8 +17,8 @@ class RulesController < ApplicationController
   end
 
   def new
-    if params[:duplicate]
-      @rule = Rule.for_project(@project).find(params[:duplicate]).dup
+    if @duplicate
+      @rule = @duplicate.dup
       @rule.name = @rule.priority = nil
     else
       @rule = @agent.rules.new
@@ -25,10 +26,11 @@ class RulesController < ApplicationController
   end
 
   def create
-    @rule = @agent.rules.new(rule_params)
+    @rule = @duplicate ? Rule.new : @agent.rules.new
+    @rule.assign_attributes(rule_params)
 
     if @rule.save
-      redirect_to edit_project_agent_path(@project, @agent), notice: 'Regra criada.'
+      redirect_to edit_project_agent_path(@project, @rule.agent), notice: 'Regra criada.'
     else
       render :new
     end
@@ -61,9 +63,13 @@ class RulesController < ApplicationController
     end
 
     def rule_params
-      p = params.require(:rule).permit(:name, :priority, :condition, :action)
+      p = params.require(:rule).permit(:name, :priority, :condition, :action, :agent_id)
       param_to_json(p, :condition)
       param_to_json(p, :action)
       p
+    end
+
+    def find_rule_to_duplicate
+      @duplicate = params[:duplicate] ? Rule.for_project(@project).find(params[:duplicate]) : nil
     end
 end

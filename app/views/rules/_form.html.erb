@@ -2,6 +2,18 @@
   <%= f.error_notification %>
 
   <div class="form-inputs">
+    <% if @duplicate %>
+      <div class="row">
+        <div class="col-md-6">
+          <%= f.association :agent, readonly: !@project.can_be_edited_by?(current_user),
+            collection: @project.agents.order('LOWER(name) asc'), required: true, include_blank: false,
+            hint: 'Agente ao qual esta regra será associada.' %>
+        </div>
+      </div>
+
+      <%= f.hidden_field :duplicate, value: @duplicate.id, name: 'duplicate' %>
+    <% end %>
+
     <div class="row">
       <div class="col-md-6">
         <%= f.input :name, readonly: !@project.can_be_edited_by?(current_user),
