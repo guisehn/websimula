@@ -29,7 +29,7 @@ class RulesController < ApplicationController
     @rule = @duplicate ? Rule.new : @agent.rules.new
     @rule.assign_attributes(rule_params)
 
-    if @rule.save
+    if can_use_agent && @rule.save
       redirect_to edit_project_agent_path(@project, @rule.agent), notice: 'Regra criada.'
     else
       render :new
@@ -40,7 +40,7 @@ class RulesController < ApplicationController
   end
 
   def update
-    if @rule.update(rule_params)
+    if can_use_agent && @rule.update(rule_params)
       redirect_to edit_project_agent_path(@project, @agent), notice: 'Regra atualizada.'
     else
       render :edit
@@ -60,6 +60,10 @@ class RulesController < ApplicationController
     def set_rule
       @rule = @agent.rules.find(params[:id])
       @rule.edited_by = current_user
+    end
+
+    def can_use_agent
+      @rule.agent.project.can_be_edited_by?(current_user)
     end
 
     def rule_params
