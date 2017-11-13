@@ -5,9 +5,6 @@ Rails.application.routes.draw do
 
   root to: 'home#index'
 
-  get 'projects/open' => 'projects#open', as: 'open_projects'
-  get 'projects/all' => 'projects#all', as: 'all_projects'
-
   resources :projects do
     resources :users
     resources :simulations, except: [:edit, :update]
@@ -15,6 +12,11 @@ Rails.application.routes.draw do
 
     resources :agents, except: [:index] do
       resources :rules, except: [:show]
+    end
+
+    collection do
+      get 'open'
+      get 'all'
     end
 
     member do
