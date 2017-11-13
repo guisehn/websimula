@@ -20,7 +20,7 @@ const modalTemplate = _.template(`
           </p>
 
           <div class="play-button-container">
-            <a href="https://youtu.be/0RFRyhyClDc"
+            <a href=""
               class="btn btn-lg btn-default" target="_blank" data-action="watch-video">
               <span class="glyphicon glyphicon-play"></span>
               Assistir vídeo
@@ -61,8 +61,7 @@ export default {
     let self = this
 
     modal.find('[data-action=watch-video]').click(function (e) {
-      let id = $(this).attr('href').match(/\/([^\/]+)$/)[1]
-      self.openVideo(id)
+      self.openVideo()
       e.preventDefault()
     })
 
@@ -76,9 +75,7 @@ export default {
     })
   },
 
-  openVideo(id) {
-    let url = `https://www.youtube.com/embed/${id}?autoplay=1`
-
+  openVideo() {
     let dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : screen.left
     let dualScreenTop = window.screenTop != undefined ? window.screenTop : screen.top
 
@@ -90,6 +87,8 @@ export default {
 
     let left = ((screenWidth / 2) - (width / 2)) + dualScreenLeft
     let top = ((screenHeight / 2) - (height / 2)) + dualScreenTop
+
+    let url = '/projects/tutorial?autoplay=1'
 
     let newWindow = window.open(url, 'project_help_video',
       `scrollbars=no, width=${width}, height=${height}, top=${top}, left=${left}`)

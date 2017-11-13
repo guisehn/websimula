@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tutorial - web simula</title>
+    <%= stylesheet_link_tag 'application' %>
+    <%= javascript_include_tag 'application' %>
+  </head>
+
+  <body class="tutorial-page">
+    <div class="page-container">
+      <div class="video-container">
+        <div id="video"></div>
+      </div>
+
+      <div class="jump-to">
+        <h2>Tarefas específicas</h2>
+
+        <ul class="list-unstyled">
+          <li>
+            <a href="" data-action="seek-to" data-time="6">Criando um agente</a>
+          </li>
+          <li>
+            <a href="" data-action="seek-to" data-time="2:20">Criando uma regra de comportamento</a>
+          </li>
+          <li>
+            <a href="" data-action="seek-to" data-time="1:05">Posicionando agentes no ambiente de forma fixa</a>
+          </li>
+          <li>
+            <a href="" data-action="seek-to" data-time="6:42.5">Posicionando agentes no ambiente de forma aleatória</a>
+          </li>
+          <li>
+            <a href="" data-action="seek-to" data-time="7:36.8">Criando uma variável</a>
+          </li>
+          <li>
+            <a href="" data-action="seek-to" data-time="8:35">Definindo a condição de parada</a>
+          </li>
+          <li>
+            <a href="" data-action="seek-to" data-time="9:38.7">Executando a simulação</a>
+          </li>
+          <li>
+            <a href="" data-action="seek-to" data-time="10:10">Convidando membros</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <script>
+      var player
+
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('video', {
+          videoId: '0RFRyhyClDc',
+
+          playerVars: {
+            autoplay: <%= params[:autoplay] ? 1 : 0 %>,
+            rel: 0,
+            showinfo: 0
+          },
+
+          events: {
+            onReady: function() {
+              console.log('Player is ready')
+            }
+          }
+        })
+      }
+
+      $('[data-action=seek-to]').click(function (e) {
+        var time = $(this).attr('data-time').split(':')
+        var seconds
+
+        if (time.length > 1) {
+          seconds = parseInt(time[0], 10) * 60 + parseFloat(time[1])
+        } else {
+          seconds = parseFloat(time[0])
+        }
+
+        player.seekTo(seconds, true)
+        e.preventDefault()
+      })
+    </script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+  </body>
+</html>

@@ -19,6 +19,10 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
+html, body {
+  height: 100%;
+}
+
 body {
   background: #fff;
   padding-bottom: 40px;

@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     collection do
       get 'open'
       get 'all'
+      get 'tutorial'
     end
 
     member do
