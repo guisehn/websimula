@@ -1,5 +1,5 @@
 class ProjectsController < ApplicationController
-  before_action :authenticate_user!, except: [:show, :open]
+  before_action :authenticate_user!, except: [:show, :open, :tutorial]
   before_action :check_system_admin_access!, only: [:all]
   before_action :set_project_and_check_access!, except: [:index, :open, :all, :tutorial, :new, :create]
   before_action :check_project_management_permission!, only: [:destroy]
