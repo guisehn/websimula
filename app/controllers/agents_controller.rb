@@ -1,7 +1,7 @@
 class AgentsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create, :update]
   before_action :set_project_and_check_access!
-  before_action :check_project_edit_permission!, only: [:new, :create, :update]
+  before_action :check_project_edit_permission!, only: [:new, :create, :update, :destroy]
   before_action :set_agent, only: [:show, :edit, :update, :destroy]
 
   def show
