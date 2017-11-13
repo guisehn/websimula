@@ -29,7 +29,9 @@ class RulesController < ApplicationController
     @rule = @duplicate ? Rule.new : @agent.rules.new
     @rule.assign_attributes(rule_params)
 
-    if can_use_agent && @rule.save
+    validate_agent_used
+
+    if @rule.save
       redirect_to edit_project_agent_path(@project, @rule.agent), notice: 'Regra criada.'
     else
       render :new
@@ -40,7 +42,9 @@ class RulesController < ApplicationController
   end
 
   def update
-    if can_use_agent && @rule.update(rule_params)
+    validate_agent_used
+
+    if @rule.update(rule_params)
       redirect_to edit_project_agent_path(@project, @agent), notice: 'Regra atualizada.'
     else
       render :edit
@@ -62,8 +66,10 @@ class RulesController < ApplicationController
       @rule.edited_by = current_user
     end
 
-    def can_use_agent
-      @rule.agent.project.can_be_edited_by?(current_user)
+    def validate_agent_used
+      if @rule.agent && !@rule.agent.project.can_be_edited_by?(current_user)
+        @rule.agent_id = nil
+      end
     end
 
     def rule_params
