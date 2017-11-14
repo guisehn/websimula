@@ -1,4 +1,7 @@
+<% include Rails.application.routes.url_helpers %>
+
 import _ from 'lodash'
+import UrlUtils from './url-utils'
 
 const modalTemplate = _.template(`
   <div class="project-help-modal modal fade" tabindex="-1" role="dialog">
@@ -8,11 +11,11 @@ const modalTemplate = _.template(`
           <h4 class="modal-title">Precisa de ajuda?</h4>
         </div>
         <div class="modal-body">
-          <% if (firstAccess) { %>
+          <%% if (firstAccess) { %>
           <p>
             Vimos que é primeira vez acessando este projeto.
           </p>
-          <% } %>
+          <%% } %>
 
           <p>
             Se você precisar de ajuda, clique no botão abaixo para assistir a um vídeo
@@ -88,7 +91,7 @@ export default {
     let left = ((screenWidth / 2) - (width / 2)) + dualScreenLeft
     let top = ((screenHeight / 2) - (height / 2)) + dualScreenTop
 
-    let url = '/projects/tutorial?autoplay=1'
+    let url = '<%= tutorial_projects_path(autoplay: 1) %>'
 
     let newWindow = window.open(url, 'project_help_video',
       `scrollbars=no, width=${width}, height=${height}, top=${top}, left=${left}`)
@@ -99,9 +102,14 @@ export default {
   },
 
   updateFirstAccess(projectId, value) {
+    let url = UrlUtils.generate(
+      `<%= first_access_project_path(':projectId') %>`,
+      { projectId }
+    )
+
     $.ajax({
       type: 'PUT',
-      url: `/projects/${projectId}/first_access`,
+      url: url,
       dataType: 'json',
       data: { first_access: value }
     })
