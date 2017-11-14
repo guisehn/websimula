@@ -72,7 +72,6 @@ function showProjectHelpModal(projectId, firstAccess) {
 let conflictChecker = new ConflictChecker()
 
 $(document).on('turbolinks:load', function () {
-
   conflictChecker.setUrl(window.location.pathname)
   conflictChecker.setCurrentUserId(window.simulaUserId)
 

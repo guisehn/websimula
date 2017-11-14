@@ -1,4 +1,7 @@
+<% include Rails.application.routes.url_helpers %>
+
 import _ from 'lodash'
+import UrlUtils from './url-utils'
 
 const modalTemplate = _.template(`
   <div class="modal fade" tabindex="-1" role="dialog">
@@ -8,7 +11,7 @@ const modalTemplate = _.template(`
           <h4 class="modal-title">Aviso de conflito</h4>
         </div>
         <div class="modal-body">
-          <p><%= content %></p>
+          <p><%%= content %></p>
           <p>Clique no botão <b>Recarregar</b> para carregar as alterações, ou em <b>Cancelar</b> para prosseguir
           com as suas alterações. Caso deseja prosseguir com as suas alterações sem recarregar, as alterações
           feitas pelo outro usuário poderão ser perdidas.</p>
@@ -42,16 +45,16 @@ export default class ConflictChecker {
   }
 
   rulePageCheck(data) {
-    let m = window.location.pathname.match(/^\/projects\/[0-9]+\/agents\/[0-9]+\/rules\/([0-9]+)\//)
+    let m = UrlUtils.match(window.location.pathname, `<%= edit_project_agent_rule_path(':projectId', ':agentId', ':ruleId') %>`)
 
-    if (m && parseInt(m[1], 10) === data.id) {
+    if (m && parseInt(m.ruleId, 10) === data.id) {
       let editor = this.editorName(data)
       this.showConflictMessage(`Esta regra foi modificada por <b>${editor}</b> enquanto você está com esta tela aberta.`)
     }
   }
 
   initialPositionsCheck(data) {
-    let m = window.location.pathname.match(/^\/projects\/[0-9]+\/initial_positions\/edit/)
+    let m = UrlUtils.match(window.location.pathname, `<%= edit_initial_positions_project_path(':projectId') %>`)
 
     if (m && _.includes(data.changes, 'initial_positions')) {
       let editor = this.editorName(data)
@@ -60,7 +63,7 @@ export default class ConflictChecker {
   }
 
   stopConditionCheck(data) {
-    let m = window.location.pathname.match(/^\/projects\/[0-9]+\/stop_condition\/edit/)
+    let m = UrlUtils.match(window.location.pathname, `<%= edit_stop_condition_project_path(':projectId') %>`)
 
     if (m && _.includes(data.changes, 'stop_condition')) {
       let editor = this.editorName(data)
