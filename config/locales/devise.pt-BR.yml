@@ -18,11 +18,11 @@ pt-BR:
       unconfirmed: 'Antes de continuar, confirme a sua conta.'
     mailer:
       confirmation_instructions:
-        subject: 'Instruções de confirmação'
+        subject: 'Web Simula - Instruções de confirmação'
       reset_password_instructions:
-        subject: 'Instruções de troca de senha'
+        subject: 'Web Simula - Instruções de troca de senha'
       unlock_instructions:
-        subject: 'Instruções de desbloqueio'
+        subject: 'Web Simula - Instruções de desbloqueio'
     omniauth_callbacks:
       failure: 'Não foi possível autenticá-lo como %{kind} porque "%{reason}".'
       success: 'Autenticado com sucesso com uma conta de %{kind}.'
