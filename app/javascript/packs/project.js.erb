@@ -1,6 +1,9 @@
+<% include Rails.application.routes.url_helpers %>
+
 import _ from 'lodash'
 import ConflictChecker from './conflict-checker'
 import ProjectHelp from './project-help'
+import UrlUtils from './url-utils'
 
 let currentProjectId = null
 
@@ -114,12 +117,17 @@ $(document).on('turbolinks:load', function () {
 
       received: (data) => {
         if (data.model === 'Project') {
-          $.get(`/projects/${projectId}.json`, project => {
+          let projectUrl = UrlUtils.generate(`<%= project_path(':projectId', format: 'json') %>`, { projectId })
+
+          $.get(projectUrl, project => {
             updateBindings('project', project)
 
+            let initialPositionsUrl = UrlUtils.generate(`<%= initial_positions_project_path(':projectId') %>`, { projectId })
+            let stopConditionUrl = UrlUtils.generate(`<%= stop_condition_project_path(':projectId') %>`, { projectId })
+
             // TODO: refactor, make it parallel, only reload if initial position/stop condition actually changes
-            $('#initial-positions-section').load(`/projects/${projectId}/initial_positions`, () => {
-              $('#stop-condition-section').load(`/projects/${projectId}/stop_condition`, () => {
+            $('#initial-positions-section').load(initialPositionsUrl, () => {
+              $('#stop-condition-section').load(stopConditionUrl, () => {
                 document.dispatchEvent(new Event('simula:reload-vue'))
               })
             })
@@ -127,15 +135,16 @@ $(document).on('turbolinks:load', function () {
         }
 
         if (data.model === 'Agent') {
-          $('#agents-section').load(`/projects/${projectId}/agents`)
+          let agentsUrl = UrlUtils.generate(`<%= project_agents_path(':projectId') %>`, { projectId })
+          $('#agents-section').load(agentsUrl)
 
-          $.get(`/projects/${projectId}/agents/${data.id}.json`, agent => {
-            updateBindings('agent', agent)
-          })
+          let agentUrl = UrlUtils.generate(`<%= project_agents_path(':projectId', format: 'json') %>`, { projectId })
+          $.get(agentUrl, agent => updateBindings('agent', agent))
         }
 
         if (data.model === 'Variable') {
-          $('#variables-section').load(`/projects/${projectId}/variables`)
+          let url = UrlUtils.generate(`<%= project_variables_path(':projectId') %>`, { projectId })
+          $('#variables-section').load(url)
         }
 
         if (data.model === 'Rule') {
