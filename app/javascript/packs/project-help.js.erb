@@ -69,12 +69,14 @@ export default {
     })
 
     modal.find('[data-action=close]').click(function (e) {
-      if (firstAccess) {
-        self.updateFirstAccess(projectId, false)
-      }
-
       modal.modal('hide')
       e.preventDefault()
+    })
+
+    modal.on('hidden.bs.modal', () => {
+      if (firstAccess) {
+        this.updateFirstAccess(projectId, false)
+      }
     })
   },
 
