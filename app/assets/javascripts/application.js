@@ -19,7 +19,7 @@
 //= require spectrum.pt-br
 //= require_tree .
 
-function simulaEditableOptions() {
+window.simulaEditableOptions = function () {
   return {
     url: function (params) {
       var inner = {};
@@ -49,4 +49,4 @@ function simulaEditableOptions() {
       return message;
     }
   };
-}
+};

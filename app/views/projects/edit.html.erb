@@ -153,6 +153,11 @@ $(function () {
   var addMemberButton = $('#btn-add-member');
   var originalText = addMemberButton.text();
 
+  function validateEmail(email) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+  }
+
   $('#txt-confirm-destroy-project').keyup(function () {
     var isNameCorrect = ($(this).val().trim() !== '<%= @project.name %>');
     $('#btn-confirm-destroy-project').toggleClass('disabled', isNameCorrect);
@@ -177,7 +182,7 @@ $(function () {
         return 'Preencha o e-mail';
       }
 
-      if (!Utils.validateEmail(value)) {
+      if (!validateEmail(value)) {
         return 'E-mail inválido';
       }
     },
