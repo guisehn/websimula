@@ -152,6 +152,11 @@ function refreshGridFromDataUrlInput(grid, dataUrlInput) {
       let tr = grid.find('tr').eq(Math.floor(n / Constants.AGENT_SIZE))
       tr.find('td').eq(n % Constants.AGENT_SIZE).data('color', rgba).css('background-color', rgba)
     }
+
+    // ensure that the input value is updated after the canvas is drawn
+    // we need to make sure that the uploaded image is resized if the user
+    // uses the file input
+    refreshInputValue(dataUrlInput, grid)
   }
 
   if (dataUrl) {
