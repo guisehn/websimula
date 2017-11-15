@@ -138,7 +138,11 @@ $(document).on('turbolinks:load', function () {
           let agentsUrl = UrlUtils.generate(`<%= project_agents_path(':projectId') %>`, { projectId })
           $('#agents-section').load(agentsUrl)
 
-          let agentUrl = UrlUtils.generate(`<%= project_agents_path(':projectId', format: 'json') %>`, { projectId })
+          let agentUrl = UrlUtils.generate(
+            `<%= project_agent_path(':projectId', ':agentId', format: 'json') %>`,
+            { projectId, agentId: data.id }
+          )
+
           $.get(agentUrl, agent => updateBindings('agent', agent))
         }
 
