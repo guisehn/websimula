@@ -112,9 +112,10 @@
 
 <script>
 import Vue from 'vue/dist/vue.esm'
-import Constants from '../../constants'
 import _ from 'lodash'
 import uuid from 'uuid/v4'
+
+import Constants from '../../../constants'
 
 export default {
   name: 'initial-positions-field',

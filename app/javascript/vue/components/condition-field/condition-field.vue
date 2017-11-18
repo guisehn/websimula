@@ -29,8 +29,8 @@
 
 <script>
 import ConditionLogicalOperator from './condition-logical-operator.vue'
-import InputValidator from '../../simulation/input-validator'
-import SimulationFunctions from '../../simulation/functions'
+import InputValidator from '../../../simulation/input-validator'
+import SimulationFunctions from '../../../simulation/functions'
 
 import uuid from 'uuid/v4'
 import _ from 'lodash'

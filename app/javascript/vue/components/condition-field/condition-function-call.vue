@@ -41,8 +41,8 @@
 <script>
 import FunctionCall from '../function-call/function-call.vue'
 
-import SimulationFunctions from '../../simulation/functions'
-import FunctionHelp from '../../simulation/function-help'
+import SimulationFunctions from '../../../simulation/functions'
+import FunctionHelp from '../../../simulation/function-help'
 
 export default {
   name: 'condition-function-call',

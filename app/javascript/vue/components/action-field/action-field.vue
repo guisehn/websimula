@@ -55,9 +55,9 @@
 
 <script>
 import FunctionCall from '../function-call/function-call.vue'
-import InputValidator from '../../simulation/input-validator'
-import SimulationFunctions from '../../simulation/functions'
-import FunctionHelp from '../../simulation/function-help'
+import InputValidator from '../../../simulation/input-validator'
+import SimulationFunctions from '../../../simulation/functions'
+import FunctionHelp from '../../../simulation/function-help'
 
 import draggable from 'vuedraggable'
 import uuid from 'uuid/v4'
