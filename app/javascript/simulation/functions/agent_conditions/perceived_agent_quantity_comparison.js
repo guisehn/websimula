@@ -2,7 +2,7 @@ import _ from 'lodash'
 import Constants from '../../../constants'
 import Util from '../util'
 
-import perceivedQuantityCount from '../../../../images/perceive-agent-quantity-count.png'
+import perceivedQuantityCount from '../../../images/perceive-agent-quantity-count.png'
 
 export default {
   label: 'Comparar quantidade de agentes percebidos',

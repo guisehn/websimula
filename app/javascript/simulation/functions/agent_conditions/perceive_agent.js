@@ -2,8 +2,8 @@ import _ from 'lodash'
 import Constants from '../../../constants'
 import Util from '../util'
 
-import perceiveImage from '../../../../images/perceive-agent.png'
-import notPerceiveImage from '../../../../images/not-perceive-agent.png'
+import perceiveImage from '../../../images/perceive-agent.png'
+import notPerceiveImage from '../../../images/not-perceive-agent.png'
 
 export default {
   label: 'Perceber agente',

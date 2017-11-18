@@ -1,7 +1,7 @@
 import _ from 'lodash'
 
 import Constants from './constants'
-import eyedropperToolImage from '../images/eyedropper-icon.png'
+import eyedropperToolImage from './images/eyedropper-icon.png'
 
 function refreshInputValue(input, grid) {
   let canvas = $('<canvas></canvas>').attr('width', Constants.AGENT_SIZE).attr('height', Constants.AGENT_SIZE)

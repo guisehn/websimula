@@ -4,7 +4,7 @@ import ExpressionEvaluator from 'expr-eval'
 import Constants from '../constants'
 import SimulationFunctions from './functions'
 
-import clueImage from '../../images/clue.png'
+import clueImage from '../images/clue.png'
 
 let global = window
 

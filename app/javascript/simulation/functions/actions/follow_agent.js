@@ -2,7 +2,7 @@ import _ from 'lodash'
 import Constants from '../../../constants'
 import Util from '../util'
 
-import followImage from '../../../../images/follow-agent.png'
+import followImage from '../../../images/follow-agent.png'
 
 export default {
   label: 'Seguir agente',

@@ -3,7 +3,7 @@ import Constants from '../../../constants'
 import Util from '../util'
 
 import moveRandom from './move_random'
-import escapeImage from '../../../../images/escape-from-agent.png'
+import escapeImage from '../../../images/escape-from-agent.png'
 
 export default {
   label: 'Fugir de agente',
