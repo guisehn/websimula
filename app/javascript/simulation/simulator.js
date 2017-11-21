@@ -126,12 +126,10 @@ class Simulator {
         this.executeAgentRules(agent)
       })
 
-      if (this.definition.stop_condition) {
-        if (this._evaluateCondition(this.definition.stop_condition)) {
-          this.finished = true
-          this.stopLoop()
-          this._setButtonsStates()
-        }
+      if (this.definition.stop_condition && this._evaluateCondition(this.definition.stop_condition)) {
+        this.finished = true
+        this.stopLoop()
+        this._setButtonsStates()
       }
 
       this._refreshVariablesTable()
