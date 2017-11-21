@@ -218,13 +218,13 @@ const Util = {
     while (currentNode && currentNode.h !== 0 && openNodes.length) {
       // move current node from open -> closed
       _.remove(openNodes, currentNode)
-      _.set(foundNodes, `${currentNode.y}.${currentNode.x}`, true)
+      Util.setObjectKey(foundNodes, `${currentNode.y}.${currentNode.x}`, true)
       if (!currentNode.isRoot) closedNodes.push(currentNode)
 
       // generate adjacent nodes
       let adjacentNodes = getAdjacentNodes(currentNode)
       openNodes.push.apply(openNodes, adjacentNodes)
-      adjacentNodes.forEach(node => _.set(foundNodes, `${node.y}.${node.x}`, true))
+      adjacentNodes.forEach(node => Util.setObjectKey(foundNodes, `${node.y}.${node.x}`, true))
 
       // go to next node
       let next = _.minBy(openNodes, 'f')
@@ -254,6 +254,13 @@ const Util = {
     let max = Math.max(dx, dy)
     let min = Math.min(dx, dy)
     return 14 * min + 10 * (max - min)
+  },
+
+  // Version of _.set that forces creation of objects instead of arrays when
+  // a numeric key is provided.
+  // Based on https://github.com/lodash/lodash/issues/1316#issuecomment-120753100
+  setObjectKey(object, path, value) {
+    return _.setWith(object, path, value, Object)
   }
 }
 
