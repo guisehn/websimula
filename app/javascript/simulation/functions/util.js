@@ -195,8 +195,10 @@ const Util = {
 
     let getAdjacentNodes = (node) => {
       let adjacentCoordinates = Util.getAdjacentCoordinates(env, node.x, node.y, 1, true, (x, y) => {
-        if (x === targetX && y === targetY) return true
-        if (!Util.isCoordinateOccupied(env, x, y) && !Util.isDiagonalBlocked(env, x, y, node.x, node.y) && !_.get(foundNodes, `${y}.${x}`)) return true
+        if (!Util.isDiagonalBlocked(env, x, y, node.x, node.y)) {
+          if (x === targetX && y === targetY) return true
+          if (!Util.isCoordinateOccupied(env, x, y) && !_.get(foundNodes, `${y}.${x}`)) return true
+        }
       })
 
       let adjacentNodes = adjacentCoordinates.map(coordinate => {
