@@ -117,7 +117,7 @@ const Util = {
     if (_.isObject(x1)) [x1, y1] = [x1.x, x1.y]
     if (_.isObject(y1)) [x2, y2] = [y1.x, y1.y]
 
-    return x1 !== x2 && y1 !== y2
+    return Math.abs(x1 - x2) === 1 && Math.abs(y1 - y2) === 1
       && Util.isCoordinateOccupied(env, x1, y2)
       && Util.isCoordinateOccupied(env, x2, y1)
   },
