@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171112154249) do
+ActiveRecord::Schema.define(version: 20171129022810) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -117,4 +117,14 @@ ActiveRecord::Schema.define(version: 20171112154249) do
     t.datetime "updated_at",    null: false
   end
 
+  add_foreign_key "agents", "projects"
+  add_foreign_key "audits", "users"
+  add_foreign_key "project_invites", "projects"
+  add_foreign_key "project_invites", "users", column: "inviter_id"
+  add_foreign_key "project_invites", "users", column: "registered_user_id"
+  add_foreign_key "project_users", "projects"
+  add_foreign_key "project_users", "users"
+  add_foreign_key "projects", "projects", column: "parent_project_id"
+  add_foreign_key "rules", "agents"
+  add_foreign_key "variables", "projects"
 end
