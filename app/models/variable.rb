@@ -3,7 +3,7 @@ class Variable < ApplicationRecord
 
   belongs_to :project
 
-  enum data_type: [ :number, :string ]
+  enum data_type: [:number, :string]
 
   validates :project_id, presence: true
   validates :data_type, presence: true

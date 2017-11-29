@@ -13,7 +13,7 @@ class Project < ApplicationRecord
 
   belongs_to :parent_project, class_name: 'Project', required: false
 
-  enum visibility: [ :secret, :open ]
+  enum visibility: [:secret, :open]
 
   validates :name, presence: true, length: { maximum: 60 }
   validates :visibility, presence: true

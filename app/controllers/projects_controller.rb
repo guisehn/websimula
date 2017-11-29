@@ -20,7 +20,7 @@ class ProjectsController < ApplicationController
   end
 
   def all
-    @projects = Project.order('id desc').includes(:users).paginate(:page => params[:page])
+    @projects = Project.order('id desc').includes(:users).paginate(page: params[:page])
   end
 
   def tutorial

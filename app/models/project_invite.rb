@@ -10,7 +10,7 @@ class ProjectInvite < ApplicationRecord
   belongs_to :inviter, class_name: 'User'
   belongs_to :project
 
-  enum role: [ :admin, :editor ]
+  enum role: [:admin, :editor]
 
   private
     def set_code
