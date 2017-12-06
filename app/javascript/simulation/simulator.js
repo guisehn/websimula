@@ -275,8 +275,11 @@ class Simulator {
       clue.element.css({ transform: 'scale(0)' })
 
       setTimeout(() => {
-        clue.element.remove()
-        clue.element = null
+        // sanity check in case multiple rules remove the clue in the same cycle
+        if (clue.element) {
+          clue.element.remove()
+          clue.element = null
+        }
       }, 150)
     }
 
@@ -689,8 +692,11 @@ class Simulator {
         agent.element.css({ transform: 'scale(0)' })
 
         setTimeout(() => {
-          agent.element.remove()
-          agent.element = null
+          // sanity check in case multiple rules kill the agent in the same cycle
+          if (agent.element) {
+            agent.element.remove()
+            agent.element = null
+          }
         }, 150)
       }
 
