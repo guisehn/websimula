@@ -15,7 +15,7 @@ class ResourceUsageFinderTest < ActiveSupport::TestCase
     assert finder.in_function_call?(obj)
   end
 
-  test "#in_function_call? should return true if resource is not being used" do
+  test "#in_function_call? should return false if resource is not being used" do
     obj = {
       'type' => 'function_call',
       'input' => { 'x' => 2, 'y' => 5 },
@@ -84,7 +84,7 @@ class ResourceUsageFinderTest < ActiveSupport::TestCase
     assert finder.in_object?(obj)
   end
 
-  test "#in_object? should return false if it's inside a condition object" do
+  test "#in_object? should return false if it's not inside a condition object" do
     obj = {
       'type' => 'logical_operator',
       'children' => [
