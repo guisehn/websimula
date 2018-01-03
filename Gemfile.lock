@@ -38,6 +38,8 @@ GEM
       i18n (~> 0.7)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
+    addressable (2.5.2)
+      public_suffix (>= 2.0.2, < 4.0)
     arel (7.1.4)
     audited (4.5.0)
       activerecord (>= 4.0, < 5.2)
@@ -110,8 +112,12 @@ GEM
     postmark-rails (0.15.0)
       actionmailer (>= 3.0.0)
       postmark (~> 1.10.0)
+    public_suffix (3.0.1)
     puma (3.6.2)
     rack (2.0.1)
+    rack-canonical-host (0.2.3)
+      addressable (> 0, < 3)
+      rack (>= 1.0.0, < 3)
     rack-proxy (0.6.2)
       rack
     rack-test (0.6.3)
@@ -220,6 +226,7 @@ DEPENDENCIES
   pg
   postmark-rails (~> 0.15.0)
   puma (~> 3.0)
+  rack-canonical-host
   rails (~> 5.0.0, >= 5.0.0.1)
   rails_12factor
   redis (~> 3.0)

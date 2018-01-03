@@ -41,6 +41,7 @@ gem 'will_paginate', '~> 3.1.0'
 gem 'will_paginate-bootstrap'
 gem 'sentry-raven'
 gem 'audited', '~> 4.5'
+gem 'rack-canonical-host'
 
 gem 'rails_12factor', group: :production
 
