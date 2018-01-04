@@ -38,24 +38,6 @@ TODO:
 - Increase server-side test coverage
 - There's no automated tests for the client code yet.
 
-## Heroku deployment
+## Production deployment
 
-1. Create a new project
-
-2. Set up Redis and Postgres add-ons
-
-3. Set Postmark environment variable to enable email sending
-
-4. Set up Sentry environment variables (optional)
-
-5. Set buildpack order (as in https://github.com/rails/webpacker/issues/739). Run the following commands:
-
-```
-heroku buildpacks:clear
-heroku buildpacks:set heroku/nodejs
-heroku buildpacks:add heroku/ruby
-```
-
-6. `heroku run rails db:schema:load` to load the database schema
-
-That's it!
+For production deployment refer to the wiki page: [Deploying Web Simula in Production](https://github.com/guisehn/websimula/wiki/Deploying-Web-Simula-in-Production).
