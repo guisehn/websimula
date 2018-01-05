@@ -13,7 +13,7 @@
 - [Postmark](https://postmarkapp.com/) for sending e-mails
 - [Sentry](https://sentry.io/) for error tracking (both client and server-side)
 
-## Dev environment setup instructions
+## Development environment setup instructions
 
 - Install the dependencies above
 - Create a copy of `config/application.example.yml` and rename it to `config/application.yml`, update the content with real values
@@ -22,15 +22,15 @@
 - Run `rails db:create` to create the local development database
 - Run `rails db:schema:load` to create the database tables
 
-## Starting up local server
+### Starting up local server
 
 Run `rails s` to start the server.
 
-## REPL
+### REPL
 
 Run `rails c` to access the Rails console.
 
-## Automated testing
+### Automated testing
 
 Run `rails test` to run automated tests for the server.
 
