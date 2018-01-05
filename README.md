@@ -16,7 +16,7 @@
 ## Dev environment setup instructions
 
 - Install the dependencies above
-- Create a copy of `config/application.example.yml` and rename it to `config/application.yml`, update the content with the real values
+- Create a copy of `config/application.example.yml` and rename it to `config/application.yml`, update the content with real values
 - Open the project folder in your terminal
 - Run `bundle install` to install the gems
 - Run `rails db:create` to create the local development database
@@ -32,11 +32,7 @@ Run `rails c` to access the Rails console.
 
 ## Automated testing
 
-Run `rails test` to run the server automated tests.
-
-TODO:
-- Increase server-side test coverage
-- There's no automated tests for the client code yet.
+Run `rails test` to run automated tests for the server.
 
 ## Production deployment
 
