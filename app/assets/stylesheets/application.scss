@@ -19,9 +19,15 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
+$sticky_footer_height: 50px;
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
 body {
   background: #fff;
-  padding-bottom: 40px;
 }
 
 .form-control {
@@ -109,6 +115,51 @@ h2 {
 
       .glyphicon-play-circle { color: green; }
     }
+  }
+}
+
+.sticky-footer {
+  padding: 0 10px;
+  margin-top: 40px;
+  color: #666;
+  font-size: 12px;
+
+  a {
+    color: #333;
+  }
+
+  .container {
+    border-top: 1px solid #ddd;
+    padding: 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .source-code {
+    padding-top: 10px;
+  }
+}
+
+@media (min-width: 992px) {
+  body {
+    margin-bottom: $sticky_footer_height;
+    padding-bottom: 40px;
+  }
+
+  .sticky-footer {
+    position: absolute;
+    width: 100%;
+    height: $sticky_footer_height;
+    font-size: 13px;
+    bottom: 0;
+    margin-top: 0;
+
+    .container {
+      padding-top: 12px;
+    }
+
+    .credits { float: left; }
+    .source-code { float: right; padding-top: 0; }
   }
 }
 

@@ -78,6 +78,21 @@
 
     <%= yield %>
 
+    <div class="sticky-footer">
+      <div class="container">
+        <div class="credits">
+          O web simula foi desenvolvido como Trabalho de Conclusão de Curso de
+          <%= link_to 'Guilherme Sehn', 'http://guisehn.com', target: '_blank' %>
+          na
+          <%= link_to 'UNISC', 'http://www.unisc.br/', target: '_blank' %>
+          (2017/2)
+        </div>
+        <div class="source-code">
+          <%= link_to 'Ver código-fonte no GitHub', 'https://www.github.com/guisehn/websimula', target: '_blank' %>
+        </div>
+      </div>
+    </div>
+
     <script>
       window.simulaUserId = <%= (current_user ? current_user.id : nil).to_json %>;
       <% if @project && current_user %>
