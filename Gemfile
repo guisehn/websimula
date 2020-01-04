@@ -31,7 +31,7 @@ gem 'redis', '~> 3.0'
 # gem 'capistrano-rails', group: :development
 
 gem 'bootstrap-sass', '~> 3.3.6'
-gem 'devise'
+gem 'devise', '~> 4.7.1'
 gem 'figaro'
 gem 'simple_form'
 gem 'webpacker', '~> 3.0'
