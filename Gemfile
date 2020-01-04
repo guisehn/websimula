@@ -33,7 +33,7 @@ gem 'redis', '~> 3.0'
 gem 'bootstrap-sass', '~> 3.3.6'
 gem 'devise', '~> 4.7.1'
 gem 'figaro'
-gem 'simple_form'
+gem 'simple_form', '~> 5.0.1'
 gem 'webpacker', '~> 3.0'
 gem 'postmark-rails', '~> 0.15.0'
 gem 'paranoia', "~> 2.2"
