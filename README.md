@@ -2,10 +2,10 @@
 
 ## Dependencies
 
-- Ruby 2.2.2
+- Ruby 2.5.0
 - Rails 5.0.0
 - PostgreSQL 9.4
-- node.js v6.7.0
+- node.js v8.16.0
 - Redis 3.0.5
 
 ## External services
