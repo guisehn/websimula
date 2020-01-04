@@ -30,7 +30,7 @@ gem 'redis', '~> 3.0'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
-gem 'bootstrap-sass', '~> 3.3.6'
+gem 'bootstrap-sass', '~> 3.4.1'
 gem 'devise', '~> 4.7.1'
 gem 'figaro'
 gem 'simple_form', '~> 5.0.1'
