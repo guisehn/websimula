@@ -17,10 +17,10 @@
 # end
 
 # If you are using UJS then enable automatic nonce generation
-Rails.application.config.content_security_policy_nonce_generator = -> request { SecureRandom.base64(16) }
+#Rails.application.config.content_security_policy_nonce_generator = -> request { SecureRandom.base64(16) }
 
 # Set the nonce only to specific directives
-Rails.application.config.content_security_policy_nonce_directives = %w(script-src)
+#Rails.application.config.content_security_policy_nonce_directives = %w(script-src)
 
 # Report CSP violations to a specified URI
 # For further information see the following documentation:
@@ -28,9 +28,14 @@ Rails.application.config.content_security_policy_nonce_directives = %w(script-sr
 # Rails.application.config.content_security_policy_report_only = true
 
 Rails.application.config.content_security_policy do |policy|
-  if Rails.env.development?
-    policy.script_src :self, :https, :unsafe_eval, :unsafe_inline
-  else
-    policy.script_src :self, :https
-  end
+  # We need to allow unsafe_eval and unsafe_inline for vue.js and our
+  # <script> tags inside views to work.
+  #
+  # TODO: Ideally, the code should be refactored so that:
+  # - unsafe_eval and unsafe_inline are no longer allowed in production
+  # - vue tags are not used directly into views:
+  #   https://stackoverflow.com/a/48651338/1443358
+  # - remove <script> tags inside views; instead, move all code to /app/javascripts/
+  #   and use something like Stimulus.js
+  policy.script_src :self, :https, :unsafe_eval, :unsafe_inline
 end
