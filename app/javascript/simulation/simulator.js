@@ -340,7 +340,7 @@ class Simulator {
           parsedInput[arg.name] = String(parsedInput[arg.name])
           parsedInput[arg.name] = this._injectVariables(parsedInput[arg.name])
 
-          // to-do: do expression parsing on initialization instead of every cycle
+          // TODO: do expression parsing on initialization instead of every cycle
           parsedInput[arg.name] = parsedInput[arg.name].replace(/([^\\])?[{]{2}(.*)[}]{2}/g,
             (_, before, expr) => (before || '') + this.expressionParser.parse(expr).evaluate())
 

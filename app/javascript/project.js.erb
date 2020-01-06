@@ -4,6 +4,7 @@ import _ from 'lodash'
 import ConflictChecker from './conflict-checker'
 import ProjectHelp from './project-help'
 import UrlUtils from './url-utils'
+import consumer from './channels/consumer'
 
 let currentProjectId = null
 
@@ -86,7 +87,8 @@ $(document).on('turbolinks:load', function () {
   let changedProject = false
 
   if (!projectId || projectId !== currentProjectId) {
-    App.cable.subscriptions.subscriptions.forEach(subscription => {
+    consumer.subscriptions.subscriptions.forEach(subscription => {
+      console.log('Unsubscribing from channel', subscription)
       subscription.unsubscribe()
     })
 
@@ -103,7 +105,7 @@ $(document).on('turbolinks:load', function () {
       showProjectHelpModal(projectId, true)
     }
 
-    App.cable.subscriptions.create({
+    consumer.subscriptions.create({
       channel: 'ProjectChannel',
       project_id: projectId
     }, {

@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   }
 
   root to: 'home#index'
+  get '/robots.txt' => 'home#robots_txt'
 
   resources :projects do
     resources :users

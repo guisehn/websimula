@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
-ruby '2.5.0'
+ruby '2.5.7'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.0.0', '>= 5.0.0.1'
+gem 'rails', '~> 6.0.2'
 # Use Postgres as the database for Active Record
 gem 'pg'
 # Use Puma as the app server
@@ -11,17 +11,15 @@ gem 'puma', '~> 3.12.2'
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
-# Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails', '~> 4.2'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 
 # Use jquery as the JavaScript library
-gem 'jquery-rails'
+gem 'jquery-rails', '~> 4.3.5'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.5'
+gem 'jbuilder', '~> 2.7'
 # Use Redis adapter to run Action Cable in production
 gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password
@@ -34,7 +32,7 @@ gem 'bootstrap-sass', '~> 3.4.1'
 gem 'devise', '~> 4.7.1'
 gem 'figaro'
 gem 'simple_form', '~> 5.0.1'
-gem 'webpacker', '~> 3.0'
+gem 'webpacker', '~> 4.0.7'
 gem 'postmark-rails', '~> 0.15.0'
 gem 'paranoia', "~> 2.2"
 gem 'will_paginate', '~> 3.1.0'

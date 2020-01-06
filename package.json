@@ -2,13 +2,18 @@
   "name": "simula",
   "private": true,
   "dependencies": {
-    "@rails/webpacker": "^3.0.1",
+    "@rails/actioncable": "^6.0.2-1",
+    "@rails/activestorage": "^6.0.2-1",
+    "@rails/ujs": "^6.0.2-1",
+    "@rails/webpacker": "^4.0.7",
     "expr-eval": "^1.2.0",
     "lodash": "^4.17.13",
+    "rails-erb-loader": "^5.5.2",
+    "turbolinks": "^5.2.0",
     "uuid": "^3.1.0",
-    "vue": "^2.4.2",
-    "vue-loader": "^13.0.4",
-    "vue-template-compiler": "^2.4.2",
+    "vue": "^2.6.11",
+    "vue-loader": "^15.8.3",
+    "vue-template-compiler": "^2.6.11",
     "vuedraggable": "^2.14.1"
   },
   "devDependencies": {
