@@ -5,7 +5,7 @@
 - Ruby 2.5.0
 - Rails 6.0.0
 - PostgreSQL 9.4
-- node.js v8.16.0
+- node.js v8.16.0 + yarn
 - Redis 3.0.5
 
 ## External services
@@ -18,7 +18,8 @@
 - Install the dependencies above
 - Create a copy of `config/application.example.yml` and rename it to `config/application.yml`, update the content with real values
 - Open the project folder in your terminal
-- Run `bundle install` to install the gems
+- Run `yarn install` to install the JavaScript dependencies
+- Run `bundle install` to install the Ruby gems
 - Run `rails db:create` to create the local development database
 - Run `rails db:schema:load` to create the database tables
 
