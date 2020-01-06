@@ -8,7 +8,7 @@ class HomeController < ApplicationController
   end
 
   def robots_txt
-    text = "User-Agent: *\nDisallow: *" if ENV['ROBOTS_NOINDEX'].present?
+    text = "User-Agent: *\nDisallow: /" if ENV['ROBOTS_NOINDEX'].present?
     text ||= ''
     render plain: text, content_type: 'text/plain'
   end
