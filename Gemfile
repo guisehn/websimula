@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
-ruby '2.5.7'
+ruby '2.6.8'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.0.2'
+gem 'rails', '~> 6.0.3.6'
 # Use Postgres as the database for Active Record
 gem 'pg'
 # Use Puma as the app server
@@ -33,7 +33,7 @@ gem 'devise', '~> 4.7.1'
 gem 'figaro'
 gem 'simple_form', '~> 5.0.1'
 gem 'webpacker', '~> 4.0.7'
-gem 'postmark-rails', '~> 0.15.0'
+gem 'postmark-rails', '~> 0.22.1'
 gem 'paranoia', "~> 2.2"
 gem 'will_paginate', '~> 3.1.0'
 gem 'will_paginate-bootstrap'
