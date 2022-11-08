@@ -33,7 +33,7 @@ gem 'devise', '~> 4.7.1'
 gem 'figaro'
 gem 'simple_form', '~> 5.0.1'
 gem 'webpacker', '~> 4.0.7'
-gem 'postmark-rails', '~> 0.15.0'
+gem 'postmark-rails', '~> 0.22.1'
 gem 'paranoia', "~> 2.2"
 gem 'will_paginate', '~> 3.1.0'
 gem 'will_paginate-bootstrap'
