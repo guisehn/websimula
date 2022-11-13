@@ -129,7 +129,8 @@ GEM
       actionmailer (>= 3.0.0)
       postmark (>= 1.21.3, < 2.0)
     public_suffix (5.0.0)
-    puma (3.12.6)
+    puma (4.3.12)
+      nio4r (~> 2.0)
     racc (1.6.0)
     rack (2.2.4)
     rack-canonical-host (1.1.0)
@@ -251,7 +252,7 @@ DEPENDENCIES
   paranoia (~> 2.2)
   pg
   postmark-rails (~> 0.22.1)
-  puma (~> 3.12.2)
+  puma (~> 4.3.12)
   rack-canonical-host
   rails (~> 6.1.7)
   rails_12factor
