@@ -2,8 +2,8 @@
 
 ## Dependencies
 
-- Ruby 2.5.0
-- Rails 6.0.0
+- Ruby 2.7
+- Rails 6
 - PostgreSQL 9.4
 - node.js v8.16.0 + yarn
 - Redis 3.0.5
