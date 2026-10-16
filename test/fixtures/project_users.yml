@@ -1,0 +1,11 @@
+secret_admin:
+  project: secret
+  user: member
+  role: 0
+  first_access: false
+
+secret_editor:
+  project: secret
+  user: editor
+  role: 1
+  first_access: false

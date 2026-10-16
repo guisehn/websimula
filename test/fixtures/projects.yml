@@ -1,0 +1,7 @@
+secret:
+  name: Secret project
+  visibility: 0
+
+open:
+  name: Open project
+  visibility: 1

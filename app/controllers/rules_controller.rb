@@ -67,9 +67,10 @@ class RulesController < ApplicationController
     end
 
     def validate_agent_used
-      if @rule.agent && !@rule.agent.project.can_be_edited_by?(current_user)
-        @rule.agent_id = nil
-      end
+      agent = Agent.find_by(id: @rule.agent_id)
+      return if agent.nil? || agent.project.can_be_edited_by?(current_user)
+
+      @rule.agent = nil
     end
 
     def rule_params

@@ -1,0 +1,27 @@
+member:
+  name: Member
+  email: member@example.com
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'password') %>
+  system_role: 0
+  sign_in_count: 0
+
+editor:
+  name: Editor
+  email: editor@example.com
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'password') %>
+  system_role: 0
+  sign_in_count: 0
+
+admin:
+  name: Admin
+  email: admin@example.com
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'password') %>
+  system_role: 1
+  sign_in_count: 0
+
+outsider:
+  name: Outsider
+  email: outsider@example.com
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'password') %>
+  system_role: 0
+  sign_in_count: 0
