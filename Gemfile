@@ -1,13 +1,16 @@
 source 'https://rubygems.org'
-ruby '2.7.6'
+ruby '3.1.7'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.1.7.10'
 gem 'logger'
 # Use Postgres as the database for Active Record
-gem 'pg'
+# Rails 6.1 still constructs PG coders with a hash. pg 1.6 deprecates that.
+gem 'pg', '~> 1.5.9'
+# Rails 6.1 passes quirks_mode to JSON.generate. json 2.7+ rejects it.
+gem 'json', '~> 2.6.3'
 # Use Puma as the app server
-gem 'puma', '~> 3.12.2'
+gem 'puma', '~> 6.4'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -22,7 +25,7 @@ gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.7'
 # Use Redis adapter to run Action Cable in production
-gem 'redis', '~> 3.0'
+gem 'redis', '~> 4.8'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -30,19 +33,18 @@ gem 'redis', '~> 3.0'
 # gem 'capistrano-rails', group: :development
 
 gem 'bootstrap-sass', '~> 3.4.1'
-gem 'devise', '~> 4.7.1'
+gem 'devise', '~> 4.9'
 gem 'figaro'
-gem 'simple_form', '~> 5.0.1'
+gem 'simple_form', '~> 5.3'
 gem 'webpacker', '~> 4.0.7'
 gem 'postmark-rails', '~> 0.22.1'
-gem 'paranoia', "~> 2.2"
-gem 'will_paginate', '~> 3.1.0'
+gem 'paranoia', '~> 2.6'
+gem 'will_paginate', '~> 3.3'
 gem 'will_paginate-bootstrap'
-gem 'sentry-raven'
-gem 'audited', '~> 4.5'
+gem 'sentry-ruby'
+gem 'sentry-rails'
+gem 'audited', '~> 5.4'
 gem 'rack-canonical-host'
-
-gem 'rails_12factor', group: :production
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -52,10 +54,10 @@ end
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
   gem 'web-console'
-  gem 'listen', '~> 3.0.5'
+  gem 'listen', '~> 3.8'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'spring-watcher-listen', '~> 2.1'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

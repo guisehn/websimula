@@ -2,7 +2,7 @@
 
 Target **Ruby 3.4** and **Rails 8.1**. Rails 8.1 is tested against Ruby 3.4. Leave Ruby 4 until the app is already green on 8.1: it drops the `cgi` standard library and still trips older gems.
 
-The app is Rails 6.1.7.10 on Ruby 2.7.6, with Sprockets (Bootstrap 3, Sass, jQuery) and Webpacker 4 (Vue 2) side by side. Do the upgrade in small steps. A single jump to 8.1 will fail on gem constraints before a Dockerfile will build.
+The app is Rails 6.1.7.10 on Ruby 3.1.7, with Sprockets (Bootstrap 3, Sass, jQuery) and Webpacker 4 (Vue 2) side by side. Do the upgrade in small steps. A single jump to 8.1 will fail on gem constraints before a Dockerfile will build.
 
 `rails test` is the checkpoint after each step. The request tests cover sign-in, projects, agents, variables, rules, membership, and the simulation page.
 
@@ -14,7 +14,7 @@ Boot the app and run `rails test` on the current stack, and keep that commit as 
 
 Rails 6.1.7.10 is the last 6.1 release. Its suite passes on Ruby 3.1 through 3.4. On 3.4, `require "logger"` before Rails boots, because Logger is no longer loaded by default. That require is already in `config/boot.rb`, because current `concurrent-ruby` no longer loads Logger for Rails 6.1.
 
-Land on Ruby 3.1 first, still on Rails 6.1. The 2.7 to 3.x break is keyword arguments: a call like `foo(key: value)` into `def foo(options = {})` becomes an error. Run the suite and fix those in app code and in gems that have to be bumped.
+Ruby 3.1.7 is in place. The gem bumps below are done, with two exceptions: `paranoia` 3 requires Active Record 7, so the app stays on 2.6 until the Rails 7 step, and `redis` is on 4.8 until Action Cable requires 5.
 
 While still on 6.1, loosen or replace the gems that cannot survive the next Rails bump:
 
@@ -96,7 +96,7 @@ Environment variables to set on the service:
 ## Order of work
 
 1. Baseline on 2.7 / 6.1.
-2. Ruby 3.1, still on Rails 6.1.7.10, and the gem bumps above.
+2. Done: Ruby 3.1.7, still on Rails 6.1.7.10, and the gem bumps above. `paranoia` 3 waits for Rails 7.
 3. Rails 7.0, 7.1, 7.2, with `app:update` and tests at each stop.
 4. Shakapacker and Node 22, once Rails 7 boots.
 5. Ruby 3.4, then Rails 8.0, then 8.1.

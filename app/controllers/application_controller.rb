@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
-  before_action :set_raven_context
+  before_action :set_sentry_context
 
   protected
     def check_system_admin_access!
@@ -27,8 +27,10 @@ class ApplicationController < ActionController::Base
       params[name] = JSON.parse(params[name]) unless params[name].nil?
     end
 
-    def set_raven_context
-      Raven.user_context(id: current_user ? current_user.id : nil)
-      Raven.extra_context(params: params.to_unsafe_h, url: request.url)
+    def set_sentry_context
+      return unless Sentry.initialized?
+
+      Sentry.set_user(id: current_user ? current_user.id : nil)
+      Sentry.set_extras(params: params.to_unsafe_h, url: request.url)
     end
 end
