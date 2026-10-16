@@ -9,6 +9,7 @@
     "expr-eval": "^1.2.0",
     "lodash": "^4.17.13",
     "rails-erb-loader": "^5.5.2",
+    "sass": "1.77.8",
     "turbolinks": "^5.2.0",
     "uuid": "^3.1.0",
     "vue": "^2.6.11",
@@ -19,8 +20,12 @@
   "devDependencies": {
     "webpack-dev-server": "^2.7.1"
   },
+  "resolutions": {
+    "sass-loader": "10.4.1",
+    "**/node-sass": "file:vendor/node-sass-stub"
+  },
   "engines": {
     "yarn": ">= 0.25.2",
-    "node": "8.16.0"
+    "node": "16.18.0"
   }
 }
