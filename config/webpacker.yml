@@ -1,6 +1,7 @@
 # Note: You must restart bin/webpack-dev-server for changes to take effect.
 # Ruby 3.1 refuses YAML aliases, and Webpacker 4 loads this file without enabling them,
 # so the shared settings are repeated in each environment.
+# check_yarn_integrity stays off: yarn resolutions replace node-sass, so `yarn check` always disagrees.
 
 development:
   source_path: app/javascript
@@ -8,7 +9,7 @@ development:
   public_root_path: public
   public_output_path: packs
   cache_path: tmp/cache/webpacker
-  check_yarn_integrity: true
+  check_yarn_integrity: false
   webpack_compile_output: true
   resolved_paths: []
   cache_manifest: false

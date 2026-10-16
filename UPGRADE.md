@@ -54,7 +54,7 @@ In production, turn on `config.force_ssl = true` and, from Rails 7.1 on, `config
 
 Do not rewrite Vue 2 as part of this. The layout loads Sprockets assets and a Webpacker pack (`javascript_pack_tag` / `stylesheet_pack_tag` in `app/views/layouts/application.html.erb`).
 
-`package.json` pins Node `8.16.0`. Webpacker 4 uses Webpack 4, which breaks on Node 17+ because of OpenSSL. Rails 8’s new-app default (Propshaft, importmap, no Node) does not fit this app.
+`package.json` pins Node `16.18.0` so Webpacker 4 can install and compile today. Node 8 no longer installs, and Webpack 4 breaks on Node 17+ because of OpenSSL. Rails 8’s new-app default (Propshaft, importmap, no Node) does not fit this app.
 
 Keep Sprockets for the Bootstrap 3 stylesheets. Replace `webpacker` with **Shakapacker** (the maintained Webpacker fork, Webpack 5) and set Node to **22**. That keeps `app/javascript`, the Vue loader, and the ERB loader, and it gives the Docker build a Node that is still supported. Update the `@rails/*` packages to match the Rails version. Propshaft can wait until after the app is deployed.
 
