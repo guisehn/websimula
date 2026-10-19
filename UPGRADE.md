@@ -2,7 +2,7 @@
 
 Target **Ruby 3.4** and **Rails 8.1**. Rails 8.1 is tested against Ruby 3.4. Leave Ruby 4 until the app is already green on 8.1: it drops the `cgi` standard library and still trips older gems.
 
-The app is Rails 7.2.4 on Ruby 3.1.7, with Sprockets (Bootstrap 3, Sass, jQuery) and Shakapacker 10.3.2 (Webpack 5, Vue 2, Node 22.23.3) side by side. Do the upgrade in small steps. A single jump to 8.1 will fail on gem constraints before a Dockerfile will build.
+The app is Rails 7.2.4 on Ruby 3.4.11, with Sprockets (Bootstrap 3, Sass, jQuery) and Shakapacker 10.3.2 (Webpack 5, Vue 2, Node 22.23.3) side by side. Do the upgrade in small steps. A single jump to 8.1 will fail on gem constraints before a Dockerfile will build.
 
 `rails test` is the checkpoint after each step. The request tests cover sign-in, projects, agents, variables, rules, membership, and the simulation page.
 
@@ -14,7 +14,7 @@ Boot the app and run `rails test` on the current stack, and keep that commit as 
 
 Rails 6.1.7.10 is the last 6.1 release. Its suite passes on Ruby 3.1 through 3.4. On 3.4, `require "logger"` before Rails boots, because Logger is no longer loaded by default. That require is already in `config/boot.rb`, because current `concurrent-ruby` no longer loads Logger for Rails 6.1.
 
-Ruby 3.1.7 is in place. The gem bumps below are done. `paranoia` is 3.1 as of the Rails 7.0 step. `redis` stays on 4.8 until Action Cable requires 5.
+Ruby 3.4.11 is in place. The gem bumps below are done. `paranoia` is 3.1 as of the Rails 7.0 step. `redis` stays on 4.8 until Action Cable requires 5.
 
 While still on 6.1, loosen or replace the gems that cannot survive the next Rails bump:
 
@@ -46,7 +46,8 @@ Version gates:
 - Rails 7.0 drops the classic autoloader. The app is already on Zeitwerk.
 - Done: Rails 7.1 removed `config/secrets.yml`. Production reads `SECRET_KEY_BASE` from the environment. Development and test use `tmp/local_secret.txt`.
 - Done: Rails 7.2. `load_defaults 7.2` turns on YJIT when the Ruby build has it, waits to enqueue jobs until the current transaction commits, decodes PostgreSQL `date` values as `Date`, and rejects migration timestamps more than a day in the future. Enums use positional arguments (`enum :visibility, [:secret, :open]`), which Rails 8.0 requires. The `json` Gemfile pin is gone because 7.2 no longer passes `quirks_mode`; the lockfile still resolved 2.6.3. `pg` stays on 1.5.
-- Rails 8.0 needs Ruby `>= 3.2`. After Shakapacker and Node 22 are in place, switch the Gemfile to **Ruby 3.4**, then take 8.0 and 8.1.
+- Done: Ruby 3.4.11, still on Rails 7.2.4. The `sass` 3.7 gem warns that its string literals will be frozen in a later Ruby; the suite still passes.
+- Rails 8.0 needs Ruby `>= 3.2`. Ruby 3.4 is in place. Next are 8.0 and 8.1.
 
 In production, turn on `config.force_ssl = true` and, from Rails 7.1 on, `config.assume_ssl = true`. Railway terminates TLS in front of the container.
 
@@ -98,8 +99,8 @@ Environment variables to set on the service:
 1. Baseline on 2.7 / 6.1.
 2. Done: Ruby 3.1.7, still on Rails 6.1.7.10, and the gem bumps above.
 3. Done: Rails 7.2.4 with `config.load_defaults 7.2`. `paranoia` is 3.1. `db/schema.rb` stays `ActiveRecord::Schema[6.1]` so existing `serial` keys keep their old column defaults. `pg` stays on 1.5. `secrets.yml` is removed. Production has `force_ssl` and `assume_ssl`. Active Storage update migrations were not copied: the schema has no Active Storage tables.
-4. Done: Shakapacker 10.3.2 and Node 22.23.3. Next: Ruby 3.4.
-5. Ruby 3.4, then Rails 8.0, then 8.1.
+4. Done: Shakapacker 10.3.2 and Node 22.23.3.
+5. Done: Ruby 3.4.11, still on Rails 7.2.4. Next: Rails 8.0, then 8.1.
 6. `DATABASE_URL`, Dockerfile, Railway Postgres and Redis, env vars, pre-deploy `db:prepare`.
 
 Start the Dockerfile only after `bundle install` and `rails assets:precompile` succeed locally on Ruby 3.4 and Rails 8.1.
