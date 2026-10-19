@@ -2,7 +2,7 @@
 
 ## Dependencies
 
-- Ruby 3.1
+- Ruby 3.4.11
 - Rails 6
 - PostgreSQL 9.4
 - node.js v22.23.3 + yarn
