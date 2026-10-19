@@ -47,8 +47,10 @@ Rails.application.configure do
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # Railway terminates TLS and sets X-Forwarded-Proto. assume_ssl makes
   # the app treat those requests as HTTPS.
-  config.assume_ssl = true
-  config.force_ssl = true
+  # A local Docker run can set RAILS_FORCE_SSL=false. Unset stays on.
+  ssl = ENV["RAILS_FORCE_SSL"] != "false"
+  config.assume_ssl = ssl
+  config.force_ssl = ssl
 
   # Include generic and useful information about system operation, but avoid logging too much
   # information to avoid inadvertent exposure of personally identifiable information (PII).

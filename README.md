@@ -1,16 +1,18 @@
 # web simula
 
+Live at www.websimula.com
+
 ## Dependencies
 
 - Ruby 3.4.11
 - Rails 8.1
-- PostgreSQL 9.4
-- node.js v22.23.3 + yarn
-- Redis 3.0.5
+- PostgreSQL
+- Redis
+- Node.js v22.23.3 + yarn
 
 ## External services
 
-- [Postmark](https://postmarkapp.com/) for sending e-mails
+- [Resend](https://resend.com/) for sending e-mails
 - [Sentry](https://sentry.io/) for error tracking (both client and server-side)
 
 ## Development environment setup instructions
@@ -34,7 +36,3 @@ Run `rails c` to access the Rails console.
 ### Automated testing
 
 Run `rails test` to run automated tests for the server.
-
-## Production deployment
-
-For production deployment refer to the wiki page: [Deploying Web Simula in Production](https://github.com/guisehn/websimula/wiki/Deploying-Web-Simula-in-Production).
