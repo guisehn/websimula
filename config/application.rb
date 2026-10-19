@@ -25,7 +25,7 @@ module Simula
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
-    config.load_defaults 7.0
+    config.load_defaults 7.1
 
     config.i18n.default_locale = :'pt-BR'
 

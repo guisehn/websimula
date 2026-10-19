@@ -2,7 +2,7 @@
 
 Target **Ruby 3.4** and **Rails 8.1**. Rails 8.1 is tested against Ruby 3.4. Leave Ruby 4 until the app is already green on 8.1: it drops the `cgi` standard library and still trips older gems.
 
-The app is Rails 7.0.10 on Ruby 3.1.7, with Sprockets (Bootstrap 3, Sass, jQuery) and Webpacker 4 (Vue 2) side by side. Do the upgrade in small steps. A single jump to 8.1 will fail on gem constraints before a Dockerfile will build.
+The app is Rails 7.1.6 on Ruby 3.1.7, with Sprockets (Bootstrap 3, Sass, jQuery) and Webpacker 4 (Vue 2) side by side. Do the upgrade in small steps. A single jump to 8.1 will fail on gem constraints before a Dockerfile will build.
 
 `rails test` is the checkpoint after each step. The request tests cover sign-in, projects, agents, variables, rules, membership, and the simulation page.
 
@@ -34,7 +34,7 @@ While still on 6.1, loosen or replace the gems that cannot survive the next Rail
 
 ## 3. Climb Rails one minor version at a time
 
-`config.load_defaults` is `7.0`. For each remaining stop — 7.1, 7.2, 8.0, 8.1 — do this and do not continue until tests pass:
+`config.load_defaults` is `7.1`. `config/secrets.yml` is gone: production reads `SECRET_KEY_BASE` from the environment, and development and test use the generated `tmp/local_secret.txt`. For each remaining stop — 7.2, 8.0, 8.1 — do this and do not continue until tests pass:
 
 1. Set the Gemfile to that version and `bundle update rails`.
 2. Run `bin/rails app:update` and review the diffs. Keep the mailer, locale, and time zone settings.
@@ -44,7 +44,7 @@ While still on 6.1, loosen or replace the gems that cannot survive the next Rail
 Version gates:
 
 - Rails 7.0 drops the classic autoloader. The app is already on Zeitwerk.
-- Rails 7.1 removes `config/secrets.yml`. Production already reads `SECRET_KEY_BASE` from the environment. Move dev and test to credentials or `ENV`, then delete `secrets.yml`.
+- Done: Rails 7.1 removed `config/secrets.yml`. Production reads `SECRET_KEY_BASE` from the environment. Development and test use `tmp/local_secret.txt`.
 - Rails 7.2 needs Ruby `>= 3.1`. Rails 8.0 needs Ruby `>= 3.2`.
 - After 7.2 is green, switch the Gemfile to **Ruby 3.4**, then take 8.0 and 8.1.
 
@@ -97,7 +97,7 @@ Environment variables to set on the service:
 
 1. Baseline on 2.7 / 6.1.
 2. Done: Ruby 3.1.7, still on Rails 6.1.7.10, and the gem bumps above.
-3. Done: Rails 7.0.10 with `config.load_defaults 7.0`. `paranoia` is 3.1. `db/schema.rb` loads as `ActiveRecord::Schema[6.1]` so existing `serial` keys keep their old column defaults. `json` stays on 2.6 and `pg` stays on 1.5 until a later Rails stops passing the deprecated arguments. Active Storage update migrations were not copied: the schema has no Active Storage tables, and those migrations would fail. Next: Rails 7.1, then 7.2, with `app:update` and tests at each stop.
+3. Done: Rails 7.1.6 with `config.load_defaults 7.1`. `paranoia` is 3.1. `db/schema.rb` loads as `ActiveRecord::Schema[6.1]` so existing `serial` keys keep their old column defaults. `json` stays on 2.6 because 7.1 still passes `quirks_mode`. `pg` stays on 1.5. `secrets.yml` is removed. Production has `force_ssl` and `assume_ssl`. Active Storage update migrations were not copied: the schema has no Active Storage tables. Next: Rails 7.2, with `app:update` and tests.
 4. Shakapacker and Node 22, once Rails 7 boots.
 5. Ruby 3.4, then Rails 8.0, then 8.1.
 6. `DATABASE_URL`, Dockerfile, Railway Postgres and Redis, env vars, pre-deploy `db:prepare`.
