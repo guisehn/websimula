@@ -94,6 +94,7 @@ GEM
     concurrent-ruby (1.3.8)
     connection_pool (3.0.2)
     crass (1.0.7)
+    csv (3.3.6)
     date (3.6.0)
     devise (4.9.4)
       bcrypt (~> 3.0)
@@ -111,6 +112,10 @@ GEM
       thor (>= 0.14.0, < 2)
     globalid (1.4.0)
       activesupport (>= 6.1)
+    httparty (0.24.3)
+      csv
+      mini_mime (>= 1.0.0)
+      multi_xml (>= 0.5.2)
     i18n (1.15.2)
       concurrent-ruby (~> 1.0)
     io-console (0.9.4)
@@ -153,6 +158,8 @@ GEM
     minitest (6.0.6)
       drb (~> 2.0)
       prism (~> 1.5)
+    multi_xml (0.9.1)
+      bigdecimal (>= 3.1, < 5)
     net-imap (0.6.8)
       date
       net-protocol
@@ -171,11 +178,6 @@ GEM
     paranoia (3.1.0)
       activerecord (>= 7, < 8.2)
     pg (1.5.9)
-    postmark (1.25.1)
-      json
-    postmark-rails (0.22.1)
-      actionmailer (>= 3.0.0)
-      postmark (>= 1.21.3, < 2.0)
     pp (0.6.4)
       prettyprint
     prettyprint (0.2.1)
@@ -243,6 +245,9 @@ GEM
     redis (4.8.1)
     reline (0.7.0)
       io-console (~> 0.5)
+    resend (1.18.0)
+      base64
+      httparty (>= 0.22.0)
     responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
@@ -335,11 +340,11 @@ DEPENDENCIES
   logger
   paranoia (~> 3.0)
   pg (~> 1.5.9)
-  postmark-rails (~> 0.22.1)
   puma (~> 6.4)
   rack-canonical-host
   rails (~> 8.0.0)
   redis (~> 4.8)
+  resend
   sass-rails (~> 5.0)
   sentry-rails
   sentry-ruby

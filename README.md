@@ -10,7 +10,7 @@
 
 ## External services
 
-- [Postmark](https://postmarkapp.com/) for sending e-mails
+- [Resend](https://resend.com/) for sending e-mails
 - [Sentry](https://sentry.io/) for error tracking (both client and server-side)
 
 ## Development environment setup instructions
