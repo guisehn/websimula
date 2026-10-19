@@ -5,7 +5,7 @@ Live at www.websimula.com
 ## Dependencies
 
 - Ruby 3.4.11
-- Rails 8.0
+- Rails 8.1
 - PostgreSQL
 - Redis
 - Node.js v22.23.3 + yarn
