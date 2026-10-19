@@ -45,7 +45,9 @@ Rails.application.configure do
   # config.action_cable.allowed_request_origins = [ 'http://example.com', /http:\/\/example.*/ ]
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # Railway terminate TLS and set X-Forwarded-Proto.
+  # Railway terminates TLS and sets X-Forwarded-Proto. assume_ssl makes
+  # the app treat those requests as HTTPS.
+  config.assume_ssl = true
   config.force_ssl = true
 
   # Include generic and useful information about system operation, but avoid logging too much
