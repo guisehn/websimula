@@ -1,4 +1,4 @@
-# Restart bin/shakapacker-dev-server after changing this file.
+# Recompile with bin/shakapacker after changing this file.
 # Missing keys fall back to the defaults shipped with the shakapacker gem.
 
 default: &default
