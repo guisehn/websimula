@@ -2,14 +2,12 @@ source 'https://rubygems.org'
 ruby '3.1.7'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 7.1.0'
+gem 'rails', '~> 7.2.0'
 gem 'logger'
 # Use Postgres as the database for Active Record
 # Rails 7.1 uses keyword arguments for PG coders. Stay on 1.5 until that is
 # exercised against pg 1.6.
 gem 'pg', '~> 1.5.9'
-# Rails 7.1 still passes quirks_mode to JSON.generate. json 2.7+ rejects it.
-gem 'json', '~> 2.6.3'
 # Use Puma as the app server
 gem 'puma', '~> 6.4'
 # Use SCSS for stylesheets
