@@ -39,6 +39,15 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
 
+  # Preview mail in the browser. Host is required to build links in the message.
+  config.action_mailer.delivery_method = :letter_opener
+  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
+  config.after_initialize do
+    if ENV["EMAIL_FROM_ADDRESS"].blank?
+      ApplicationMailer.default from: "from@localhost"
+    end
+  end
+
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
