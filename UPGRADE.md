@@ -2,7 +2,7 @@
 
 Target **Ruby 3.4** and **Rails 8.1**. Rails 8.1 is tested against Ruby 3.4. Leave Ruby 4 until the app is already green on 8.1: it drops the `cgi` standard library and still trips older gems.
 
-The app is Rails 6.1.7.10 on Ruby 3.1.7, with Sprockets (Bootstrap 3, Sass, jQuery) and Webpacker 4 (Vue 2) side by side. Do the upgrade in small steps. A single jump to 8.1 will fail on gem constraints before a Dockerfile will build.
+The app is Rails 7.0.10 on Ruby 3.1.7, with Sprockets (Bootstrap 3, Sass, jQuery) and Webpacker 4 (Vue 2) side by side. Do the upgrade in small steps. A single jump to 8.1 will fail on gem constraints before a Dockerfile will build.
 
 `rails test` is the checkpoint after each step. The request tests cover sign-in, projects, agents, variables, rules, membership, and the simulation page.
 
@@ -14,14 +14,14 @@ Boot the app and run `rails test` on the current stack, and keep that commit as 
 
 Rails 6.1.7.10 is the last 6.1 release. Its suite passes on Ruby 3.1 through 3.4. On 3.4, `require "logger"` before Rails boots, because Logger is no longer loaded by default. That require is already in `config/boot.rb`, because current `concurrent-ruby` no longer loads Logger for Rails 6.1.
 
-Ruby 3.1.7 is in place. The gem bumps below are done, with two exceptions: `paranoia` 3 requires Active Record 7, so the app stays on 2.6 until the Rails 7 step, and `redis` is on 4.8 until Action Cable requires 5.
+Ruby 3.1.7 is in place. The gem bumps below are done. `paranoia` is 3.1 as of the Rails 7.0 step. `redis` stays on 4.8 until Action Cable requires 5.
 
 While still on 6.1, loosen or replace the gems that cannot survive the next Rails bump:
 
 | Gem now                                                      | What to do                                                                                                                                                                       |
 | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `audited` 4.10                                               | Hard-locked to Active Record `< 6.2`. Move to audited 5.x before leaving 6.1.                                                                                                    |
-| `paranoia` 2.6                                               | Move to 3.x on the way to Rails 7. `acts_as_paranoid` stays.                                                                                                                     |
+| `paranoia` 2.6                                               | Done on Rails 7.0: now 3.1. `acts_as_paranoid` stays.                                                                                                                            |
 | `puma` `~> 3.12.2`                                           | Move to 6.x. 3.12 is far behind current security releases.                                                                                                                       |
 | `redis` `~> 3.0`                                             | Move to 4.x, then 5.x when Action Cable asks for it. `config/cable.yml` already reads `REDIS_URL`.                                                                               |
 | `listen` `~> 3.0.5`                                          | Move to `~> 3.8` or the dev group will not boot.                                                                                                                                 |
@@ -34,7 +34,7 @@ While still on 6.1, loosen or replace the gems that cannot survive the next Rail
 
 ## 3. Climb Rails one minor version at a time
 
-`config.load_defaults` is still `'6.0'`, and `config/initializers/new_framework_defaults_6_0.rb` is present, so the app has never taken the 6.1 defaults. For each stop — 7.0, 7.1, 7.2, 8.0, 8.1 — do this and do not continue until tests pass:
+`config.load_defaults` is `7.0`. For each remaining stop — 7.1, 7.2, 8.0, 8.1 — do this and do not continue until tests pass:
 
 1. Set the Gemfile to that version and `bundle update rails`.
 2. Run `bin/rails app:update` and review the diffs. Keep the mailer, locale, and time zone settings.
@@ -96,8 +96,8 @@ Environment variables to set on the service:
 ## Order of work
 
 1. Baseline on 2.7 / 6.1.
-2. Done: Ruby 3.1.7, still on Rails 6.1.7.10, and the gem bumps above. `paranoia` 3 waits for Rails 7.
-3. Rails 7.0, 7.1, 7.2, with `app:update` and tests at each stop.
+2. Done: Ruby 3.1.7, still on Rails 6.1.7.10, and the gem bumps above.
+3. Done: Rails 7.0.10 with `config.load_defaults 7.0`. `paranoia` is 3.1. `db/schema.rb` loads as `ActiveRecord::Schema[6.1]` so existing `serial` keys keep their old column defaults. `json` stays on 2.6 and `pg` stays on 1.5 until a later Rails stops passing the deprecated arguments. Active Storage update migrations were not copied: the schema has no Active Storage tables, and those migrations would fail. Next: Rails 7.1, then 7.2, with `app:update` and tests at each stop.
 4. Shakapacker and Node 22, once Rails 7 boots.
 5. Ruby 3.4, then Rails 8.0, then 8.1.
 6. `DATABASE_URL`, Dockerfile, Railway Postgres and Redis, env vars, pre-deploy `db:prepare`.

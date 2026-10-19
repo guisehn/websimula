@@ -1,6 +1,8 @@
 require_relative 'boot'
 
 require 'rails/all'
+# Rails 7 no longer loads Sprockets from rails/all.
+require 'sprockets/railtie'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -23,7 +25,7 @@ module Simula
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
-    config.load_defaults '6.0'
+    config.load_defaults 7.0
 
     config.i18n.default_locale = :'pt-BR'
 
@@ -33,7 +35,5 @@ module Simula
     config.action_mailer.delivery_method = :postmark
     config.action_mailer.postmark_settings = { api_token: ENV['POSTMARK_KEY'] }
     config.action_mailer.default_url_options = { host: ENV['APP_HOST_URL'] }
-
-    config.filter_parameters << :password
   end
 end

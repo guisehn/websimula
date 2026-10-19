@@ -2,17 +2,19 @@ source 'https://rubygems.org'
 ruby '3.1.7'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.1.7.10'
+gem 'rails', '~> 7.0.8'
 gem 'logger'
 # Use Postgres as the database for Active Record
-# Rails 6.1 still constructs PG coders with a hash. pg 1.6 deprecates that.
+# Rails 7.0 still constructs PG coders with a hash. pg 1.6 deprecates that.
 gem 'pg', '~> 1.5.9'
-# Rails 6.1 passes quirks_mode to JSON.generate. json 2.7+ rejects it.
+# Rails 7.0 passes quirks_mode to JSON.generate. json 2.7+ rejects it.
 gem 'json', '~> 2.6.3'
 # Use Puma as the app server
 gem 'puma', '~> 6.4'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
+# Rails 7 no longer depends on Sprockets. sass-rails 5 needs Sprockets 3.
+gem 'sprockets-rails', '~> 3.4'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
@@ -38,7 +40,7 @@ gem 'figaro'
 gem 'simple_form', '~> 5.3'
 gem 'webpacker', '~> 4.0.7'
 gem 'postmark-rails', '~> 0.22.1'
-gem 'paranoia', '~> 2.6'
+gem 'paranoia', '~> 3.0'
 gem 'will_paginate', '~> 3.3'
 gem 'will_paginate-bootstrap'
 gem 'sentry-ruby'
