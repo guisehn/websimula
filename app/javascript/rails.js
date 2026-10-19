@@ -1,6 +1,8 @@
-'use strict'
+import Rails from '@rails/ujs'
+import { start as startActiveStorage } from '@rails/activestorage'
+import Turbolinks from 'turbolinks'
+import './channels'
 
-require('@rails/ujs').start()
-require('@rails/activestorage').start()
-require("turbolinks").start()
-require('./channels')
+Rails.start()
+startActiveStorage()
+Turbolinks.start()

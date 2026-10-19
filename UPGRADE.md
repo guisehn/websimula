@@ -2,7 +2,7 @@
 
 Target **Ruby 3.4** and **Rails 8.1**. Rails 8.1 is tested against Ruby 3.4. Leave Ruby 4 until the app is already green on 8.1: it drops the `cgi` standard library and still trips older gems.
 
-The app is Rails 7.2.4 on Ruby 3.1.7, with Sprockets (Bootstrap 3, Sass, jQuery) and Webpacker 4 (Vue 2) side by side. Do the upgrade in small steps. A single jump to 8.1 will fail on gem constraints before a Dockerfile will build.
+The app is Rails 7.2.4 on Ruby 3.1.7, with Sprockets (Bootstrap 3, Sass, jQuery) and Shakapacker 10.3.2 (Webpack 5, Vue 2, Node 22.23.3) side by side. Do the upgrade in small steps. A single jump to 8.1 will fail on gem constraints before a Dockerfile will build.
 
 `rails test` is the checkpoint after each step. The request tests cover sign-in, projects, agents, variables, rules, membership, and the simulation page.
 
@@ -52,11 +52,11 @@ In production, turn on `config.force_ssl = true` and, from Rails 7.1 on, `config
 
 ## 4. Leave the Vue app on a bundler
 
-Do not rewrite Vue 2 as part of this. The layout loads Sprockets assets and a Webpacker pack (`javascript_pack_tag` / `stylesheet_pack_tag` in `app/views/layouts/application.html.erb`).
+Do not rewrite Vue 2 as part of this. The layout loads Sprockets assets and a Shakapacker pack (`javascript_pack_tag` / `stylesheet_pack_tag` in `app/views/layouts/application.html.erb`). `javascript_pack_tag` is called with `defer: false` so inline page scripts still see the pack's globals.
 
-`package.json` pins Node `16.18.0` so Webpacker 4 can install and compile today. Node 8 no longer installs, and Webpack 4 breaks on Node 17+ because of OpenSSL. Rails 8’s new-app default (Propshaft, importmap, no Node) does not fit this app.
+Done: `webpacker` is replaced by Shakapacker 10.3.2. Node is 22.23.3 in `.tool-versions` and `package.json`. The pack stays in `app/javascript`, Vue 2 single-file components still use `vue-loader` 15, and `.js.erb` files still go through `rails-erb-loader` (Shakapacker adds that loader when the package is installed; do not add a second copy). `javascript_transpiler` is `babel`. `css_modules_export_mode` is `default` so Vue style blocks keep a default export. `@rails/actioncable` and `@rails/activestorage` are 7.2.400. `@rails/ujs` stays on 7.1.600 because Rails stopped publishing that package. Sprockets still serves the Bootstrap 3 stylesheets. Propshaft can wait until after the app is deployed.
 
-Keep Sprockets for the Bootstrap 3 stylesheets. Replace `webpacker` with **Shakapacker** (the maintained Webpacker fork, Webpack 5) and set Node to **22**. That keeps `app/javascript`, the Vue loader, and the ERB loader, and it gives the Docker build a Node that is still supported. Update the `@rails/*` packages to match the Rails version. Propshaft can wait until after the app is deployed.
+CI installs Node 22, Yarn 1.22.22, and compiles the pack before `rails test`. The request tests still stub the pack tags, so they do not need the manifest.
 
 ## 5. Point the database config at Railway
 
@@ -97,8 +97,8 @@ Environment variables to set on the service:
 
 1. Baseline on 2.7 / 6.1.
 2. Done: Ruby 3.1.7, still on Rails 6.1.7.10, and the gem bumps above.
-3. Done: Rails 7.2.4 with `config.load_defaults 7.2`. `paranoia` is 3.1. `db/schema.rb` stays `ActiveRecord::Schema[6.1]` so existing `serial` keys keep their old column defaults. `pg` stays on 1.5. `secrets.yml` is removed. Production has `force_ssl` and `assume_ssl`. Active Storage update migrations were not copied: the schema has no Active Storage tables. Next: Shakapacker and Node 22.
-4. Shakapacker and Node 22.
+3. Done: Rails 7.2.4 with `config.load_defaults 7.2`. `paranoia` is 3.1. `db/schema.rb` stays `ActiveRecord::Schema[6.1]` so existing `serial` keys keep their old column defaults. `pg` stays on 1.5. `secrets.yml` is removed. Production has `force_ssl` and `assume_ssl`. Active Storage update migrations were not copied: the schema has no Active Storage tables.
+4. Done: Shakapacker 10.3.2 and Node 22.23.3. Next: Ruby 3.4.
 5. Ruby 3.4, then Rails 8.0, then 8.1.
 6. `DATABASE_URL`, Dockerfile, Railway Postgres and Redis, env vars, pre-deploy `db:prepare`.
 
