@@ -1,6 +1,0 @@
-{
-  "name": "node-sass",
-  "version": "7.0.3",
-  "description": "Stand-in so Webpacker 4 does not compile the native node-sass package. Styles compile with the sass package.",
-  "main": "index.js"
-}

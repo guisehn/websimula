@@ -8,18 +8,6 @@ require 'sprockets/railtie'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-# Webpacker 4 loads its packaged default config with YAML aliases.
-# Ruby 3.1 rejects those unless the caller opts in, and this app's
-# config/webpacker.yml already lists every setting that fallback would supply.
-module Webpacker
-  class Configuration
-    private
-      def defaults
-        @defaults ||= HashWithIndifferentAccess.new
-      end
-  end
-end
-
 module Simula
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.

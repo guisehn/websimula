@@ -39,8 +39,19 @@ jobs:
           ruby-version: 3.1.7
           bundler-cache: true
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.23.3
+          cache: yarn
+
+      - name: Install JavaScript dependencies
+        run: corepack enable && corepack prepare yarn@1.22.22 --activate && yarn install --frozen-lockfile
+
       - name: Prepare database
         run: bin/rails db:prepare
+
+      - name: Compile the JavaScript pack
+        run: bin/shakapacker
 
       - name: Run tests
         run: bin/rails test

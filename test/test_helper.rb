@@ -10,7 +10,8 @@ class ActiveSupport::TestCase
   # Add more helper methods to be used by all tests here...
 end
 
-# TODO: hack until we upgrade Node.js
+# Request tests do not execute the pack. Stub the tags so the suite can run
+# without a compiled manifest. CI still compiles the pack in a separate step.
 module TestPackTags
   def javascript_pack_tag(*)
     ''.html_safe
