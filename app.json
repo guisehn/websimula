@@ -1,7 +1,0 @@
-{
-  "scripts": {
-    "dokku": {
-      "postdeploy": "[[ -n $WEBSIMULA_AUTO_MIGRATIONS ]] && bundle exec rake db:migrate || exit 0"
-    }
-  }
-}
