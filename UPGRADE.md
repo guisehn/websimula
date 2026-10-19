@@ -2,7 +2,7 @@
 
 Target **Ruby 3.4** and **Rails 8.1**. Rails 8.1 is tested against Ruby 3.4. Leave Ruby 4 until the app is already green on 8.1: it drops the `cgi` standard library and still trips older gems.
 
-The app is Rails 8.0.5.1 on Ruby 3.4.11, with Sprockets (Bootstrap 3, Sass, jQuery) and Shakapacker 10.3.2 (Webpack 5, Vue 2, Node 22.23.3) side by side. Do the upgrade in small steps. A single jump to 8.1 will fail on gem constraints before a Dockerfile will build.
+The app is Rails 8.1.4 on Ruby 3.4.11, with Sprockets (Bootstrap 3, Sass, jQuery) and Shakapacker 10.3.2 (Webpack 5, Vue 2, Node 22.23.3) side by side. Do the upgrade in small steps. A single jump to 8.1 will fail on gem constraints before a Dockerfile will build.
 
 `rails test` is the checkpoint after each step. The request tests cover sign-in, projects, agents, variables, rules, membership, and the simulation page.
 
@@ -34,7 +34,7 @@ While still on 6.1, loosen or replace the gems that cannot survive the next Rail
 
 ## 3. Climb Rails one minor version at a time
 
-`config.load_defaults` is `8.0`. `config/secrets.yml` is gone: production reads `SECRET_KEY_BASE` from the environment, and development and test use the generated `tmp/local_secret.txt`. For the remaining stop — 8.1 — do this and do not continue until tests pass:
+`config.load_defaults` is `8.1`. `config/secrets.yml` is gone: production reads `SECRET_KEY_BASE` from the environment, and development and test use the generated `tmp/local_secret.txt`. Rails 8.1 is the last framework stop. Each stop followed these steps:
 
 1. Set the Gemfile to that version and `bundle update rails`.
 2. Run `bin/rails app:update` and review the diffs. Keep the mailer, locale, and time zone settings.
@@ -47,7 +47,8 @@ Version gates:
 - Done: Rails 7.1 removed `config/secrets.yml`. Production reads `SECRET_KEY_BASE` from the environment. Development and test use `tmp/local_secret.txt`.
 - Done: Rails 7.2. `load_defaults 7.2` turns on YJIT when the Ruby build has it, waits to enqueue jobs until the current transaction commits, decodes PostgreSQL `date` values as `Date`, and rejects migration timestamps more than a day in the future. Enums use positional arguments (`enum :visibility, [:secret, :open]`), which Rails 8.0 requires. The `json` Gemfile pin is gone because 7.2 no longer passes `quirks_mode`; the lockfile still resolved 2.6.3. `pg` stays on 1.5.
 - Done: Ruby 3.4.11, still on Rails 7.2.4. The `sass` 3.7 gem warns that its string literals will be frozen in a later Ruby; the suite still passes.
-- Done: Rails 8.0.5.1. `load_defaults 8.0` makes `to_time` keep the receiver's time zone, lets an `ETag` win over `Last-Modified`, and sets `Regexp.timeout` to 1 second. The global `enqueue_after_transaction_commit` setting from 7.2 is gone in 8.0; do not put it back. `app:update` wanted to overwrite `config/boot.rb`, the environment files, and `config/puma.rb`, and it copied Active Storage migrations. Those were rejected: the schema has no Active Storage tables, and the mailer, locale, time zone, cookie rotator, and `SECRET_KEY_BASE` setup stay. Next is 8.1.
+- Done: Rails 8.0.5.1. `load_defaults 8.0` makes `to_time` keep the receiver's time zone, lets an `ETag` win over `Last-Modified`, and sets `Regexp.timeout` to 1 second. The global `enqueue_after_transaction_commit` setting from 7.2 is gone in 8.0; do not put it back. `app:update` wanted to overwrite `config/boot.rb`, the environment files, and `config/puma.rb`, and it copied Active Storage migrations. Those were rejected: the schema has no Active Storage tables, and the mailer, locale, time zone, cookie rotator, and `SECRET_KEY_BASE` setup stay.
+- Done: Rails 8.1.4. `load_defaults 8.1` turns YJIT off in development and test, stops escaping HTML in JSON responses, raises on path-relative redirects such as `redirect_to "example.com"`, and raises when an order-dependent finder has no order column to fall back on. `config.active_support.to_time_preserves_timezone` is deprecated and is no longer set; `to_time` still keeps the time zone. `app:update` also offered `bin/ci`, `bin/dev`, and `config/ci.rb`. Those were not kept: this app has no importmap, and CI stays in GitHub Actions. Devise 4.9.4 still passes a hash to `resource` for registrations. Rails warns that support ends in 8.2. Leave Devise on 4.9 until that is a deliberate bump.
 
 In production, turn on `config.force_ssl = true` and, from Rails 7.1 on, `config.assume_ssl = true`. Railway terminates TLS in front of the container.
 
@@ -100,7 +101,7 @@ Environment variables to set on the service:
 2. Done: Ruby 3.1.7, still on Rails 6.1.7.10, and the gem bumps above.
 3. Done: Rails 7.2.4 with `config.load_defaults 7.2`. `paranoia` is 3.1. `db/schema.rb` stays `ActiveRecord::Schema[6.1]` so existing `serial` keys keep their old column defaults. `pg` stays on 1.5. `secrets.yml` is removed. Production has `force_ssl` and `assume_ssl`. Active Storage update migrations were not copied: the schema has no Active Storage tables.
 4. Done: Shakapacker 10.3.2 and Node 22.23.3.
-5. Done: Ruby 3.4.11, then Rails 8.0.5.1 with `config.load_defaults 8.0`. Next: Rails 8.1.
+5. Done: Ruby 3.4.11, Rails 8.0.5.1, then Rails 8.1.4 with `config.load_defaults 8.1`.
 6. `DATABASE_URL`, Dockerfile, Railway Postgres and Redis, env vars, pre-deploy `db:prepare`.
 
 Start the Dockerfile only after `bundle install` and `rails assets:precompile` succeed locally on Ruby 3.4 and Rails 8.1.

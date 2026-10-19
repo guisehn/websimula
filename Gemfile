@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 ruby '3.4.11'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 8.0.0'
+gem 'rails', '~> 8.1.0'
 gem 'logger'
 # Use Postgres as the database for Active Record
 # Rails 7.1 uses keyword arguments for PG coders. Stay on 1.5 until that is
